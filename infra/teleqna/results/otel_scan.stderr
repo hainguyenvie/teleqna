@@ -1,0 +1,34 @@
+teleqna: 10000 items, 1312 too short to index at k=8
+srsranbench: 1502 items, 229 too short to index at k=8
+telelogs864: 864 items, 0 too short to index at k=8
+index: 77,658 shingles
+  ...20,000 | teleqna=114 | srsranbench=1 | telelogs864=0
+  ...40,000 | teleqna=179 | srsranbench=1 | telelogs864=0
+  ...60,000 | teleqna=241 | srsranbench=1 | telelogs864=0
+  ...80,000 | teleqna=299 | srsranbench=1 | telelogs864=0
+  ...100,000 | teleqna=340 | srsranbench=1 | telelogs864=0
+  ...120,000 | teleqna=375 | srsranbench=1 | telelogs864=0
+  ...140,000 | teleqna=410 | srsranbench=1 | telelogs864=0
+  ...160,000 | teleqna=439 | srsranbench=1 | telelogs864=0
+  ...180,000 | teleqna=470 | srsranbench=2 | telelogs864=0
+  ...200,000 | teleqna=493 | srsranbench=2 | telelogs864=0
+  ...220,000 | teleqna=520 | srsranbench=2 | telelogs864=0
+  ...240,000 | teleqna=522 | srsranbench=2 | telelogs864=0
+  ...260,000 | teleqna=524 | srsranbench=2 | telelogs864=0
+  ...280,000 | teleqna=524 | srsranbench=2 | telelogs864=0
+  ...300,000 | teleqna=525 | srsranbench=2 | telelogs864=0
+  ...320,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...340,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...360,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...380,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...400,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...420,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...440,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...460,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...480,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...500,000 | teleqna=527 | srsranbench=2 | telelogs864=0
+  ...520,000 | teleqna=528 | srsranbench=2 | telelogs864=0
+  ...540,000 | teleqna=528 | srsranbench=2 | telelogs864=0
+  ...560,000 | teleqna=528 | srsranbench=2 | telelogs864=0
+  ...580,000 | teleqna=529 | srsranbench=2 | telelogs864=0
+  ...600,000 | teleqna=529 | srsranbench=2 | telelogs864=0

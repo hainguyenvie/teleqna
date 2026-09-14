@@ -1,0 +1,73 @@
+{
+  "corpus": "infra/teleqna/thirdparty/otel-llm-data/OTel-LLM-Data.jsonl",
+  "records": 606237,
+  "k": 8,
+  "matched": {
+    "teleqna": {
+      "hit": 530,
+      "total": 10000,
+      "frac": 0.053
+    },
+    "srsranbench": {
+      "hit": 2,
+      "total": 1502,
+      "frac": 0.0013
+    },
+    "telelogs864": {
+      "hit": 0,
+      "total": 864,
+      "frac": 0.0
+    }
+  },
+  "note": "lower bound; items shorter than k words cannot be detected",
+  "examples": [
+    {
+      "target": "teleqna",
+      "item": 9321,
+      "shingle": "what is one of the key enabling technologies",
+      "corpus_record": "What is one of the key enabling technologies for the future SAGS network for 6G? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is one of the key enabling technologies for the future"
+    },
+    {
+      "target": "teleqna",
+      "item": 5329,
+      "shingle": "an ip packet arrives at the upf for",
+      "corpus_record": "How are non-deducible SDFs classified in DL for packet inspection in CN-UP? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question How are non-deducible SDFs classified in DL for packet inspectio"
+    },
+    {
+      "target": "teleqna",
+      "item": 1243,
+      "shingle": "which of the following is not a benefit",
+      "corpus_record": "Which of the following is NOT a benefit of using declarative configurations in Kubernetes? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question Which of the following is NOT a benefit of using "
+    },
+    {
+      "target": "teleqna",
+      "item": 831,
+      "shingle": "what is the term used to refer to",
+      "corpus_record": "What is the term used to refer to the combined PDB and interference estimation in the GSC structure for adaptive beamforming design with the CM-GSC criterion? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable st"
+    },
+    {
+      "target": "teleqna",
+      "item": 1023,
+      "shingle": "is the term used to refer to the",
+      "corpus_record": "What is the term used to refer to the combined PDB and interference estimation in the GSC structure for adaptive beamforming design with the CM-GSC criterion? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable st"
+    },
+    {
+      "target": "teleqna",
+      "item": 2717,
+      "shingle": "what is the effect of increasing the number",
+      "corpus_record": "What is the effect of increasing the number of guard subcarriers between two adjacent 4-prb subbands on the SBLR? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the effect of incr"
+    },
+    {
+      "target": "teleqna",
+      "item": 6241,
+      "shingle": "what is the purpose of the ue context",
+      "corpus_record": "What is the purpose of the UE Context Resume procedure? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the purpose of the UE Context Resume procedure? Retrieved Contexts (use as s"
+    },
+    {
+      "target": "teleqna",
+      "item": 6191,
+      "shingle": "what is the main challenge addressed by the",
+      "corpus_record": "What is the main challenge addressed by the Privacy-preserving Location Query Protocol (PLQP) in the context of Location-Based Services (LBS)? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Questi"
+    }
+  ]
+}

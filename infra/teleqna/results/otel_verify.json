@@ -1,0 +1,62 @@
+{
+  "corpus": "infra/teleqna/thirdparty/otel-llm-data/OTel-LLM-Data.jsonl",
+  "records": 606237,
+  "tail_words": 8,
+  "questions": 10000,
+  "questions_too_short": 1312,
+  "tail_hit": 28,
+  "full_hit": 15,
+  "gold_hit": 8,
+  "examples": [
+    {
+      "item": 8204,
+      "question": "What is the maximum permissible carrier bandwidth for 5G systems in mmWave bands?",
+      "record": "What is the maximum permissible carrier bandwidth for 5G systems in mmWave bands? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the maximum permissible carrier bandwidth for 5G systems in mmWave bands? Retrieved Contexts (use as sources) CONTEXT 1 However, the maximum carrier b"
+    },
+    {
+      "item": 7120,
+      "question": "What is the main advantage of drone-cells in wireless networks?",
+      "record": "What is the main advantage of drone-cells in wireless networks? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the main advantage of drone-cells in wireless networks? Retrieved Contexts (use as sources) CONTEXT 1 A promising solution is assisting the cellular network via low-alt"
+    },
+    {
+      "item": 25,
+      "question": "What is the key challenge for 5G and beyond-5G wireless networks?",
+      "record": "What is the key challenge for 5G and beyond-5G wireless networks? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the key challenge for 5G and beyond-5G wireless networks? Retrieved Contexts (use as sources) CONTEXT 1 A major challenge lies on ensuring wireless coverage and enoug"
+    },
+    {
+      "item": 6234,
+      "question": "What is the mode of operation of the MS when connected to the Core Network via GERAN and the A and/or Gb interfaces?",
+      "record": "What is the mode of operation of the MS when connected to the Core Network via GERAN and the A and/or Gb interfaces? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the mode of operation of the MS when connected to the Core Network via GERAN and the A and/or Gb interfaces? Retrie"
+    },
+    {
+      "item": 455,
+      "question": "What is the definition of the Internet of Things (IoT)?",
+      "record": "What is the definition of the Internet of Things (IoT)? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the definition of the Internet of Things (IoT)? Retrieved Contexts (use as sources) CONTEXT 1 The IoT is a network of several internet-connected physical devices. CONTEXT 2 In "
+    },
+    {
+      "item": 4284,
+      "question": "What is the goal of Graph Neural Networks (GNNs)?",
+      "record": "What is the goal of Graph Neural Networks (GNNs)? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the goal of Graph Neural Networks (GNNs)? Retrieved Contexts (use as sources) CONTEXT 1 Introduction Graph Neural Networks (GNNs) are a class of deep learning models designed to hand"
+    },
+    {
+      "item": 6636,
+      "question": "What are the four categories of machine learning algorithms?",
+      "record": "What are the four categories of machine learning algorithms? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What are the four categories of machine learning algorithms? Retrieved Contexts (use as sources) CONTEXT 1 \\\\ Machine learning schemes can be classified into four main categories:"
+    },
+    {
+      "item": 9902,
+      "question": "What is the main aim of demand side management (DSM) in the smart grid?",
+      "record": "What is the main aim of demand side management (DSM) in the smart grid? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the main aim of demand side management (DSM) in the smart grid? Retrieved Contexts (use as sources) CONTEXT 1 In order to do so, demand side management (DSM) {s"
+    },
+    {
+      "item": 6589,
+      "question": "What are the three major techniques for integrating radar and communication systems?",
+      "record": "What are the three major techniques for integrating radar and communication systems? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What are the three major techniques for integrating radar and communication systems? Retrieved Contexts (use as sources) CONTEXT 1 When two systems share t"
+    },
+    {
+      "item": 4584,
+      "question": "What is the difference between input-output stability and internal stability?",
+      "record": "What is the difference between input-output stability and internal stability? You are a precise, helpful assistant in a Retrieval-Augmented Generation (RAG) pipeline. Your job is to produce a correct, grounded answer using only the retrieved context provided below. Do not invent facts. Prefer clarity and actionable steps. User Question What is the difference between input-output stability and internal stability? Retrieved Contexts (use as sources) CONTEXT 1 This ``gain-perspective'' is commonly "
+    }
+  ]
+}

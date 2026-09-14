@@ -1,0 +1,48 @@
+# Secrets and local configuration
+.env
+.env.*
+config.local.*
+*.local.json
+*.local.yaml
+*.local.yml
+credentials*.json
+*.pem
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Model, cache and runtime state
+cache/
+models/
+jobs/
+done/
+
+# Generated data and experiment outputs are excluded by default; a reviewed set
+# is force-added on purpose (see README §Data policy).
+data/
+artifacts/
+
+# Third-party training corpora (never commit; multi-GB, unverified provenance)
+infra/*/adaptlkey_nemotron_data/
+infra/*/adaptkey_nemotron_data/
+infra/*/thirdparty/
+
+# Local server-state snapshots (multi-GB archives, never commit)
+backups/
+
+# Miscellaneous local agent/editor state
+.claude/
+.codex/
+.agents/
+.DS_Store
+
+# ...but the H200 job wrappers under the sft tree are source, not runtime state.
+!infra/teleqna/sft/jobs/

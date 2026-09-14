@@ -1,0 +1,953 @@
+<title>teleqna baseline — 73.97%, and what the number is actually made of</title>
+<style>
+  :root{
+    color-scheme: light;
+    --plane:#f5f8fc; --panel:#ffffff; --panel-2:#f0f4fa;
+    --rule:#dbe4ef; --rule-soft:#eaf0f7;
+    --ink:#0f1c2b; --ink-2:#54687d; --ink-3:#8496a7;
+    --s1:#2a78d6; --s1-wash:rgba(42,120,214,.12);
+    --s2:#eb6834; --s2-wash:rgba(235,104,52,.12);
+    --good:#0ca30c; --warn:#b07d00; --crit:#d03b3b;
+    --floor:#8496a7;
+    --shadow:0 1px 2px rgba(15,28,43,.05), 0 10px 28px rgba(15,28,43,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])){
+      color-scheme: dark;
+      --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+      --rule:#26374e; --rule-soft:#1b283d;
+      --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+      --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+      --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+      --good:#0ca30c; --warn:#fab219; --crit:#e05c5c;
+      --floor:#7b8ea5;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+    --rule:#26374e; --rule-soft:#1b283d;
+    --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+    --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+    --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+    --good:#0ca30c; --warn:#fab219; --crit:#e05c5c;
+    --floor:#7b8ea5;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+  }
+  :root[data-theme="light"]{
+    color-scheme: light;
+    --plane:#f5f8fc; --panel:#ffffff; --panel-2:#f0f4fa;
+    --rule:#dbe4ef; --rule-soft:#eaf0f7;
+    --ink:#0f1c2b; --ink-2:#54687d; --ink-3:#8496a7;
+    --s1:#2a78d6; --s1-wash:rgba(42,120,214,.12);
+    --s2:#eb6834; --s2-wash:rgba(235,104,52,.12);
+    --good:#0ca30c; --warn:#b07d00; --crit:#d03b3b;
+    --floor:#8496a7;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--plane); color:var(--ink);
+    font:15px/1.62 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  main{width:min(1080px,93vw); margin:0 auto; padding:44px 0 100px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  /* ---- type scale ---- */
+  h1{font-size:clamp(30px,4.2vw,46px); line-height:1.08; letter-spacing:-.028em;
+     margin:0 0 14px; font-weight:800; text-wrap:balance; max-width:20ch}
+  h2{font-size:clamp(20px,2.3vw,26px); letter-spacing:-.02em; font-weight:750;
+     margin:0 0 6px; text-wrap:balance}
+  h3{font-size:16.5px; letter-spacing:-.012em; font-weight:700; margin:0 0 6px}
+  p{margin:0 0 12px; max-width:70ch}
+  .lede{font-size:17px; color:var(--ink-2); max-width:68ch; margin-bottom:0}
+  .eyebrow{font-size:11px; font-weight:750; letter-spacing:.13em; text-transform:uppercase;
+     color:var(--ink-3); margin:0 0 10px; display:flex; align-items:center; gap:10px}
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--rule)}
+  .note{font-size:13.5px; color:var(--ink-2); max-width:74ch}
+  .tiny{font-size:12px; color:var(--ink-3)}
+  a{color:var(--s1)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.87em;
+    background:var(--panel-2); border:1px solid var(--rule); border-radius:5px; padding:1px 5px}
+  strong{font-weight:700}
+  :focus-visible{outline:2px solid var(--s1); outline-offset:2px; border-radius:4px}
+
+  /* ---- structure ---- */
+  section{margin-top:56px}
+  .card{background:var(--panel); border:1px solid var(--rule); border-radius:14px;
+    padding:22px; box-shadow:var(--shadow)}
+  .grid{display:grid; gap:14px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  @media(max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))} .g2{grid-template-columns:1fr}}
+  @media(max-width:560px){.g4{grid-template-columns:1fr}}
+
+  /* ---- masthead ---- */
+  .masthead{border-bottom:1px solid var(--rule); padding-bottom:26px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+  .chip{font-size:11.5px; font-weight:650; letter-spacing:.02em; padding:4px 10px;
+    border-radius:999px; border:1px solid var(--rule); background:var(--panel);
+    color:var(--ink-2); white-space:nowrap}
+  .chip b{color:var(--ink); font-weight:750}
+
+  /* ---- stat tiles ---- */
+  .tile{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:16px 17px}
+  .tile .k{font-size:10.5px; font-weight:750; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ink-3)}
+  .tile .v{font-size:31px; font-weight:800; letter-spacing:-.03em; margin:8px 0 3px; line-height:1}
+  .tile .s{font-size:12.5px; color:var(--ink-2); line-height:1.45}
+  .tile.hl{border-color:color-mix(in srgb,var(--s1) 42%,transparent); background:var(--s1-wash)}
+
+  /* ---- verdict banner ---- */
+  .verdict{display:flex; gap:14px; align-items:flex-start; border-radius:12px; padding:16px 18px;
+    border:1px solid; margin-top:16px}
+  .verdict .badge{flex:none; font-size:10.5px; font-weight:800; letter-spacing:.09em;
+    text-transform:uppercase; padding:4px 10px; border-radius:999px; color:#fff; margin-top:2px}
+  .verdict.pass{border-color:color-mix(in srgb,var(--good) 40%,transparent);
+    background:color-mix(in srgb,var(--good) 9%,transparent)}
+  .verdict.pass .badge{background:var(--good)}
+  .verdict.watch{border-color:color-mix(in srgb,var(--warn) 45%,transparent);
+    background:color-mix(in srgb,var(--warn) 10%,transparent)}
+  .verdict.watch .badge{background:var(--warn); color:#1a1200}
+  .verdict p{margin:0; font-size:14px}
+
+  /* ---- tables ---- */
+  .tw{border:1px solid var(--rule); border-radius:12px; overflow-x:auto; background:var(--panel)}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;
+    font-variant-numeric:tabular-nums}
+  th,td{padding:9px 13px; text-align:right; border-bottom:1px solid var(--rule-soft); white-space:nowrap}
+  th{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3);
+    background:var(--panel-2); font-weight:750}
+  th:first-child,td:first-child{text-align:left}
+  td.l,th.l{text-align:left}
+  tbody tr:last-child td{border-bottom:0}
+  tr.ref td{color:var(--ink-2)}
+  tr.us td{background:var(--s1-wash); font-weight:700}
+  .pos{color:var(--good); font-weight:700}
+  .neg{color:var(--crit); font-weight:700}
+  .flat{color:var(--ink-3); font-weight:700}
+
+  /* ---- charts ---- */
+  figure{margin:0}
+  figcaption{font-size:12.5px; color:var(--ink-2); margin-top:10px; max-width:74ch}
+  .chartbox{overflow-x:auto}
+  svg{display:block; width:100%; height:auto; max-width:100%}
+  .ax{font-size:11px; fill:var(--ink-3); font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .lbl{font-size:12.5px; fill:var(--ink-2)}
+  .lbl.em{fill:var(--ink); font-weight:700}
+  .val{font-size:12px; fill:var(--ink); font-weight:700;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .grid-line{stroke:var(--rule-soft); stroke-width:1}
+  .axis-line{stroke:var(--rule); stroke-width:1}
+  .floor-line{stroke:var(--floor); stroke-width:1.5}
+  .floor-lbl{font-size:11px; fill:var(--floor); font-weight:700}
+  .bar-hit{fill:transparent; cursor:default}
+
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin:2px 0 14px; font-size:12.5px;
+    color:var(--ink-2)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .swatch{width:11px; height:11px; border-radius:3px; flex:none}
+
+  /* ---- tooltip ---- */
+  #tip{position:fixed; z-index:50; pointer-events:none; opacity:0; transition:opacity .1s;
+    background:var(--panel); color:var(--ink); border:1px solid var(--rule);
+    border-radius:9px; box-shadow:var(--shadow); padding:9px 11px; font-size:12.5px;
+    max-width:260px; line-height:1.45}
+  #tip .t{font-weight:750; margin-bottom:3px}
+  #tip .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-2)}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+
+  /* ---- misc ---- */
+  .callout{border-left:3px solid var(--s1); padding:2px 0 2px 16px; margin:18px 0;
+    color:var(--ink); font-size:15px; max-width:68ch}
+  .callout.alarm{border-left-color:var(--crit)}
+  details{margin-top:14px; border-top:1px solid var(--rule); padding-top:12px}
+  summary{cursor:pointer; font-size:12.5px; font-weight:700; color:var(--ink-2);
+    letter-spacing:.02em}
+  summary::marker{color:var(--ink-3)}
+  details[open] summary{margin-bottom:12px}
+  ul{margin:0 0 12px; padding-left:20px; max-width:70ch}
+  li{margin-bottom:7px}
+  hr{border:0; border-top:1px solid var(--rule); margin:34px 0}
+</style>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<main>
+
+<!-- ============ MASTHEAD ============ -->
+<header class="masthead">
+  <p class="eyebrow">GSMA Open Telco &middot; benchmark column 1 of 7</p>
+  <h1>teleqna baseline: 73.97%</h1>
+  <p class="lede">
+    Qwen3-8B, closed-book, all 10,000 rows, scored byte-for-byte the way the official
+    Inspect harness scores it. This page is the number and, more usefully, what the
+    number is made of — because a raw percentage on this benchmark is close to
+    meaningless without its floor.
+  </p>
+  <div class="meta">
+    <span class="chip"><b>Model</b> Qwen/Qwen3-8B</span>
+    <span class="chip"><b>Rows</b> 10,000 &times; 4 arms</span>
+    <span class="chip"><b>Probe</b> 600 rows &times; 6 arms</span>
+    <span class="chip"><b>Harness</b> multiple_choice(cot=False) + choice()</span>
+    <span class="chip"><b>Truncated</b> 7 / 10,000</span>
+    <span class="chip"><b>Run</b> 2026-08-03, H200</span>
+  </div>
+</header>
+
+<!-- ============ 1. THE SCALE ============ -->
+<section>
+  <p class="eyebrow">The reading, on a calibrated scale</p>
+  <h2>73.97% sits about halfway up the usable range, not three quarters</h2>
+  <p class="note" style="margin-top:10px">
+    Random guessing already scores 21.89%. A policy that never reads the question — take
+    &ldquo;All of the above&rdquo; if present, else &ldquo;Both&hellip;&rdquo;, else drop
+    &ldquo;None of the above&rdquo; and pick the longest survivor — scores <strong>39.72%</strong>.
+    That is the floor every number on this page is measured against, and it is drawn on
+    every chart below.
+  </p>
+
+  <div class="card" style="margin-top:18px">
+    <figure>
+      <div class="chartbox">
+        <svg viewBox="0 0 960 216" role="img" aria-label="Calibrated scale from 20% to 95% showing where each reference point and each measured arm falls">
+          <rect id="floor-band" y="24" height="138" fill="var(--rule-soft)"></rect>
+          <g class="ax" text-anchor="middle">
+            <line x1="52" y1="162" x2="936" y2="162" class="axis-line"></line>
+            <g id="scale-ticks"></g>
+          </g>
+          <text id="floor-band-lbl" y="206" class="floor-lbl" text-anchor="middle"></text>
+          <g id="scale-marks"></g>
+        </svg>
+      </div>
+      <figcaption>
+        Every reference point <em>scored on all 10,000 rows</em>, on one axis. The grey band is
+        territory a model earns nothing for reaching. Three frontier-model leaderboard rows
+        (gemini-3.1-pro 85.20, claude-opus-4.5 84.50, gpt-5 83.80) are deliberately absent:
+        they were scored on the 1,000-row ot-lite subset, and plotting them here would repeat
+        the scale-mixing this benchmark's own leaderboard column suffers from. They are in the
+        table below with their sample counts.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">Floor</div><div class="v">39.72%</div>
+      <div class="s">distractor-shape policy, zero telecom knowledge</div></div>
+    <div class="tile hl"><div class="k">This baseline</div><div class="v">73.97%</div>
+      <div class="s">+34.25 over the floor; 53% of the usable range</div></div>
+    <div class="tile"><div class="k">GPT-4, 2023</div><div class="v">74.91%</div>
+      <div class="s">0.94 above us — and it is a 2023 frontier model</div></div>
+    <div class="tile"><div class="k">Leaderboard #1</div><div class="v">91.20%</div>
+      <div class="s">AT&amp;T OTel-LLM-8.3B-QnA, n&thinsp;&asymp;&thinsp;10,237</div></div>
+  </div>
+
+  <details>
+    <summary>Table view — every reference point</summary>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th class="l">Reference</th><th>Score</th><th>vs floor</th><th>Rows scored</th><th class="l">Source</th><th class="l">On the axis?</th>
+        </tr></thead>
+        <tbody id="ref-table"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<!-- ============ 2. THE FOUR ARMS ============ -->
+<section>
+  <p class="eyebrow">Measurement &middot; four arms, 40,000 scored responses</p>
+  <h2>Thinking is worth +2.02 points, and it costs 968 tokens a question</h2>
+  <p class="note" style="margin-top:10px">
+    Each arm ran the full 10,000 rows. The rotated arms deterministically rotate every row's
+    choices — same question, same options, gold moved. On this benchmark that is not a
+    position-prior control (there is no position prior: <span class="mono">always&nbsp;A</span>
+    scores 22.10%) but an order-robustness control.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr>
+        <th class="l">Arm</th><th>Overall</th><th>Lexicon</th><th>Res. ovw</th>
+        <th>Res. pub</th><th>Std. ovw</th><th>Std. spec</th><th>tok/case</th>
+      </tr></thead>
+      <tbody id="arms-table"></tbody>
+    </table>
+  </div>
+
+  <div class="grid g2" style="margin-top:22px">
+    <div class="card">
+      <h3>Paired comparison — McNemar</h3>
+      <p class="tiny" style="margin-bottom:12px">
+        All arms ran the same rows, so only the rows where two arms disagree carry information.
+        Exact two-sided binomial on the discordant pairs.
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="l">Comparison</th><th>&Delta; pp</th><th>discordant</th><th>p</th></tr></thead>
+          <tbody id="mcnemar-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>What the third row means</h3>
+      <p style="font-size:14.5px">
+        Under no-think, rotating the choices costs a statistically real 1.59 points. Under
+        thinking it costs <strong>nothing measurable</strong> — 538 rows lost against 499 gained,
+        p&nbsp;=&nbsp;0.238.
+      </p>
+      <p style="font-size:14.5px; margin-bottom:0">
+        Reasoning does not only raise the score. It removes the model's sensitivity to where an
+        option happens to sit. That is a second, quieter argument for keeping thinking on —
+        and it is the opposite of what the sibling srsranbench track measured, where thinking
+        <em>cost</em> 4.8 points on identifier-lookup questions.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. DIAGNOSIS: WHERE THINKING FAILS ============ -->
+<section>
+  <p class="eyebrow">Diagnosis 1 &middot; the shape of the gain</p>
+  <h2>Thinking pays in every subject except the hardest one</h2>
+
+  <div class="card" style="margin-top:18px">
+    <figure>
+      <div class="chartbox">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Accuracy gained by enabling thinking, per subject. Standards specifications gains only 0.35 points while every other subject gains between 1.3 and 3.8.">
+          <g id="delta-chart"></g>
+        </svg>
+      </div>
+      <figcaption>
+        Points of accuracy gained by enabling native thinking, per subject, on the full
+        benchmark. Bar width is the gain; the number beside each bar is the row count of
+        that subject.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="callout alarm">
+    Deliberation cannot manufacture a 3GPP clause the model never read.
+    <strong>Standards specifications is a knowledge gap, not a reasoning gap</strong> — and it
+    is the only place where more thinking buys nothing.
+  </div>
+
+  <p class="note">
+    That single row reframes the whole plan. For the 8,000 rows outside Standards
+    specifications, better reasoning and better answer discipline are live levers. For the
+    2,000 rows inside it — 765 of which are still wrong — the only lever is putting the
+    specification text where the model can reach it: retrieval at inference, or knowledge
+    distilled from the specs into the weights.
+  </p>
+
+  <details>
+    <summary>Table view — per-subject gain</summary>
+    <div class="tw">
+      <table>
+        <thead><tr><th class="l">Subject</th><th>Rows</th><th>no-think</th><th>thinking</th><th>&Delta; pp</th></tr></thead>
+        <tbody id="delta-table"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<!-- ============ 4. DIAGNOSIS: MEMORISATION ============ -->
+<section>
+  <p class="eyebrow">Diagnosis 2 &middot; the gate before any training</p>
+  <h2>Is 73.97% knowledge, or is it recall of a public file?</h2>
+  <p class="note" style="margin-top:10px">
+    The GSMA <span class="mono">teleqna</span> split is the public TeleQnA dataset verbatim —
+    9,948 of 9,948 distinct questions appear word-for-word in
+    <span class="mono">netop-team/TeleQnA</span>, same option order, same gold, and the public
+    copy ships an explanation for all 10,000. It has been on GitHub since October 2023.
+    Contamination is the null hypothesis here, not the exception.
+  </p>
+
+  <h3 style="margin-top:26px">The test that is evidence rather than inference</h3>
+  <p class="note">
+    Mask one <strong>wrong</strong> option and ask the model to reproduce it. A distractor is
+    arbitrary text invented by TeleQnA's generator — it is not a fact about telecommunications,
+    so no amount of domain knowledge reconstructs it. The raw rate came back at 4.84%, inside
+    the band that had been pre-registered as &ldquo;partial exposure&rdquo;. Then the length
+    breakdown falsified the assumption that threshold rested on.
+  </p>
+
+  <div class="card" style="margin-top:18px">
+    <figure>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--s1)"></i> real TeleQnA distractor</span>
+        <span><i class="swatch" style="background:var(--s2)"></i> control: distractor the model wrote itself, seconds earlier</span>
+      </div>
+      <div class="chartbox">
+        <svg viewBox="0 0 760 300" role="img" aria-label="Exact-match reconstruction rate by masked-option length. Both real and control decay sharply with length; at five words or more the real rate is 1.23 percent and the control 1.67 percent.">
+          <g id="tsg-chart"></g>
+        </svg>
+      </div>
+      <figcaption>
+        Monotone decay with length is the signature of guessing — recall would be flat or
+        rising, since longer strings are more distinctive. The control is text that is
+        plausible for the question and <em>certainly</em> absent from any corpus, so its rate
+        is an upper bound on what guessing alone achieves.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">Raw rate</div><div class="v">4.84%</div>
+      <div class="s">29 / 599 &mdash; dominated by 1&ndash;3 word options</div></div>
+    <div class="tile"><div class="k">Options &ge; 5 words</div><div class="v">1.23%</div>
+      <div class="s">4 / 326, where guessing is genuinely hard</div></div>
+    <div class="tile hl"><div class="k">Control, &ge; 5 words</div><div class="v">1.67%</div>
+      <div class="s">5 / 300 &mdash; <strong>higher than the real probe</strong></div></div>
+    <div class="tile"><div class="k">Excess</div><div class="v">&minus;0.44</div>
+      <div class="s">z = &minus;0.46 &mdash; nothing for recall to explain</div></div>
+  </div>
+
+  <h3 style="margin-top:30px">Four independent lines, all pointing the same way</h3>
+  <div class="tw" style="margin-top:12px">
+    <table>
+      <thead><tr>
+        <th class="l">Probe arm</th><th class="l">What it perturbs</th><th>Accuracy</th>
+        <th>&Delta; pp</th><th>discordant</th><th>p</th>
+      </tr></thead>
+      <tbody id="probe-table"></tbody>
+    </table>
+  </div>
+
+  <div class="verdict pass">
+    <span class="badge">Gate passed</span>
+    <p>
+      <strong>No usable evidence that Qwen3-8B has memorised TeleQnA.</strong>
+      Reconstruction never exceeds a measured guessing floor at any length where guessing is
+      hard; rewriting every question in different words costs nothing (p&nbsp;=&nbsp;0.55);
+      rotation costs 1.59 points, a position effect rather than item recall; and the
+      per-subject difficulty profile reproduces the 2023 paper's ordering and spread.
+      This is not proof the model never saw the file — it is the more useful statement that
+      <strong>73.97% is not explained by recall</strong>. Re-run the probe against every
+      fine-tuned checkpoint, since training is where contamination would newly enter.
+    </p>
+  </div>
+
+  <details>
+    <summary>A control that had to be thrown away — kept in the record</summary>
+    <p class="note" style="margin-top:6px">
+      The first control masked a distractor <em>transplanted from a different question</em>.
+      It scored <span class="mono">0 / 599</span>, mean token F1 0.032 against 0.299 on the real
+      probe. That looked decisive and was not: a transplanted distractor is not a plausible
+      answer to the question it was pasted into, so the control removed guessability along with
+      memorisation. It measured &ldquo;can the model reproduce unrelated text&rdquo;, which is
+      trivially no. It is recorded here rather than quietly dropped, because the pre-registered
+      threshold it was meant to defend had already been shown invalid and the temptation was to
+      move the goalposts by argument instead of measuring.
+    </p>
+  </details>
+</section>
+
+<!-- ============ 5. DIAGNOSIS: WHERE THE DIFFICULTY IS ============ -->
+<section>
+  <p class="eyebrow">Diagnosis 3 &middot; decomposition</p>
+  <h2>Why an untrained model already scores this high</h2>
+  <p class="note" style="margin-top:10px">
+    The benchmark is easier than its name suggests, in four measurable ways. Numbers below are
+    from the no-think arm, where every row can be attributed cleanly.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr>
+        <th class="l">Slice of the benchmark</th><th>Rows</th><th>Accuracy</th><th class="l">What it shows</th>
+      </tr></thead>
+      <tbody id="decomp-table"></tbody>
+    </table>
+  </div>
+
+  <p class="note" style="margin-top:16px">
+    Two further reasons sit outside the table. GPT-4's 74.91% is an <strong>October 2023</strong>
+    number — an 8B model in 2026 matching a 2023 frontier model on knowledge MCQ is the normal
+    scaling trend, not a telecom result. And &ldquo;beats active telecom professionals at
+    64.86%&rdquo; measures <em>breadth</em>: those humans answered closed-book across five
+    subdomains no single engineer covers. A RAN engineer does not know the IEEE C95.1 RF
+    exposure limits. Breadth is exactly what a language model has and a specialist does not.
+  </p>
+
+  <h3 style="margin-top:30px">Where the 2,603 remaining errors actually live</h3>
+
+  <div class="card" style="margin-top:14px">
+    <figure>
+      <div class="chartbox">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Count of remaining wrong rows per subject in the thinking arm. Research publications holds 1007 wrong rows, Standards specifications 765, Research overview 489, Standards overview 278, Lexicon 64.">
+          <g id="err-chart"></g>
+        </svg>
+      </div>
+      <figcaption>
+        Wrong rows in the thinking arm, by subject. Standards specifications has the highest
+        <em>error rate</em> (38.3%), but Research publications holds more wrong rows outright.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="callout">
+    Fixing all 3,000 Standards rows to 100% would reach 84.4% — still 6.8 points short of the
+    leaderboard's top entry. <strong>A retrieval plan aimed only at 3GPP specifications cannot
+    finish this benchmark.</strong> That is the ceiling the Telco-RAG line ran into at 76%.
+  </div>
+</section>
+
+<!-- ============ 6. WHAT FOLLOWS ============ -->
+<section>
+  <p class="eyebrow">Consequences</p>
+  <h2>What the baseline decides</h2>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Settled by measurement</h3>
+      <ul style="font-size:14.5px; margin-bottom:0">
+        <li><strong>Keep thinking on.</strong> +2.02 points and it removes order sensitivity, at 968 tokens a question.</li>
+        <li><strong>The split is clean.</strong> The memorisation gate passed; downstream numbers can be built on.</li>
+        <li><strong>Report against 39.72%, never against zero.</strong> A specialist at 80% has recovered 40 points of real signal, not 80.</li>
+        <li><strong>Run at n = 10,000.</strong> 53 of 85 leaderboard entries on this column sit at n&thinsp;&asymp;&thinsp;1,000; a full-scale row is itself a differentiator.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Still open</h3>
+      <ul style="font-size:14.5px; margin-bottom:0">
+        <li><strong>Two corpora, not one.</strong> 3GPP and IEEE specifications for the 3,000 standards rows; telecom literature for the 6,500 research rows. Neither alone closes the gap.</li>
+        <li><strong>Retrieval as teacher or as scaffold.</strong> Both are permitted — the harness accepts any OpenAI-compatible endpoint and never inspects what is behind it. The choice is about what the submitted number should mean.</li>
+        <li><strong>Distractor generation is a first-class step.</strong> Swapping TeleQnA's distractors for foreign ones lifts accuracy 15.8 points, so roughly a sixth of this benchmark's difficulty is discrimination, not knowledge. A teacher that writes lazy distractors teaches the answer without teaching the discrimination.</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+  <p class="tiny" style="max-width:74ch">
+    Sources for reference points: TeleQnA (arXiv:2310.15051, Table II) for GPT-4, GPT-3.5 and
+    the professional baseline; GSMA/leaderboard for AT&amp;T, SoftBank and Gemini rows, with
+    sample counts inferred by inverting the published binomial standard error. All Qwen3-8B
+    figures are this run: <span class="mono">infra/teleqna/</span>, greedy for the no-think
+    arms, temperature 0.6 / top-p 0.95 / top-k 20 for the thinking arms, Inspect's
+    <span class="mono">parse_answers()</span> ported verbatim, only message
+    <span class="mono">content</span> parsed and never <span class="mono">reasoning_content</span>.
+  </p>
+</section>
+
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (n, a = {}) => {
+    const e = document.createElementNS(NS, n);
+    for (const k in a) e.setAttribute(k, a[k]);
+    return e;
+  };
+  const txt = (s, a = {}) => { const t = el("text", a); t.textContent = s; return t; };
+  const pp = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2);
+
+  // Rounded data-end only — a rect with rx rounds the baseline end too, which lifts
+  // the mark off its own axis and reads as a floating pill.
+  const barUp = (x, y, w, h, r = 4) => {   // vertical bar, rounded top
+    const rr = Math.min(r, w / 2, h);
+    return el("path", { d: `M${x},${y + h} L${x},${y + rr} Q${x},${y} ${x + rr},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h} Z` });
+  };
+  const barRight = (x, y, w, h, r = 4) => { // horizontal bar, rounded right end
+    const rr = Math.min(r, h / 2, w);
+    return el("path", { d: `M${x},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h - rr} Q${x + w},${y + h} ${x + w - rr},${y + h} L${x},${y + h} Z` });
+  };
+
+  /* ---------------- data ---------------- */
+  const FLOOR = 39.72;
+
+  const REFS = [
+    { name: "Random guessing",              v: 21.89, n: "—",  src: "1 / choices, averaged", kind: "floorzone" },
+    { name: "always “A”",         v: 22.10, n: "10,000",  src: "computed offline",      kind: "floorzone" },
+    { name: "Distractor-shape heuristic",   v: 39.72, n: "10,000",  src: "computed offline",      kind: "floor" },
+    { name: "Active telecom professionals", v: 64.86, n: "—",  src: "TeleQnA paper, 2023",   kind: "ref" },
+    { name: "GPT-3.5",                      v: 67.29, n: "10,000",  src: "TeleQnA paper, 2023",   kind: "ref" },
+    { name: "Qwen3-8B, no-think",           v: 71.95, n: "10,000",  src: "this run",              kind: "ours" },
+    { name: "Qwen3-8B, thinking",           v: 73.97, n: "10,000",  src: "this run",              kind: "ours-hl" },
+    { name: "GPT-4",                        v: 74.91, n: "10,000",  src: "TeleQnA paper, 2023",   kind: "ref" },
+    { name: "LTM (SoftBank)",               v: 81.91, n: "≈11,799", src: "GSMA leaderboard", kind: "ref" },
+    { name: "gemini-3.1-pro-preview",       v: 85.20, n: "≈1,005",  src: "GSMA leaderboard", kind: "ref", lite: true },
+    { name: "claude-opus-4.5",              v: 84.50, n: "≈999",    src: "GSMA leaderboard", kind: "ref", lite: true },
+    { name: "gpt-5",                        v: 83.80, n: "≈999",    src: "GSMA leaderboard", kind: "ref", lite: true },
+    { name: "AT&T OTel-LLM-8.3B",           v: 91.20, n: "≈10,237", src: "GSMA leaderboard", kind: "sota" }
+  ];
+
+  const SUBJECTS = [
+    { key: "Lexicon",                    rows: 500,  nothink: 83.40, think: 87.20, heur: 32.80, gpt4: 86.80 },
+    { key: "Research overview",          rows: 2000, nothink: 74.25, think: 75.55, heur: 39.90, gpt4: 76.25 },
+    { key: "Research publications",      rows: 4500, nothink: 74.84, think: 77.62, heur: 41.80, gpt4: 77.62 },
+    { key: "Standards overview",         rows: 1000, nothink: 69.70, think: 72.20, heur: 42.00, gpt4: 74.40 },
+    { key: "Standards specifications",   rows: 2000, nothink: 61.40, think: 61.75, heur: 35.50, gpt4: 64.78 }
+  ];
+
+  const ARMS = [
+    { arm: "no-think",           o: 71.95, s: [83.40, 74.25, 74.84, 69.70, 61.40], tok: "5.0",     us: false },
+    { arm: "no-think, rotated",  o: 70.36, s: [83.60, 73.50, 73.07, 69.80, 58.10], tok: "5.0",     us: false },
+    { arm: "thinking",           o: 73.97, s: [87.20, 75.55, 77.62, 72.20, 61.75], tok: "967.8",   us: true  },
+    { arm: "thinking, rotated",  o: 73.58, s: [87.60, 75.70, 76.38, 73.50, 61.70], tok: "1000.2",  us: false },
+    { arm: "GPT-4 (2023 paper)", o: 74.91, s: [86.80, 76.25, 77.62, 74.40, 64.78], tok: "—",  ref: true },
+    { arm: "Telecom professionals", o: 64.86, s: [80.33, 63.66, 68.33, 61.66, 56.33], tok: "—", ref: true },
+    { arm: "Shape heuristic (no model)", o: 39.72, s: [32.80, 39.90, 41.80, 42.00, 35.50], tok: "0", ref: true }
+  ];
+
+  const MCNEMAR = [
+    { c: "thinking vs no-think",          d: 2.02,  disc: "554 / 756", p: "&lt;0.001", sig: "pos" },
+    { c: "no-think: rotated vs plain",    d: -1.59, disc: "647 / 488", p: "&lt;0.001", sig: "neg" },
+    { c: "thinking: rotated vs plain",    d: -0.39, disc: "538 / 499", p: "0.238",     sig: "flat" }
+  ];
+
+  const TSG = [
+    { band: "1 word",     n: 63,  real: 15.87, cn: 47,  ctrl: 8.51 },
+    { band: "2–3",   n: 155, real:  7.74, cn: 136, ctrl: 5.15 },
+    { band: "4–6",   n: 145, real:  2.07, cn: 145, ctrl: 2.07 },
+    { band: "7–12",  n: 194, real:  1.55, cn: 183, ctrl: 0.55 },
+    { band: "13+",        n: 42,  real:  2.38, cn: 36,  ctrl: 5.56 }
+  ];
+
+  const PROBE = [
+    { arm: "orig",       what: "nothing — the control",                     acc: "72.67%", d: null,   disc: "—",    p: "—",  sig: "" },
+    { arm: "perm",       what: "choices rotated",                                acc: "69.00%", d: -3.67,  disc: "55 / 33",   p: "0.025",   sig: "neg" },
+    { arm: "perm, 10k",  what: "choices rotated, full benchmark",                acc: "70.36%", d: -1.59,  disc: "647 / 488", p: "&lt;0.001", sig: "neg" },
+    { arm: "distract",   what: "gold kept, all distractors replaced",            acc: "88.50%", d: 15.83,  disc: "50 / 145",  p: "&lt;0.001", sig: "pos" },
+    { arm: "paraphrase", what: "every question rewritten, terms preserved",      acc: "72.57%", d: -0.87,  disc: "25 / 20",   p: "0.551",   sig: "flat" }
+  ];
+
+  const DECOMP = [
+    { slice: "Rows the shape heuristic also solves", rows: "3,972",  acc: "80.34%",
+      note: "39.7% of the benchmark is partly answerable from option shape alone" },
+    { slice: "Rows the shape heuristic fails",       rows: "6,028",  acc: "66.42%",
+      note: "the honest figure — what the model scores when shape gives nothing" },
+    { slice: "Rows containing “All of the above”", rows: "824", acc: "86.04%",
+      note: "gold 89.8% of the time it appears; nearly free" },
+    { slice: "Rows citing a standard, e.g. [3GPP Release 18]", rows: "2,621", acc: "63.87%",
+      note: "where the question is genuinely domain-specific, accuracy drops 11 points" },
+    { slice: "Rows with no standard tag",            rows: "7,379",  acc: "74.82%",
+      note: "general technical prose from papers — abundant in any pretraining mix" },
+    { slice: "Research subjects (overview + publications)", rows: "6,500", acc: "74.66%",
+      note: "65% of the benchmark is not standards work at all" },
+    { slice: "Standards subjects (overview + specifications)", rows: "3,000", acc: "64.17%",
+      note: "10.5 points harder, and the part the name of the benchmark promises" }
+  ];
+
+  const ERRORS = SUBJECTS.map(s => ({
+    key: s.key, rows: s.rows,
+    wrong: Math.round(s.rows * (1 - s.think / 100)),
+    rate: 100 - s.think
+  })).sort((a, b) => b.wrong - a.wrong);
+
+  /* ---------------- tooltip ---------------- */
+  const tip = document.getElementById("tip");
+  function bindTip(node, title, body) {
+    const show = ev => {
+      tip.innerHTML = '<div class="t"></div><div class="n"></div>';
+      tip.querySelector(".t").textContent = title;
+      tip.querySelector(".n").textContent = body;
+      tip.style.opacity = "1";
+      move(ev);
+    };
+    const move = ev => {
+      const p = ev.touches ? ev.touches[0] : ev;
+      const r = tip.getBoundingClientRect();
+      let x = p.clientX + 14, y = p.clientY + 16;
+      if (x + r.width > innerWidth - 8) x = p.clientX - r.width - 14;
+      if (y + r.height > innerHeight - 8) y = p.clientY - r.height - 14;
+      tip.style.left = Math.max(8, x) + "px";
+      tip.style.top = Math.max(8, y) + "px";
+    };
+    const hide = () => { tip.style.opacity = "0"; };
+    node.addEventListener("pointerenter", show);
+    node.addEventListener("pointermove", move);
+    node.addEventListener("pointerleave", hide);
+    node.setAttribute("tabindex", "0");
+    node.addEventListener("focus", ev => {
+      const b = node.getBoundingClientRect();
+      show({ clientX: b.left + b.width / 2, clientY: b.top });
+    });
+    node.addEventListener("blur", hide);
+  }
+
+  /* ---------------- 1. calibrated scale ---------------- */
+  (() => {
+    const svg = document.querySelector('svg [id="scale-marks"]').ownerSVGElement;
+    const X0 = 52, X1 = 936, D0 = 20, D1 = 95;
+    const sx = v => X0 + (v - D0) / (D1 - D0) * (X1 - X0);
+
+    const band = svg.querySelector("#floor-band");
+    band.setAttribute("x", X0);
+    band.setAttribute("width", sx(FLOOR) - X0);
+    const bl = svg.querySelector("#floor-band-lbl");
+    bl.setAttribute("x", (X0 + sx(FLOOR)) / 2);
+    bl.textContent = "no credit — reachable with zero telecom knowledge";
+
+    const ticks = svg.querySelector("#scale-ticks");
+    for (let v = 20; v <= 95; v += 5) {
+      const x = sx(v);
+      ticks.appendChild(el("line", { x1: x, y1: 162, x2: x, y2: 168, class: "axis-line" }));
+      if (v % 10 === 0) ticks.appendChild(txt(v + "%", { x, y: 184, class: "ax" }));
+    }
+
+    const marks = svg.querySelector("#scale-marks");
+    // Six lanes, not four: five of the ten marks fall between 64% and 92%, and with
+    // four lanes the two longest labels there had nowhere to go but on top of each other.
+    const lanes = [148, 126, 104, 82, 60, 38];
+    const occupied = lanes.map(() => -1e4);
+
+    // Only full-benchmark numbers go on the axis. Three leaderboard rows were scored
+    // on the 1,000-row ot-lite subset; plotting them beside n = 10,000 points would
+    // repeat exactly the scale-mixing this page criticises. They stay in the table,
+    // where their sample count is visible.
+    const plotted = REFS.filter(r => !r.lite);
+
+    // Pass 1 — build every label and MEASURE it. Estimating label width from
+    // character count put "GPT-4" under "AT&T OTel-LLM-8.3B" in an earlier render;
+    // getComputedTextLength is exact and costs one layout.
+    const built = plotted.map(r => {
+      const x = sx(r.v);
+      const anchor = x > X1 - 120 ? "end" : x < X0 + 90 ? "start" : "middle";
+      const isHL = r.kind === "ours-hl";
+      const isSota = r.kind === "sota";
+      const isFloor = r.kind === "floor";
+      const isOurs = r.kind === "ours" || isHL;
+      const lab = el("text", {
+        x, "text-anchor": anchor,
+        class: isHL || isSota || isFloor ? "lbl em" : "lbl"
+      });
+      const nameSpan = el("tspan");
+      nameSpan.textContent = r.name + "  ";
+      const valSpan = el("tspan", { class: "val" });
+      valSpan.textContent = r.v.toFixed(2) + "%";
+      // Inline style, not a fill attribute: .lbl/.val set fill in CSS and a class
+      // selector outranks a presentation attribute, so setAttribute("fill") is a no-op here.
+      const tint = isHL ? "var(--s1)" : isSota ? "var(--s2)" : isFloor ? "var(--floor)" : null;
+      if (tint) { lab.style.fill = tint; valSpan.style.fill = tint; }
+      lab.appendChild(nameSpan); lab.appendChild(valSpan);
+      marks.appendChild(lab);
+      return { r, x, anchor, lab, isHL, isSota, isFloor, isOurs };
+    });
+
+    // Pass 2 — lane assignment from the measured spans, then draw stems and hit areas.
+    built.forEach(b => {
+      const w = b.lab.getComputedTextLength ? b.lab.getComputedTextLength() : b.r.name.length * 9;
+      const left = b.anchor === "end" ? b.x - w : b.anchor === "start" ? b.x : b.x - w / 2;
+      let lane = occupied.indexOf(Math.min(...occupied));
+      for (let i = 0; i < lanes.length; i++) {
+        if (left > occupied[i] + 14) { lane = i; break; }
+      }
+      occupied[lane] = left + w;
+      const y = lanes[lane];
+      b.lab.setAttribute("y", y);
+
+      const emphatic = b.isHL || b.isSota || b.isFloor;
+      const stroke = b.isHL ? "var(--s1)" : b.isSota ? "var(--s2)"
+                   : b.isFloor ? "var(--floor)" : b.isOurs ? "var(--s1)" : "var(--ink-3)";
+      const stem = el("line", {
+        x1: b.x, y1: y + 6, x2: b.x, y2: 162, stroke,
+        "stroke-width": emphatic ? 2 : 1,
+        "stroke-opacity": emphatic ? 1 : .55
+      });
+      const dot = el("circle", {
+        cx: b.x, cy: 162, r: b.isHL || b.isSota ? 5.5 : 3.5, fill: stroke,
+        stroke: "var(--panel)", "stroke-width": 2
+      });
+      marks.insertBefore(stem, marks.firstChild);
+      marks.insertBefore(dot, marks.firstChild);
+
+      const hit = el("rect", { x: b.x - 12, y: y - 14, width: 24, height: 182 - y + 14, class: "bar-hit" });
+      bindTip(hit, b.r.name, `${b.r.v.toFixed(2)}%  ·  ${pp(b.r.v - FLOOR)} vs floor  ·  n = ${b.r.n}  ·  ${b.r.src}`);
+      marks.appendChild(hit);
+    });
+
+    // reference table
+    const tb = document.getElementById("ref-table");
+    REFS.slice().sort((a, b) => b.v - a.v).forEach(r => {
+      const tr = document.createElement("tr");
+      if (r.kind === "ours" || r.kind === "ours-hl") tr.className = "us";
+      else tr.className = "ref";
+      tr.innerHTML = `<td class="l">${r.name}</td><td>${r.v.toFixed(2)}%</td>` +
+        `<td class="${r.v - FLOOR >= 0 ? "pos" : "neg"}">${pp(r.v - FLOOR)}</td>` +
+        `<td>${r.n}</td><td class="l" style="color:var(--ink-3)">${r.src}</td>` +
+        `<td class="l" style="color:var(--ink-3)">${r.lite ? "no — ot-lite scale" : "yes"}</td>`;
+      tb.appendChild(tr);
+    });
+  })();
+
+  /* ---------------- 2. arms table ---------------- */
+  (() => {
+    const tb = document.getElementById("arms-table");
+    ARMS.forEach(a => {
+      const tr = document.createElement("tr");
+      if (a.us) tr.className = "us"; else if (a.ref) tr.className = "ref";
+      tr.innerHTML = `<td class="l">${a.arm}</td><td>${a.o.toFixed(2)}%</td>` +
+        a.s.map(v => `<td>${v.toFixed(2)}</td>`).join("") + `<td>${a.tok}</td>`;
+      tb.appendChild(tr);
+    });
+
+    const mb = document.getElementById("mcnemar-table");
+    MCNEMAR.forEach(m => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="l">${m.c}</td>` +
+        `<td class="${m.sig}">${pp(m.d)}</td><td>${m.disc}</td><td>${m.p}</td>`;
+      mb.appendChild(tr);
+    });
+  })();
+
+  /* ---------------- 3. thinking delta ---------------- */
+  (() => {
+    const g = document.getElementById("delta-chart");
+    const L = 214, R = 556, TOP = 34, RH = 38, BH = 15;
+    const rows = SUBJECTS.map(s => ({ ...s, d: +(s.think - s.nothink).toFixed(2) }))
+                         .sort((a, b) => b.d - a.d);
+    const max = 4.0;
+    const sx = v => L + (v / max) * (R - L);
+
+    g.appendChild(txt("points of accuracy gained by enabling thinking", {
+      x: L, y: 16, class: "lbl"
+    }));
+    for (let v = 0; v <= 4; v += 1) {
+      g.appendChild(el("line", { x1: sx(v), y1: TOP - 8, x2: sx(v), y2: TOP + rows.length * RH - 12, class: "grid-line" }));
+      g.appendChild(txt("+" + v, { x: sx(v), y: TOP + rows.length * RH + 4, class: "ax", "text-anchor": "middle" }));
+    }
+    g.appendChild(el("line", { x1: L, y1: TOP - 8, x2: L, y2: TOP + rows.length * RH - 12, class: "axis-line" }));
+
+    rows.forEach((r, i) => {
+      const y = TOP + i * RH;
+      const anomaly = r.key === "Standards specifications";
+      const fill = anomaly ? "var(--crit)" : "var(--s1)";
+      const op = anomaly ? 1 : 0.9;
+
+      g.appendChild(txt(r.key, {
+        x: L - 12, y: y + BH - 2, class: anomaly ? "lbl em" : "lbl", "text-anchor": "end"
+      }));
+
+      const w = Math.max(2, sx(r.d) - L);
+      const bar = barRight(L, y, w, BH);
+      bar.setAttribute("fill", fill); bar.setAttribute("fill-opacity", op);
+      g.appendChild(bar);
+      const vt = txt(pp(r.d), { x: L + w + 9, y: y + BH - 2, class: "val" });
+      if (anomaly) vt.style.fill = "var(--crit)";
+      g.appendChild(vt);
+      g.appendChild(txt(r.rows.toLocaleString() + " rows", {
+        x: L + w + 62, y: y + BH - 2, class: "ax"
+      }));
+
+      const hit = el("rect", { x: L, y: y - 6, width: R - L, height: RH - 4, class: "bar-hit" });
+      bindTip(hit, r.key,
+        `no-think ${r.nothink.toFixed(2)}%  →  thinking ${r.think.toFixed(2)}%  (${pp(r.d)})  ·  ${r.rows.toLocaleString()} rows  ·  GPT-4 ${r.gpt4.toFixed(2)}%`);
+      g.appendChild(hit);
+    });
+
+    const tb = document.getElementById("delta-table");
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="l">${r.key}</td><td>${r.rows.toLocaleString()}</td>` +
+        `<td>${r.nothink.toFixed(2)}%</td><td>${r.think.toFixed(2)}%</td>` +
+        `<td class="${r.d > 1 ? "pos" : "flat"}">${pp(r.d)}</td>`;
+      tb.appendChild(tr);
+    });
+  })();
+
+  /* ---------------- 4. TS-Guessing ---------------- */
+  (() => {
+    const g = document.getElementById("tsg-chart");
+    const L = 62, R = 730, TOP = 26, BOT = 232;
+    const max = 17;
+    const sy = v => BOT - (v / max) * (BOT - TOP);
+    const band = (R - L) / TSG.length;
+    const BW = 22, GAP = 2;
+
+    for (let v = 0; v <= 16; v += 4) {
+      g.appendChild(el("line", { x1: L, y1: sy(v), x2: R, y2: sy(v), class: "grid-line" }));
+      g.appendChild(txt(v + "%", { x: L - 10, y: sy(v) + 4, class: "ax", "text-anchor": "end" }));
+    }
+    g.appendChild(el("line", { x1: L, y1: BOT, x2: R, y2: BOT, class: "axis-line" }));
+    g.appendChild(txt("exact-match reconstruction rate", { x: L, y: 14, class: "lbl" }));
+
+    TSG.forEach((d, i) => {
+      const cx = L + band * (i + 0.5);
+      const x1 = cx - BW - GAP / 2, x2 = cx + GAP / 2;
+
+      [[x1, d.real, "var(--s1)", d.n, "real TeleQnA distractor"],
+       [x2, d.ctrl, "var(--s2)", d.cn, "self-generated control"]].forEach(([x, v, fill, n, label]) => {
+        const h = Math.max(2, BOT - sy(v));
+        const bar = barUp(x, BOT - h, BW, h);
+        bar.setAttribute("fill", fill);
+        g.appendChild(bar);
+        const hit = el("rect", { x: x - 3, y: TOP, width: BW + 6, height: BOT - TOP, class: "bar-hit" });
+        bindTip(hit, `${label} · ${d.band}`,
+          `${v.toFixed(2)}% exact match  ·  ${Math.round(v / 100 * n)} of ${n} masked options`);
+        g.appendChild(hit);
+      });
+
+      g.appendChild(txt(d.band, { x: cx, y: BOT + 18, class: "ax", "text-anchor": "middle" }));
+    });
+    g.appendChild(txt("length of the masked option", { x: (L + R) / 2, y: BOT + 40, class: "ax", "text-anchor": "middle" }));
+
+    // the ≥5-word summary, direct-labelled over the low bars where there is room
+    const bx = 470;
+    g.appendChild(el("rect", { x: bx - 18, y: 40, width: 278, height: 116, fill: "var(--panel)" }));
+    g.appendChild(el("line", { x1: bx - 10, y1: 46, x2: bx - 10, y2: 150, stroke: "var(--rule)", "stroke-width": 1 }));
+    g.appendChild(txt("Options ≥ 5 words", { x: bx, y: 58, class: "lbl em" }));
+    g.appendChild(txt("guessing is hard here", { x: bx, y: 76, class: "ax" }));
+    const r1 = txt("real      1.23%", { x: bx, y: 102, class: "val" }); r1.style.fill = "var(--s1)";
+    const r2 = txt("control   1.67%", { x: bx, y: 122, class: "val" }); r2.style.fill = "var(--s2)";
+    g.appendChild(r1); g.appendChild(r2);
+    g.appendChild(txt("excess −0.44 pp, z = −0.46", { x: bx, y: 142, class: "ax" }));
+  })();
+
+  /* ---------------- 5. decomposition + error budget ---------------- */
+  (() => {
+    const tb = document.getElementById("decomp-table");
+    DECOMP.forEach(d => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="l">${d.slice}</td><td>${d.rows}</td><td>${d.acc}</td>` +
+        `<td class="l" style="color:var(--ink-2); white-space:normal; min-width:26ch">${d.note}</td>`;
+      tb.appendChild(tr);
+    });
+
+    const g = document.getElementById("err-chart");
+    const L = 214, R = 520, TOP = 34, RH = 38, BH = 15;
+    const max = 1100;
+    const sx = v => L + (v / max) * (R - L);
+
+    g.appendChild(txt("wrong rows remaining, thinking arm — 2,603 total", { x: L, y: 16, class: "lbl" }));
+    [0, 250, 500, 750, 1000].forEach(v => {
+      g.appendChild(el("line", { x1: sx(v), y1: TOP - 8, x2: sx(v), y2: TOP + ERRORS.length * RH - 12, class: "grid-line" }));
+      g.appendChild(txt(v.toLocaleString(), { x: sx(v), y: TOP + ERRORS.length * RH + 4, class: "ax", "text-anchor": "middle" }));
+    });
+    g.appendChild(el("line", { x1: L, y1: TOP - 8, x2: L, y2: TOP + ERRORS.length * RH - 12, class: "axis-line" }));
+
+    ERRORS.forEach((e, i) => {
+      const y = TOP + i * RH;
+      g.appendChild(txt(e.key, { x: L - 12, y: y + BH - 2, class: "lbl", "text-anchor": "end" }));
+      const w = Math.max(2, sx(e.wrong) - L);
+      const bar = barRight(L, y, w, BH);
+      bar.setAttribute("fill", "var(--s1)"); bar.setAttribute("fill-opacity", .9);
+      g.appendChild(bar);
+      g.appendChild(txt(e.wrong.toLocaleString(), { x: L + w + 9, y: y + BH - 2, class: "val" }));
+      g.appendChild(txt(e.rate.toFixed(1) + "% error rate", { x: L + w + 56, y: y + BH - 2, class: "ax" }));
+      const hit = el("rect", { x: L, y: y - 6, width: R - L + 90, height: RH - 4, class: "bar-hit" });
+      bindTip(hit, e.key,
+        `${e.wrong.toLocaleString()} wrong of ${e.rows.toLocaleString()} rows  ·  ${e.rate.toFixed(1)}% error rate  ·  ${(e.wrong / 2603 * 100).toFixed(1)}% of all remaining errors`);
+      g.appendChild(hit);
+    });
+  })();
+
+  /* ---------------- probe table ---------------- */
+  (() => {
+    const tb = document.getElementById("probe-table");
+    PROBE.forEach(p => {
+      const tr = document.createElement("tr");
+      const d = p.d === null ? "—" : pp(p.d);
+      tr.innerHTML = `<td class="l mono">${p.arm}</td>` +
+        `<td class="l" style="white-space:normal; color:var(--ink-2)">${p.what}</td>` +
+        `<td>${p.acc}</td><td class="${p.sig}">${d}</td><td>${p.disc}</td><td>${p.p}</td>`;
+      tb.appendChild(tr);
+    });
+  })();
+})();
+</script>

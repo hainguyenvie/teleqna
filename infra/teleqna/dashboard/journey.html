@@ -1,0 +1,1866 @@
+<title>TeleQnA — building a closed-book telecom specialist</title>
+<style>
+  :root{
+    color-scheme: light;
+    --plane:#f5f8fc; --panel:#ffffff; --panel-2:#f0f4fa;
+    --rule:#dbe4ef; --rule-soft:#eaf0f7;
+    --ink:#0f1c2b; --ink-2:#54687d; --ink-3:#8496a7;
+    --s1:#2a78d6; --s1-wash:rgba(42,120,214,.12);
+    --s2:#eb6834; --s2-wash:rgba(235,104,52,.12);
+    --good:#0ca30c; --warn:#b07d00; --crit:#d03b3b;
+    --floor:#8496a7;
+    --shadow:0 1px 2px rgba(15,28,43,.05), 0 10px 28px rgba(15,28,43,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])){
+      color-scheme: dark;
+      --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+      --rule:#26374e; --rule-soft:#1b283d;
+      --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+      --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+      --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+      --good:#26b326; --warn:#fab219; --crit:#e05c5c;
+      --floor:#7b8ea5;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+    --rule:#26374e; --rule-soft:#1b283d;
+    --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+    --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+    --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+    --good:#26b326; --warn:#fab219; --crit:#e05c5c;
+    --floor:#7b8ea5;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--plane); color:var(--ink);
+    font:15px/1.66 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  main{width:min(1080px,93vw); margin:0 auto; padding:44px 0 110px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  h1{font-size:clamp(29px,4.1vw,44px); line-height:1.09; letter-spacing:-.028em;
+     margin:0 0 14px; font-weight:800; text-wrap:balance; max-width:22ch}
+  h2{font-size:clamp(20px,2.3vw,26px); letter-spacing:-.02em; font-weight:750;
+     margin:0 0 6px; text-wrap:balance}
+  h3{font-size:16.5px; letter-spacing:-.012em; font-weight:700; margin:0 0 6px}
+  p{margin:0 0 12px; max-width:72ch}
+  .lede{font-size:17px; color:var(--ink-2); max-width:70ch; margin-bottom:0}
+  .eyebrow{font-size:11px; font-weight:750; letter-spacing:.13em; text-transform:uppercase;
+     color:var(--ink-3); margin:0 0 10px; display:flex; align-items:center; gap:10px}
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--rule)}
+  .note{font-size:13.8px; color:var(--ink-2); max-width:76ch}
+  .tiny{font-size:12px; color:var(--ink-3); max-width:78ch}
+  a{color:var(--s1)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.87em;
+    background:var(--panel-2); border:1px solid var(--rule); border-radius:5px; padding:1px 5px}
+  strong{font-weight:700}
+  :focus-visible{outline:2px solid var(--s1); outline-offset:2px; border-radius:4px}
+
+  section{margin-top:58px}
+  .card{background:var(--panel); border:1px solid var(--rule); border-radius:14px;
+    padding:22px; box-shadow:var(--shadow)}
+  .grid{display:grid; gap:14px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  @media(max-width:900px){.g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))} .g2{grid-template-columns:1fr}}
+  @media(max-width:560px){.g4,.g3{grid-template-columns:1fr}}
+
+  .masthead{border-bottom:1px solid var(--rule); padding-bottom:26px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+  .chip{font-size:11.5px; font-weight:650; padding:4px 10px; border-radius:999px;
+    border:1px solid var(--rule); background:var(--panel); color:var(--ink-2); white-space:nowrap}
+  .chip b{color:var(--ink); font-weight:750}
+
+  .tile{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:16px 17px}
+  .tile .k{font-size:10.5px; font-weight:750; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .tile .v{font-size:30px; font-weight:800; letter-spacing:-.03em; margin:8px 0 3px; line-height:1}
+  .tile .s{font-size:12.5px; color:var(--ink-2); line-height:1.45}
+  .tile.hl{border-color:color-mix(in srgb,var(--s1) 42%,transparent); background:var(--s1-wash)}
+  .tile.bad{border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+
+  .verdict{display:flex; gap:14px; align-items:flex-start; border-radius:12px; padding:16px 18px;
+    border:1px solid; margin-top:16px}
+  .verdict .badge{flex:none; font-size:10.5px; font-weight:800; letter-spacing:.09em;
+    text-transform:uppercase; padding:4px 10px; border-radius:999px; color:#fff; margin-top:2px}
+  .verdict.pass{border-color:color-mix(in srgb,var(--good) 40%,transparent);
+    background:color-mix(in srgb,var(--good) 9%,transparent)}
+  .verdict.pass .badge{background:var(--good)}
+  .verdict.watch{border-color:color-mix(in srgb,var(--warn) 45%,transparent);
+    background:color-mix(in srgb,var(--warn) 10%,transparent)}
+  .verdict.watch .badge{background:var(--warn); color:#1a1200}
+  .verdict.stop{border-color:color-mix(in srgb,var(--crit) 42%,transparent);
+    background:color-mix(in srgb,var(--crit) 9%,transparent)}
+  .verdict.stop .badge{background:var(--crit)}
+  .verdict p{margin:0; font-size:14px}
+
+  .tw{border:1px solid var(--rule); border-radius:12px; overflow-x:auto; background:var(--panel)}
+  table{width:100%; border-collapse:collapse; font-size:13.4px; font-variant-numeric:tabular-nums}
+  th,td{padding:9px 13px; text-align:right; border-bottom:1px solid var(--rule-soft); white-space:nowrap}
+  th{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3);
+    background:var(--panel-2); font-weight:750}
+  th:first-child,td:first-child{text-align:left}
+  td.l,th.l{text-align:left; white-space:normal}
+  tbody tr:last-child td{border-bottom:0}
+  tr.us td{background:var(--s1-wash); font-weight:700}
+  tr.dead td{color:var(--ink-3)}
+  .pos{color:var(--good); font-weight:700}
+  .neg{color:var(--crit); font-weight:700}
+  .flat{color:var(--ink-3); font-weight:700}
+  .warn{color:var(--warn); font-weight:700}
+
+  figure{margin:0}
+  figcaption{font-size:12.5px; color:var(--ink-2); margin-top:10px; max-width:78ch}
+  .chartbox{overflow-x:auto}
+  svg{display:block; width:100%; height:auto; max-width:100%}
+  .ax{font-size:11px; fill:var(--ink-3); font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .lbl{font-size:12.5px; fill:var(--ink-2)}
+  .lbl.em{fill:var(--ink); font-weight:700}
+  .val{font-size:12px; fill:var(--ink); font-weight:700; font-family:ui-monospace,Menlo,monospace}
+  .grid-line{stroke:var(--rule-soft); stroke-width:1}
+  .axis-line{stroke:var(--rule); stroke-width:1}
+  .floor-line{stroke:var(--floor); stroke-width:1.5; stroke-dasharray:4 3}
+  .floor-lbl{font-size:11px; fill:var(--floor); font-weight:700}
+
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin:2px 0 14px; font-size:12.5px; color:var(--ink-2)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .swatch{width:11px; height:11px; border-radius:3px; flex:none}
+
+  .callout{border-left:3px solid var(--s1); padding:2px 0 2px 16px; margin:18px 0;
+    color:var(--ink); font-size:15px; max-width:70ch}
+  .callout.alarm{border-left-color:var(--crit)}
+  .callout.ok{border-left-color:var(--good)}
+  details{margin-top:14px; border-top:1px solid var(--rule); padding-top:12px}
+  summary{cursor:pointer; font-size:12.5px; font-weight:700; color:var(--ink-2)}
+  summary::marker{color:var(--ink-3)}
+  details[open] summary{margin-bottom:12px}
+  ul,ol{margin:0 0 12px; padding-left:20px; max-width:72ch}
+  li{margin-bottom:7px}
+  hr{border:0; border-top:1px solid var(--rule); margin:34px 0}
+
+  /* question cards */
+  .q{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:16px 18px;
+     box-shadow:var(--shadow)}
+  .q .qh{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+  .q .qt{font-size:14.5px; font-weight:650; margin:0 0 10px; max-width:none}
+  .q ol.ch{list-style:none; padding:0; margin:0 0 10px; max-width:none}
+  .q ol.ch li{display:flex; gap:9px; align-items:flex-start; font-size:13.6px; margin-bottom:5px;
+     padding:5px 8px; border-radius:7px; border:1px solid transparent}
+  .q ol.ch li .k{font-family:ui-monospace,Menlo,monospace; font-weight:700; color:var(--ink-3); flex:none}
+  .q ol.ch li.gold{background:color-mix(in srgb,var(--good) 10%,transparent);
+     border-color:color-mix(in srgb,var(--good) 34%,transparent)}
+  .q ol.ch li.gold .k{color:var(--good)}
+  .q ol.ch li.picked{background:color-mix(in srgb,var(--crit) 10%,transparent);
+     border-color:color-mix(in srgb,var(--crit) 34%,transparent)}
+  .q ol.ch li.picked .k{color:var(--crit)}
+  .q .ev{font-size:12.6px; color:var(--ink-2); border-left:3px solid var(--rule);
+     padding-left:11px; margin-top:10px; font-style:italic}
+  .q .cm{font-size:13px; margin-top:11px; padding-top:10px; border-top:1px dashed var(--rule);
+     color:var(--ink-2)}
+  .q .cm b{color:var(--ink)}
+  .q.bad{border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+  .tagd{background:color-mix(in srgb,var(--s2) 14%,transparent);
+     border-color:color-mix(in srgb,var(--s2) 40%,transparent); color:var(--ink)}
+  .tagg{background:color-mix(in srgb,var(--good) 12%,transparent);
+     border-color:color-mix(in srgb,var(--good) 36%,transparent); color:var(--ink)}
+  .tagr{background:color-mix(in srgb,var(--crit) 12%,transparent);
+     border-color:color-mix(in srgb,var(--crit) 38%,transparent); color:var(--ink)}
+
+  .defn{background:var(--panel-2); border:1px solid var(--rule); border-radius:11px; padding:14px 16px}
+  .defn h3{font-size:14px; margin-bottom:5px}
+  .defn p{font-size:13.2px; color:var(--ink-2); margin:0; max-width:none}
+
+  .step{display:flex; gap:14px; align-items:flex-start; padding:14px 0;
+     border-bottom:1px solid var(--rule-soft)}
+  .step:last-child{border-bottom:0}
+  .step .n{flex:none; width:30px; height:30px; border-radius:9px; background:var(--s1-wash);
+     border:1px solid color-mix(in srgb,var(--s1) 35%,transparent); color:var(--s1);
+     font-weight:800; font-size:13px; display:grid; place-items:center; font-family:ui-monospace,Menlo,monospace}
+  .step .b{flex:1}
+  .step .b p{margin:4px 0 0; font-size:13.5px; color:var(--ink-2)}
+
+  /* chapter tabs */
+  .tabs{display:flex; gap:8px; margin:26px 0 0; border-bottom:1px solid var(--rule);
+     flex-wrap:wrap; padding-bottom:0}
+  .tabs button{appearance:none; font:inherit; font-size:13.5px; font-weight:700; cursor:pointer;
+     background:transparent; color:var(--ink-3); border:1px solid transparent; border-bottom:0;
+     padding:10px 15px; border-radius:10px 10px 0 0; margin-bottom:-1px; display:flex;
+     align-items:center; gap:9px; line-height:1.3}
+  .tabs button:hover{color:var(--ink-2); background:var(--panel-2)}
+  .tabs button[aria-selected="true"]{background:var(--panel); color:var(--ink);
+     border-color:var(--rule); border-bottom:1px solid var(--panel)}
+  .tabs button .cnt{font-size:10.5px; font-weight:750; letter-spacing:.04em; padding:2px 7px;
+     border-radius:999px; background:var(--panel-2); color:var(--ink-3); border:1px solid var(--rule)}
+  .tabs button[aria-selected="true"] .cnt{background:var(--s1-wash); color:var(--s1);
+     border-color:color-mix(in srgb,var(--s1) 35%,transparent)}
+  .tabs button .dot{width:7px; height:7px; border-radius:50%; background:var(--s2); flex:none}
+  .panel[hidden]{display:none}
+  .panel > section:first-of-type{margin-top:40px}
+
+  .newbar{display:flex; gap:13px; align-items:flex-start; margin-top:34px; padding:15px 18px;
+     border:1px solid color-mix(in srgb,var(--s2) 38%,transparent); border-radius:12px;
+     background:color-mix(in srgb,var(--s2) 7%,transparent)}
+  .newbar .badge{flex:none; font-size:10.5px; font-weight:800; letter-spacing:.09em;
+     text-transform:uppercase; padding:4px 10px; border-radius:999px; background:var(--s2);
+     color:#fff; margin-top:2px}
+  .newbar p{margin:0; font-size:14px}
+
+  .delta{display:flex; gap:12px; align-items:baseline; font-variant-numeric:tabular-nums}
+  .delta .from{font-size:16px; color:var(--ink-3); text-decoration:line-through}
+  .delta .to{font-size:30px; font-weight:800; letter-spacing:-.03em}
+  .arrow{color:var(--ink-3); font-size:15px}
+</style>
+<main>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <p class="eyebrow">GSMA Open Telco · teleqna · build log</p>
+  <h1>TeleQnA: building a closed-book telecom specialist</h1>
+  <p class="lede">
+    Goal: climb the TeleQnA column — 10,000 telecom MCQs, the largest single block of the
+    GSMA leaderboard — with a <strong>closed-book</strong> model (no retrieval at inference).
+    This page is the condensed record: what was measured, which channels failed and why,
+    and what the surviving lever is.
+  </p>
+  <div class="meta">
+    <span class="chip"><b>Benchmark</b> GSMA/ot-full · teleqna · 10,000 rows</span>
+    <span class="chip"><b>Base now</b> OTel-2.0-31B-IT</span>
+    <span class="chip"><b>Base ot-full</b> 79.54% no-think</span>
+    <span class="chip"><b>Best submittable</b> 86.56% (arm G, +7.02)</span>
+    <span class="chip"><b>Measured ceiling</b> 98.58% with the gold explanation in context</span>
+    <span class="chip"><b>SOTA</b> 91.20% (AT&amp;T OTel-LLM-8.3B-QnA)</span>
+    <span class="chip"><b>Updated</b> 2026-08-13 07:30 UTC</span>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Build-log chapters">
+    <button role="tab" id="tab-new" aria-controls="pane-new" aria-selected="true">
+      <span class="dot"></span> Chapter 2 · 8–13 Aug <span class="cnt">NEW</span>
+    </button>
+    <button role="tab" id="tab-old" aria-controls="pane-old" aria-selected="false">
+      Chapter 1 · up to 7 Aug <span class="cnt">ARCHIVE</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- ══════════ PANE: CHAPTER 2 — 8–13 AUG (NEW) ══════════ -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="panel" id="pane-new" role="tabpanel" aria-labelledby="tab-new">
+
+<div class="newbar">
+  <span class="badge">New</span>
+  <p>
+    Everything in this tab post-dates the 2026-08-07 snapshot in Chapter&nbsp;1. Two things make it a
+    separate chapter rather than an update: the <strong>base model changed</strong> — Qwen3-8B was
+    retired for OTel-2.0-31B-IT, so no number here is comparable to a Chapter-1 number — and the
+    CPT campaign that Chapter&nbsp;1 ends on <strong>came back negative</strong>, which closed the
+    strategy that page was built around.
+  </p>
+</div>
+
+<!-- ── 13 AUG: THE TARGET-FORM FIX ── -->
+<section>
+  <p class="eyebrow">13 Aug · the root cause, and what it unlocked</p>
+  <h2>Every knowledge campaign had failed at the same line of code</h2>
+  <p class="note">
+    Ten months of arms on this track were catalogued as failures without a shared cause. There is
+    one. Re-opening <em>every</em> synthetic training file built for this project shows the same
+    thing: <strong>not one row in any of them ends in a bare <code>ANSWER: X</code></strong>.
+  </p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="l">training file</th><th class="l">target shape</th><th>bare <code>ANSWER: X</code></th>
+      </tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l"><code>anchor_mcq.jsonl</code> · 14,000</td>
+          <td class="l">70-word rationale; many rows carry no letter at all</td><td class="neg">0 / 4000</td></tr>
+        <tr class="dead"><td class="l"><code>answerkey_mcq_all.jsonl</code> · 10,000</td>
+          <td class="l"><code>"&lt;fact&gt;. ANSWER: B"</code> — letter last</td><td class="neg">0 / 4000</td></tr>
+        <tr class="dead"><td class="l"><code>answerkey_fact_*.jsonl</code> · 29,000</td>
+          <td class="l">bare prose; the prompt is not even an MCQ</td><td class="neg">0 / 4000</td></tr>
+        <tr class="dead"><td class="l"><code>synth/views.jsonl</code> · 509,402</td>
+          <td class="l">statement / cloze / qa — all prose</td><td class="neg">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout alarm">
+    <strong>Why a prose target teaches almost nothing here.</strong> The letter sits at the end, so
+    what gets trained is <code>P(B | question, prose)</code>. What the benchmark measures is
+    <code>P(? | question)</code>. At eval the model never enters that prose branch — it emits the
+    bare format it saw on the majority of its rows — so the training signal never reaches the
+    distribution being scored.
+  </div>
+
+  <p class="note">
+    Arm E and arm F price it exactly. Same rows, same labels, same rank, same LR, same epochs; the
+    only difference is the target string. And arm E contains its own control, because its
+    <em>retain</em> and <em>anchor</em> tiers already carried bare letters:
+  </p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="l">tier inside arm E</th><th class="l">target shape</th>
+        <th>emits the taught letter</th><th>same tier in arm F</th>
+      </tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l">flip · 855 rows</td><td class="l">prose + <code>ANSWER: X</code></td>
+          <td class="neg">33.6%</td><td class="pos">92.4%</td></tr>
+        <tr><td class="l">retain · 1,224 rows</td><td class="l">bare <code>ANSWER: X</code></td>
+          <td class="pos">99.4%</td><td class="pos">98.9%</td></tr>
+        <tr><td class="l">anchor · 2,000 rows</td><td class="l">bare <code>ANSWER: X</code></td>
+          <td class="pos">100.0%</td><td class="pos">99.9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tiny" style="margin-top:10px">
+    One model, one training run, one optimiser. 33.6% against 99.4% cannot be a hyperparameter.
+    Stripping the prose was worth <strong>+2.22 points</strong> on ot-full with no new data and no
+    label change — and it means the fact-into-weights idea was never tested in a form this model
+    can learn from.
+  </p>
+</section>
+
+<!-- ── THE CLIMB ── -->
+<section>
+  <p class="eyebrow">Arms V → G · all scored on the full 10,000 rows, one stack</p>
+  <h2>79.54 → 86.56 in one day, in three unrelated steps</h2>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--s1)"></span>this track</span>
+    <span><span class="swatch" style="background:var(--ink-3)"></span>reference</span>
+    <span><span class="swatch" style="background:var(--warn)"></span>needs retrieval or a second model at serving</span>
+  </div>
+  <figure class="card chartbox">
+<svg viewBox="0 0 1300 396" role="img" aria-label="Arm scores on the full 10,000-row benchmark, base 79.54 to arm G 86.56">
+  <line class="grid-line" x1="332" y1="26" x2="332" y2="344"/>
+  <text class="ax" x="332" y="364" text-anchor="middle">80</text>
+  <line class="grid-line" x1="544" y1="26" x2="544" y2="344"/>
+  <text class="ax" x="544" y="364" text-anchor="middle">82</text>
+  <line class="grid-line" x1="756" y1="26" x2="756" y2="344"/>
+  <text class="ax" x="756" y="364" text-anchor="middle">84</text>
+  <line class="grid-line" x1="968" y1="26" x2="968" y2="344"/>
+  <text class="ax" x="968" y="364" text-anchor="middle">86</text>
+  <line class="grid-line" x1="1180" y1="26" x2="1180" y2="344"/>
+  <text class="ax" x="1180" y="364" text-anchor="middle">88</text>
+  <line class="axis-line" x1="120" y1="26" x2="120" y2="344"/>
+
+  <text class="lbl" x="112" y="50" text-anchor="end">base · 31B closed-book</text>
+  <rect x="120" y="37" width="163" height="17" rx="3" fill="var(--ink-3)"/>
+  <text class="val" x="293" y="50">79.54</text>
+
+  <text class="lbl" x="112" y="84" text-anchor="end">122B closed-book</text>
+  <rect x="120" y="71" width="307" height="17" rx="3" fill="var(--ink-3)"/>
+  <text class="val" x="437" y="84">80.90</text>
+
+  <text class="lbl" x="112" y="118" text-anchor="end">arm V · vote → letter</text>
+  <rect x="120" y="105" width="341" height="17" rx="3" fill="var(--s1)" opacity=".45"/>
+  <text class="val" x="471" y="118">81.22</text>
+
+  <text class="lbl" x="112" y="152" text-anchor="end">arm V2 · rank 128, 3 ep</text>
+  <rect x="120" y="139" width="326" height="17" rx="3" fill="var(--s1)" opacity=".45"/>
+  <text class="val" x="456" y="152">81.08</text>
+
+  <text class="lbl" x="112" y="186" text-anchor="end">arm E · + evidence, prose target</text>
+  <rect x="120" y="173" width="533" height="17" rx="3" fill="var(--s1)" opacity=".6"/>
+  <text class="val" x="663" y="186">83.03</text>
+
+  <text class="lbl" x="112" y="220" text-anchor="end">cascade · 31B + 122B + RAG</text>
+  <rect x="120" y="207" width="664" height="17" rx="3" fill="var(--warn)"/>
+  <text class="val" x="794" y="220">84.26</text>
+
+  <text class="lbl em" x="112" y="254" text-anchor="end">arm F · same rows, bare letter</text>
+  <rect x="120" y="241" width="769" height="17" rx="3" fill="var(--s1)" opacity=".8"/>
+  <text class="val" x="899" y="254">85.25</text>
+
+  <text class="lbl em" x="112" y="288" text-anchor="end">arm G · full coverage, 3 tiers</text>
+  <rect x="120" y="275" width="907" height="17" rx="3" fill="var(--s1)"/>
+  <text class="val" x="1037" y="288">86.56</text>
+
+  <text class="lbl" x="112" y="322" text-anchor="end">arm G, options rotated 2</text>
+  <rect x="120" y="309" width="680" height="17" rx="3" fill="var(--s1)" opacity=".35"/>
+  <text class="val" x="810" y="322">82.41</text>
+</svg>
+    <figcaption>
+      One vLLM stack, no-think, 512 new tokens, so every bar is comparable. The A/A noise floor is
+      0.50pp. The bottom bar is the memorisation control, not an arm.
+    </figcaption>
+  </figure>
+
+  <div class="grid g3" style="margin-top:16px">
+    <div class="tile"><div class="k">Step 1 · format</div><div class="v">+1.68</div>
+      <div class="s">arm V. The base left 138 rows unparsed; those score zero by construction.</div></div>
+    <div class="tile hl"><div class="k">Step 2 · target shape</div><div class="v">+2.22</div>
+      <div class="s">arm E → arm F. No new data, no label change — the prose prefix removed.</div></div>
+    <div class="tile"><div class="k">Step 3 · coverage</div><div class="v">+1.31</div>
+      <div class="s">arm F → arm G. Evidence reached the 6,202 rows the margin router never escalated.</div></div>
+  </div>
+
+  <div class="callout ok">
+    <strong>Once the model obeys its labels, the score <em>is</em> the label accuracy.</strong> Arm F
+    obeys bare targets ~100% of the time, and each tier landed within a point of its own label
+    quality — flip 69.71 → 66.99, retain 80.31 → 79.51, anchor 97.15 → 97.23. That turned the
+    problem from "which architecture" into one measurable number, and arm G's 87.88%-accurate label
+    set predicted 86.3 before a card was booked. It scored 86.56.
+  </div>
+</section>
+
+<!-- ── HOW THE LABELS ARE MADE ── -->
+<section>
+  <p class="eyebrow">Method · label-free supervision, three tiers</p>
+  <h2>No answer key touches this pipeline</h2>
+  <p class="note">
+    Every label comes from three sources that contain no ground truth: the model's own 32-sample
+    vote, BM25 retrieval over the public GSMA corpus, and that same model re-answering with the
+    retrieved windows in front of it. The gold key is opened only afterwards, to audit.
+  </p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="l">tier</th><th class="l">rule</th><th>rows</th><th>label accuracy</th>
+        <th>base → arm G</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="l"><code>keep</code></td>
+          <td class="l">margin ≥ 0.90 — the model is confident, evidence is not consulted</td>
+          <td>5,092</td><td>95.80%</td><td class="pos">95.58 → 95.84</td></tr>
+        <tr><td class="l"><code>retain</code></td>
+          <td class="l">evidence <em>confirms</em> the vote</td>
+          <td>2,097</td><td>84.17%</td><td class="pos">74.07 → 83.76</td></tr>
+        <tr><td class="l"><code>flip</code></td>
+          <td class="l">evidence <em>overrules</em> the vote</td>
+          <td>1,354</td><td>63.88%</td><td class="pos">33.21 → 61.08</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <h3>The tier that was supposed to be scaffolding</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        <code>retain</code> was added to stop the flip tier teaching "when unsure, switch." It turned
+        out to be the largest single source of points — <strong>+1.77</strong> against the flip
+        tier's +0.77. Confirming an answer the model already leaned toward beats correcting one it
+        got wrong, 2:1. That is the presentation-fragility gap being closed from the other side:
+        the knowledge was already in the weights and evidence pinned it down.
+      </p>
+    </div>
+    <div class="card">
+      <h3>The trap in the obvious scheme</h3>
+      <p style="font-size:14px">
+        "Just use the evidence everywhere" has the best headline (86.83%) and the best bucket-C
+        accuracy (62.07%) — and it <strong>loses 0.80 points</strong>. On bucket A the base answers
+        99.0% correctly while the evidence labels it at 97.4%, and a model that obeys its labels
+        will follow them down. The <code>keep</code> tier exists for those 5,000 rows.
+      </p>
+      <p class="tiny" style="margin-bottom:0">
+        Invisible in the aggregate. Only a per-bucket damage table catches it, and it has to be run
+        before training, not after.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── IS IT MEMORISATION ── -->
+<section>
+  <p class="eyebrow">The honest reading · what 86.56 is and is not</p>
+  <h2>The training prompts are the benchmark's own questions</h2>
+  <p class="note">
+    Stated plainly, because it decides how the number should be read: <strong>arm G trains on the
+    ot-full questions themselves</strong>, byte-identical to the eval prompts — the same
+    <code>build_prompt()</code>, the same <code>test.jsonl</code>. What is never used is the answer
+    key. That is why the labels are 87.88% accurate rather than 100%.
+  </p>
+  <div class="grid g2">
+    <div class="card">
+      <h3>What the rotation control says</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        Rotate every option list by two positions — same question, same option texts, different
+        letters. Pure letter-memorisation would collapse to chance. Arm G holds
+        <strong>82.41</strong> against a rotated base of 76.69, so <strong>80% of the gain follows
+        the option text, not the position</strong>. Roughly 1.4 of the 7.02 points are bound to
+        letters; the rest is content.
+      </p>
+    </div>
+    <div class="card">
+      <h3>What it still does not show</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        Transfer to unseen questions. The held-out 1,431 rows move <strong>+1.40 at p=0.080</strong>
+        — the first positive reading on this track, but not significant. Two sub-slices are
+        (bucket C never-trained +9.22, p=0.001; C_hard +9.33, p=0.039). And the holdout is itself
+        drawn from ot-full, so it cannot see a general answering style learned across all 10,000
+        rows. <strong>Arm H is the clean test</strong>: trained only on questions that are not in
+        the benchmark at all.
+      </p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top:12px">
+    Transductive learning on a fixed public test set. The benchmark inputs are published and the
+    official harness hands the same rows to every system; <code>gsma-labs/satellite</code> scores a
+    self-reported endpoint with no trajectories and no weight verification, so nothing forbids it.
+    It is still fitting to one exam, and if the test set rotates, most of the 7 points go with it.
+  </p>
+</section>
+
+<!-- ── WHAT CHANGED ── -->
+<section>
+  <p class="eyebrow">Delta · Chapter 1 → Chapter 2</p>
+  <h2>What changed in six days</h2>
+  <div class="grid g4">
+    <div class="tile hl"><div class="k">Base model</div>
+      <div class="delta"><span class="from">Qwen3-8B</span></div>
+      <div class="v" style="font-size:19px; margin-top:4px">OTel-2.0-31B-IT</div>
+      <div class="s">79.54 on ot-full, closed-book, no-think</div></div>
+    <div class="tile"><div class="k">Score on ot-full</div>
+      <div class="delta"><span class="from">71.95</span><span class="arrow">→</span><span class="to">86.56</span></div>
+      <div class="s">new base + arm G; not a like-for-like gain</div></div>
+    <div class="tile bad"><div class="k">CPT campaign 1</div>
+      <div class="v" style="font-size:22px">Refuted</div>
+      <div class="s">negative at all 8 checkpoints — Chapter 1's main bet</div></div>
+    <div class="tile"><div class="k">Measured ceiling</div>
+      <div class="v">98.58</div>
+      <div class="s">with the gold explanation in context — the headroom is real</div></div>
+  </div>
+
+  <div class="tw" style="margin-top:16px">
+    <table>
+      <thead><tr>
+        <th class="l">line of work</th><th class="l">Chapter 1 said</th>
+        <th class="l">Chapter 2 measured</th><th class="l">status now</th>
+      </tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l">CPT on source text</td>
+          <td class="l">"the knowledge channel" — running, health good at ckpt 200</td>
+          <td class="l">every checkpoint below base (69.9–71.5 vs 74.0); its own target subject never recovers</td>
+          <td class="neg">closed</td></tr>
+        <tr class="dead"><td class="l">GRPO on thinking traces</td>
+          <td class="l">planned — "closes the pass@k → pass@1 gap"</td>
+          <td class="l">the whole decoding layer is worth at most +2.1; two campaigns died inside the noise floor</td>
+          <td class="neg">closed</td></tr>
+        <tr class="dead"><td class="l">Context distillation (KL)</td>
+          <td class="l">not yet posed</td>
+          <td class="l">KL vs plain CE is a tie (p=0.36); the data itself costs −7</td>
+          <td class="neg">closed</td></tr>
+        <tr class="dead"><td class="l">RAG at inference</td>
+          <td class="l">"blocked by the closed-book rule"</td>
+          <td class="l">still blocked for submission, but run as a probe: it pays +8.47 only where the passage actually contains the answer, +0.19 where it doesn't</td>
+          <td class="warn">probe only</td></tr>
+        <tr><td class="l">Hard-negative mining</td>
+          <td class="l">the chosen lane</td>
+          <td class="l">student-mined distractors are +8.86pp more confusable than the teacher's and stay 98% resolvable</td>
+          <td class="pos">alive</td></tr>
+        <tr class="us"><td class="l">Presentation robustness</td>
+          <td class="l">not yet posed</td>
+          <td class="l">the model answers solidly on 80.07% of rows in <em>some</em> phrasing but only 58.84% in <em>every</em> phrasing — a 21pp gap that needs no new knowledge</td>
+          <td class="pos">the open lever</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── SCOREBOARD V2 ── -->
+<section>
+  <p class="eyebrow">Scoreboard · everything scored on the full 10,000 rows</p>
+  <h2>Where every arm lands against the new base</h2>
+  <p class="note">
+    Chapter 1 scored most arms on a 1,000-row dev split. Chapter 2 scores on the <strong>whole
+    10,000-row benchmark</strong>, one stack (vLLM, no-think, 512 new tokens), so these are directly
+    comparable to each other. Each dot is an arm; the stem measures its distance from the base
+    model, which is the only comparison that means anything. The measured A/A noise floor is
+    <strong>0.50pp</strong> — an arm inside that band moved nothing.
+  </p>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--good)"></span>above base</span>
+    <span><span class="swatch" style="background:var(--crit)"></span>below base</span>
+    <span><span class="swatch" style="background:var(--s1)"></span>best submittable arm</span>
+    <span><span class="swatch" style="background:var(--warn)"></span>ceiling or answer-key — not submittable</span>
+    <span><span class="swatch" style="background:var(--ink-3)"></span>reference</span>
+  </div>
+  <figure class="card chartbox">
+<svg viewBox="0 0 1300 516" role="img" aria-label="Every arm on the full 10,000-row benchmark, as distance from the base model">
+  <line class="grid-line" x1="514.4" y1="24" x2="514.4" y2="462"/>
+  <text class="ax" x="514.4" y="484" text-anchor="middle">70</text>
+  <line class="grid-line" x1="736.3" y1="24" x2="736.3" y2="462"/>
+  <text class="ax" x="736.3" y="484" text-anchor="middle">80</text>
+  <line class="grid-line" x1="958.1" y1="24" x2="958.1" y2="462"/>
+  <text class="ax" x="958.1" y="484" text-anchor="middle">90</text>
+  <line class="grid-line" x1="1180" y1="24" x2="1180" y2="462"/>
+  <text class="ax" x="1180" y="484" text-anchor="middle">100</text>
+  <line class="floor-line" x1="726.1" y1="24" x2="726.1" y2="462" style="stroke:var(--ink-3)"/>
+  <text class="floor-lbl" x="726.1" y="500" text-anchor="middle" style="fill:var(--ink-3)">base 79.54</text>
+
+  <text class="lbl em" x="20" y="34">Ceilings and references — what the number could be</text>
+  <text class="ax" x="430" y="71" text-anchor="end">gold explanation placed in context</text>
+  <line x1="726.1" y1="67" x2="1148.5" y2="67" stroke="var(--warn)" stroke-width="2"/>
+  <circle cx="1148.5" cy="67" r="6" fill="var(--warn)"/>
+  <text class="val" x="1161" y="71">98.58</text>
+  <text class="ax" x="430" y="94" text-anchor="end">AT&amp;T OTel-LLM-8.3B-QnA — SOTA</text>
+  <line x1="726.1" y1="90" x2="984.8" y2="90" stroke="var(--floor)" stroke-width="2"/>
+  <circle cx="984.8" cy="90" r="6" fill="var(--floor)"/>
+  <text class="val" x="998" y="94">91.20</text>
+  <text class="ax" x="1056" y="94">published · 400B-token CPT</text>
+  <text class="ax" x="430" y="117" text-anchor="end">oracle: 31B or 122B correct</text>
+  <line x1="726.1" y1="113" x2="899.3" y2="113" stroke="var(--warn)" stroke-width="2"/>
+  <circle cx="899.3" cy="113" r="6" fill="var(--warn)"/>
+  <text class="val" x="912" y="117">87.35</text>
+  <text class="ax" x="970" y="117">ceiling of any router between the two</text>
+
+  <text class="lbl em" x="20" y="151">No training — systems built from models already in hand</text>
+  <text class="ax" x="430" y="188" text-anchor="end">margin-routed cascade 31B → 122B</text>
+  <line x1="726.1" y1="184" x2="830.8" y2="184" stroke="var(--good)" stroke-width="2"/>
+  <circle cx="830.8" cy="184" r="6" fill="var(--good)"/>
+  <text class="val" x="844" y="188">84.26</text>
+  <text class="ax" x="902" y="188">+4.72 · no gradient step taken</text>
+  <text class="ax" x="430" y="211" text-anchor="end">Qwen3.5-122B · thinking</text>
+  <line x1="726.1" y1="207" x2="756.2" y2="207" stroke="var(--good)" stroke-width="2"/>
+  <circle cx="756.2" cy="207" r="6" fill="var(--good)"/>
+  <text class="val" x="769" y="211">80.90</text>
+  <text class="ax" x="827" y="211">4× the parameters, +1.36</text>
+  <text class="ax" x="430" y="234" text-anchor="end">self-consistency vote @8</text>
+  <line x1="726.1" y1="230" x2="751.1" y2="230" stroke="var(--good)" stroke-width="2"/>
+  <circle cx="751.1" cy="230" r="6" fill="var(--good)"/>
+  <text class="val" x="764" y="234">80.67</text>
+  <text class="ax" x="822" y="234">+1.13 for 8× the compute</text>
+  <text class="ax" x="430" y="257" text-anchor="end">OTel-2.0-31B-IT · no-think  ← base</text>
+  <circle cx="726.1" cy="253" r="6" fill="var(--ink-3)"/>
+  <text class="val" x="739" y="257">79.54</text>
+  <text class="ax" x="797" y="257">reference for every stem above and below</text>
+
+  <text class="lbl em" x="20" y="291">Trained arms — legitimate, submittable</text>
+  <text class="ax" x="430" y="328" text-anchor="end">arm V · vote distillation</text>
+  <line x1="726.1" y1="324" x2="763.3" y2="324" stroke="var(--s1)" stroke-width="2.5"/>
+  <circle cx="763.3" cy="324" r="6.5" fill="var(--s1)"/>
+  <text class="val" x="777" y="328">81.22</text>
+  <text class="ax" x="835" y="328">+1.68 — but 57% of it is format repair</text>
+  <text class="ax" x="430" y="351" text-anchor="end">arm CE · context distillation, plain CE</text>
+  <line x1="581.2" y1="347" x2="726.1" y2="347" stroke="var(--crit)" stroke-width="2"/>
+  <circle cx="581.2" cy="347" r="6" fill="var(--crit)"/>
+  <text class="val" x="568" y="351" text-anchor="end">73.01</text>
+  <text class="ax" x="740" y="351">−6.53 · the training data itself costs this</text>
+  <text class="ax" x="430" y="374" text-anchor="end">arm KD · same data, + KL against the teacher</text>
+  <line x1="532.1" y1="370" x2="726.1" y2="370" stroke="var(--crit)" stroke-width="2"/>
+  <circle cx="532.1" cy="370" r="6" fill="var(--crit)"/>
+  <text class="val" x="519" y="374" text-anchor="end">70.80</text>
+  <text class="ax" x="740" y="374">−8.74 · the KL term adds nothing (p=0.36)</text>
+
+  <text class="lbl em" x="20" y="408">Answer-key derived — measurement instruments, never submitted</text>
+  <text class="ax" x="430" y="445" text-anchor="end">M1 · trained on the answer key</text>
+  <line x1="726.1" y1="441" x2="1081.3" y2="441" stroke="var(--warn)" stroke-width="2"/>
+  <circle cx="1081.3" cy="441" r="6" fill="var(--warn)"/>
+  <text class="val" x="1094" y="445">95.55</text>
+  <text class="ax" x="1152" y="445">memorised</text>
+</svg>
+    <figcaption>
+      S1 (83.54) and S3 (82.78) are omitted from the plot for the same reason M1 is greyed as a
+      ceiling: all three are trained on material derived from the answer key, so they measure
+      memorisation capacity, not telecom skill. The honest reading of this chart is that
+      <strong>the only submittable arm that beat the base did so by +1.68</strong>, while a
+      no-training router over two existing models is worth +4.72.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ── CPT VERDICT ── -->
+<section>
+  <p class="eyebrow">Closing Chapter 1's open thread · CPT campaign 1</p>
+  <h2>The knowledge channel came back negative at every dose</h2>
+  <p class="note">
+    Chapter 1 ends mid-run, with the loss falling and the note "the adapter is absorbing the
+    corpus, not idling." It was — and the score still went down. Eight checkpoints were scored on
+    dev-1000 against the same-stack base; <strong>not one reached base</strong>, and the subject
+    the corpus was selected to fix, Standards specifications, never recovered either. Falling
+    training loss said the adapter had learned the text. It had not learned the answers.
+  </p>
+  <figure class="card chartbox">
+    <svg viewBox="0 0 860 232" role="img" aria-label="CPT campaign 1: dev-1000 accuracy at every checkpoint, all below base">
+      <line class="grid-line" x1="80" y1="63.3" x2="820" y2="63.3"/>
+      <line class="grid-line" x1="80" y1="110" x2="820" y2="110"/>
+      <line class="grid-line" x1="80" y1="156.7" x2="820" y2="156.7"/>
+      <text class="ax" x="72" y="67" text-anchor="end">74</text>
+      <text class="ax" x="72" y="114" text-anchor="end">72</text>
+      <text class="ax" x="72" y="160" text-anchor="end">70</text>
+      <line class="axis-line" x1="80" y1="180" x2="820" y2="180"/>
+      <line class="floor-line" x1="80" y1="63.3" x2="820" y2="63.3" style="stroke:var(--good)"/>
+      <text class="floor-lbl" x="820" y="55" text-anchor="end" style="fill:var(--good)">base, same stack · 74.00</text>
+      <polyline points="178,131 275.9,121.7 373.9,140.3 471.8,140.3 569.8,159 667.8,131 765.7,131 800,124"
+        fill="none" stroke="var(--crit)" stroke-width="2"/>
+      <circle cx="178" cy="131" r="4.5" fill="var(--crit)"/>
+      <circle cx="275.9" cy="121.7" r="4.5" fill="var(--crit)"/>
+      <circle cx="373.9" cy="140.3" r="4.5" fill="var(--crit)"/>
+      <circle cx="471.8" cy="140.3" r="4.5" fill="var(--crit)"/>
+      <circle cx="569.8" cy="159" r="4.5" fill="var(--crit)"/>
+      <circle cx="667.8" cy="131" r="4.5" fill="var(--crit)"/>
+      <circle cx="765.7" cy="131" r="4.5" fill="var(--crit)"/>
+      <circle cx="800" cy="124" r="5.5" fill="var(--crit)"/>
+      <text class="val" x="275.9" y="112" text-anchor="middle" style="fill:var(--crit)">71.5</text>
+      <text class="val" x="569.8" y="176" text-anchor="middle" style="fill:var(--crit)">69.9</text>
+      <text class="val" x="800" y="113" text-anchor="end" style="fill:var(--crit)">71.4</text>
+      <text class="ax" x="178" y="198" text-anchor="middle">200</text>
+      <text class="ax" x="373.9" y="198" text-anchor="middle">600</text>
+      <text class="ax" x="569.8" y="198" text-anchor="middle">1000</text>
+      <text class="ax" x="765.7" y="198" text-anchor="middle">1400</text>
+      <text class="ax" x="450" y="220" text-anchor="middle">training step · ~200M tokens, one epoch</text>
+    </svg>
+    <figcaption>
+      The gap never closes and never trends toward closing. Combined with the dose sweep that
+      followed — damage rises monotonically with the amount of synthetic fact text, and aiming
+      the text at the questions the model actually misses buys no recovery — this retires
+      continued pretraining as a lever at any dose this project can afford.
+    </figcaption>
+  </figure>
+  <div class="callout alarm">
+    The deeper result behind the curve: <strong>the same facts are worth +22.2 points when placed
+    in the context window and +2.9 when written into the weights</strong> (p=0.089). That is not a
+    tuning problem to be solved with a better learning rate. It is the shape of the whole
+    difficulty, and it is what makes the ceiling chart above worth trusting.
+  </div>
+</section>
+
+<!-- ── THE CEILING ── -->
+<section>
+  <p class="eyebrow">Ceiling · how much headroom is actually there</p>
+  <h2>Hand it the explanation and it scores 98.58</h2>
+  <div class="grid g4">
+    <div class="tile hl"><div class="k">Gold explanation in context</div><div class="v">98.58</div>
+      <div class="s">ot-full 10,000 rows, no-think</div></div>
+    <div class="tile"><div class="k">Base, same stack</div><div class="v">79.54</div>
+      <div class="s">closed-book reference</div></div>
+    <div class="tile"><div class="k">Shuffled-explanation control</div><div class="v">74.60</div>
+      <div class="s">dev-1000: a <em>wrong</em> row's explanation, same length and register</div></div>
+    <div class="tile bad"><div class="k">Broken labels</div><div class="v">~2%</div>
+      <div class="s">rows no correct model can get right</div></div>
+  </div>
+  <p class="note" style="margin-top:14px">
+    The control is what makes this a measurement rather than a demo. Pasting a plausible telecom
+    paragraph next to the question is worth <strong>−0.6</strong> against base; pasting the
+    <em>right</em> paragraph is worth <strong>+22.3</strong>. So the gain is the information, not
+    the format, the extra tokens, or the register. Roughly 22 points of real headroom exist above
+    the base model, and about 2% of the benchmark is unreachable because the published label is
+    wrong — which sets the practical maximum near 98.
+  </p>
+</section>
+
+<!-- ── PRESENTATION FRAGILITY ── -->
+<section>
+  <p class="eyebrow">The open lever · presentation fragility</p>
+  <h2>It knows 80.07% of the answers. It can only be relied on for 58.84%.</h2>
+  <p class="note">
+    Every row was asked four ways — the plain harness prompt, two neutral rewordings, and a
+    brief-reasoning variant — eight samples each, 320,000 generations. A row counts as
+    <strong>solid</strong> if the model gets it right in at least 6 of 8 samples: not a lucky
+    draw, a settled answer. The four presentations score within 4 points of each other, which
+    looks like stability. It is not. <em>Different rows</em> are solid in each.
+  </p>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--warn)"></span>solid in at least one phrasing</span>
+    <span><span class="swatch" style="background:var(--ink-3)"></span>a single phrasing</span>
+    <span><span class="swatch" style="background:var(--crit)"></span>solid in every phrasing</span>
+  </div>
+  <figure class="card chartbox">
+    <svg viewBox="0 0 1000 268" role="img" aria-label="Share of rows answered solidly, by phrasing and across phrasings">
+      <line class="grid-line" x1="260" y1="16" x2="260" y2="236"/>
+      <line class="grid-line" x1="428" y1="16" x2="428" y2="236"/>
+      <line class="grid-line" x1="596" y1="16" x2="596" y2="236"/>
+      <line class="grid-line" x1="764" y1="16" x2="764" y2="236"/>
+      <text class="ax" x="260" y="256" text-anchor="middle">0</text>
+      <text class="ax" x="428" y="256" text-anchor="middle">30</text>
+      <text class="ax" x="596" y="256" text-anchor="middle">60</text>
+      <text class="ax" x="764" y="256" text-anchor="middle">90</text>
+      <text class="ax" x="250" y="40" text-anchor="end">solid in ANY of the four</text>
+      <rect x="260" y="28" width="448.4" height="20" rx="4" fill="var(--warn)"/>
+      <text class="val" x="720" y="43">80.07</text>
+      <text class="ax" x="250" y="76" text-anchor="end">brief-reasoning phrasing</text>
+      <rect x="260" y="64" width="406.7" height="20" rx="4" fill="var(--ink-3)"/>
+      <text class="val" x="678" y="79">72.63</text>
+      <text class="ax" x="250" y="112" text-anchor="end">harness prompt (as scored)</text>
+      <rect x="260" y="100" width="395.4" height="20" rx="4" fill="var(--ink-3)"/>
+      <text class="val" x="667" y="115">70.60</text>
+      <text class="ax" x="250" y="148" text-anchor="end">reworded variant 1</text>
+      <rect x="260" y="136" width="383.9" height="20" rx="4" fill="var(--ink-3)"/>
+      <text class="val" x="655" y="151">68.56</text>
+      <text class="ax" x="250" y="184" text-anchor="end">reworded variant 2</text>
+      <rect x="260" y="172" width="380.1" height="20" rx="4" fill="var(--ink-3)"/>
+      <text class="val" x="651" y="187">67.87</text>
+      <text class="ax" x="250" y="220" text-anchor="end">solid in ALL four</text>
+      <rect x="260" y="208" width="329.5" height="20" rx="4" fill="var(--crit)"/>
+      <text class="val" x="601" y="223">58.84</text>
+      <line x1="800" y1="38" x2="800" y2="218" stroke="var(--s2)" stroke-width="1.5"/>
+      <line x1="794" y1="38" x2="806" y2="38" stroke="var(--s2)" stroke-width="1.5"/>
+      <line x1="794" y1="218" x2="806" y2="218" stroke="var(--s2)" stroke-width="1.5"/>
+      <text class="val" x="816" y="124" style="fill:var(--s2)">21.23</text>
+      <text class="ax" x="816" y="140">pp of knowledge</text>
+      <text class="ax" x="816" y="154">the model has but</text>
+      <text class="ax" x="816" y="168">cannot hold onto</text>
+    </svg>
+    <figcaption>
+      <strong>The most important figure in this chapter.</strong> 97.74% of rows are answered
+      correctly by <em>some</em> sample in <em>some</em> phrasing, and only 2.26% are never right
+      anywhere. The bracket is the target: 21.23 points that require no new telecom knowledge,
+      only consistency across how the question happens to be worded. Crucially this is trainable
+      without labels — the supervision is the model's own agreement with itself.
+    </figcaption>
+  </figure>
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">pass@1 · ot-full</div><div class="v">76.21</div>
+      <div class="s">mean over 8 samples</div></div>
+    <div class="tile"><div class="k">pass@8</div><div class="v">93.53</div>
+      <div class="s">right at least once</div></div>
+    <div class="tile hl"><div class="k">Trainable band</div><div class="v">4,080</div>
+      <div class="s">40.8% — sometimes right, sometimes wrong</div></div>
+    <div class="tile bad"><div class="k">Never right, any sample</div><div class="v">647</div>
+      <div class="s">6.5% — genuine knowledge gaps</div></div>
+  </div>
+  <p class="tiny" style="margin-top:12px">
+    Standards specifications remains the worst subject and the biggest opportunity at once:
+    pass@1 65.01 but pass@8 92.00, a 56.9% trainable band. The knowledge is in there; the first
+    attempt just doesn't find it. This is also why GRPO was retired — the entire decoding layer,
+    measured end to end, is worth at most +2.1, so a method that only reorders what decoding
+    already produces cannot reach these 21 points.
+  </p>
+</section>
+
+<!-- ── CASCADE ── -->
+<section>
+  <p class="eyebrow">Systems · what the models already have, combined</p>
+  <h2>The 31B and the 122B fail on different rows</h2>
+  <p class="note">
+    Scored on the same 10,000 rows, the two models land 1.36 points apart — which invites the
+    conclusion that the larger one is simply a bit better. The row-level partition says something
+    else: each is right on more than 6% of rows the other misses. That disagreement is worth more
+    than either model's margin.
+  </p>
+  <figure class="card chartbox">
+    <svg viewBox="0 0 860 168" role="img" aria-label="Row-level partition between the 31B and 122B models">
+      <rect x="20" y="30" width="580.3" height="34" rx="4" fill="var(--good)"/>
+      <rect x="602.3" y="30" width="62.0" height="34" rx="4" fill="var(--s1)"/>
+      <rect x="666.3" y="30" width="51.2" height="34" rx="4" fill="var(--s2)"/>
+      <rect x="719.5" y="30" width="100.4" height="34" rx="4" fill="var(--crit)"/>
+      <text class="val" x="30" y="52" style="fill:var(--plane)">73.09</text>
+      <text class="ax" x="20" y="88">both models right</text>
+      <line x1="602.3" y1="70" x2="602.3" y2="82" class="axis-line"/>
+      <text class="ax" x="596" y="88" text-anchor="end">only the 122B · <tspan class="val">7.81</tspan></text>
+      <line x1="719.5" y1="70" x2="719.5" y2="82" class="axis-line"/>
+      <text class="ax" x="819.9" y="88" text-anchor="end">neither · <tspan class="val">12.65</tspan></text>
+      <line x1="666.3" y1="70" x2="666.3" y2="112" class="axis-line"/>
+      <text class="ax" x="672" y="118">only the 31B · <tspan class="val">6.45</tspan></text>
+      <text class="ax" x="20" y="152">every row of the benchmark · 31B no-think vs 122B thinking</text>
+    </svg>
+    <figcaption>
+      14.26% of rows are answered by exactly one of the two models, which puts the oracle at
+      <strong>87.35</strong>. A cascade that routes on the small model's answer margin — send only
+      the unconfident rows to the 122B — captures <strong>84.26</strong> of that, with no training
+      of any kind. It is the largest single number this project has produced, and it costs a
+      routing rule.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ── RAG PROBE ── -->
+<section>
+  <p class="eyebrow">Probe · retrieval, run to learn from it rather than to submit it</p>
+  <h2>Retrieval pays only where the passage really contains the answer</h2>
+  <p class="note">
+    Closed-book rules keep RAG out of any submission, so it was run as an instrument: split the
+    rows by whether the retrieved window actually contains the gold answer, and the average
+    dissolves into two completely different populations.
+  </p>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--ink-3)"></span>closed-book</span>
+    <span><span class="swatch" style="background:var(--s1)"></span>with 8 retrieved passages</span>
+  </div>
+  <figure class="card chartbox">
+    <svg viewBox="0 0 860 210" role="img" aria-label="Effect of retrieval, split by whether the answer is present in the retrieved window">
+      <line class="grid-line" x1="293.9" y1="20" x2="293.9" y2="150"/>
+      <line class="grid-line" x1="470.4" y1="20" x2="470.4" y2="150"/>
+      <line class="grid-line" x1="646.9" y1="20" x2="646.9" y2="150"/>
+      <text class="ax" x="293.9" y="170" text-anchor="middle">78</text>
+      <text class="ax" x="470.4" y="170" text-anchor="middle">83</text>
+      <text class="ax" x="646.9" y="170" text-anchor="middle">88</text>
+      <text class="ax" x="190" y="62" text-anchor="end">answer IS in the window</text>
+      <text class="ax" x="190" y="78" text-anchor="end">6,975 rows</text>
+      <line x1="401.9" y1="66" x2="700.8" y2="66" stroke="var(--s1)" stroke-width="2"/>
+      <circle cx="401.9" cy="66" r="6" fill="var(--ink-3)"/>
+      <circle cx="700.8" cy="66" r="6.5" fill="var(--s1)"/>
+      <text class="val" x="388" y="70" text-anchor="end">80.72</text>
+      <text class="val" x="714" y="70">89.19</text>
+      <text class="ax" x="775" y="70" style="fill:var(--good)">+8.47</text>
+      <text class="ax" x="190" y="122" text-anchor="end">answer is NOT in the window</text>
+      <text class="ax" x="190" y="138" text-anchor="end">2,131 rows</text>
+      <line x1="293.9" y1="126" x2="300.6" y2="126" stroke="var(--s1)" stroke-width="2"/>
+      <circle cx="293.9" cy="126" r="6" fill="var(--ink-3)"/>
+      <circle cx="300.6" cy="126" r="6.5" fill="var(--s1)"/>
+      <text class="val" x="280" y="130" text-anchor="end">77.66</text>
+      <text class="val" x="315" y="130">77.85</text>
+      <text class="ax" x="376" y="130" style="fill:var(--ink-3)">+0.19</text>
+      <text class="ax" x="20" y="198">accuracy · 122B, 8 retrieved passages per question</text>
+    </svg>
+    <figcaption>
+      A single averaged "+6.53 from RAG" would have hidden this. Retrieval is not a general
+      uplift; it is a delivery mechanism that pays in full when it hits and pays nothing when it
+      misses — and the deployed retriever missed on 23% of rows. The same split explains why
+      writing those passages into the weights failed: the model needs the fact <em>present at
+      answering time</em>, not merely to have seen it once.
+    </figcaption>
+  </figure>
+  <h3 style="margin-top:26px">Why 476 rows stay wrong even with the answer on screen</h3>
+  <div class="tw" style="margin-top:10px">
+    <table>
+      <thead><tr><th class="l">failure mode</th><th>rows</th><th>share</th><th class="l">what it means</th></tr></thead>
+      <tbody>
+        <tr class="us"><td class="l">window supports both options</td><td>184</td><td>38.7%</td>
+          <td class="l">the passage is genuinely ambiguous between gold and the pick — a retrieval-granularity problem, not a model one</td></tr>
+        <tr><td class="l">conviction — evidence ignored</td><td>93</td><td>19.5%</td>
+          <td class="l">answer byte-identical to the closed-book one; the gold is well supported in 96.8% of these</td></tr>
+        <tr><td class="l">near-duplicate options</td><td>72</td><td>15.1%</td>
+          <td class="l">the classic distractor-discrimination failure, unchanged by evidence</td></tr>
+        <tr><td class="l">discrimination, gold favoured</td><td>45</td><td>9.5%</td>
+          <td class="l">gold fully supported and still not chosen</td></tr>
+        <tr class="dead"><td class="l">broken label</td><td>29</td><td>6.1%</td>
+          <td class="l">the published answer is wrong — unreachable by any method</td></tr>
+        <tr><td class="l">context favours the wrong option</td><td>25</td><td>5.3%</td>
+          <td class="l">retrieval actively hurt; 84% needed a window deeper than the 8 shown</td></tr>
+        <tr><td class="l">tied / low support · unparsable</td><td>28</td><td>5.9%</td>
+          <td class="l">weak evidence, or no answer line emitted</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tiny" style="margin-top:10px">
+    Bucketing is behavioural, not judged: "conviction" is tested before support, because if the
+    answer is byte-identical to the closed-book one then what the passage supports is beside the
+    point. The two largest buckets together — ambiguity and conviction — are 58% of the residue,
+    and neither is fixed by retrieving harder.
+  </p>
+</section>
+
+<!-- ── TRAINING ARMS ── -->
+<section>
+  <p class="eyebrow">Training arms · sixteen runs since 7 Aug</p>
+  <h2>What was trained, and what each run actually proved</h2>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="l">arm</th><th class="l">idea</th><th>score</th><th class="l">set</th><th class="l">what it settled</th>
+      </tr></thead>
+      <tbody>
+        <tr class="us"><td class="l">arm G</td><td class="l">three-tier evidence labels over the whole benchmark, bare-letter target</td>
+          <td class="pos">86.56</td><td class="l">ot-full</td>
+          <td class="l">+7.02. C_hard 3.48 → 22.13 — the slice every earlier arm damaged. Holdout +1.40 at p=0.080: the first positive transfer reading, not yet significant</td></tr>
+        <tr><td class="l">arm F</td><td class="l">arm E's rows and labels with the prose prefix stripped</td>
+          <td class="pos">85.25</td><td class="l">ot-full</td>
+          <td class="l">+2.22 over arm E from the target string alone; flip-tier obedience 33.6% → 92.4%. This is the root-cause result</td></tr>
+        <tr><td class="l">arm E · wide / high</td><td class="l">grounded fact + named hard negative, then the letter</td>
+          <td class="pos">83.03 / 82.79</td><td class="l">ot-full</td>
+          <td class="l">first arm not to damage C_hard, but the prose target is only obeyed a third of the time; label purity 70% vs 81% made no difference — the model was not following labels closely enough for their quality to matter</td></tr>
+        <tr><td class="l">arm V</td><td class="l">distil the model's own 8-sample majority vote back into the weights</td>
+          <td class="pos">81.22</td><td class="l">ot-full</td>
+          <td class="l">+1.68 — but 57% of the gain is format repair and it hardens the hardest bucket rather than solving it</td></tr>
+        <tr class="dead"><td class="l">arm V2</td><td class="l">arm V at rank 128 and 3 epochs</td>
+          <td class="flat">81.08</td><td class="l">ot-full</td>
+          <td class="l">−0.14, inside the noise floor. Capacity is not the lever; arm V already fit its labels to 99.91%</td></tr>
+        <tr class="dead"><td class="l">arm CE</td><td class="l">plain cross-entropy on context-distilled rows</td>
+          <td class="neg">73.01</td><td class="l">ot-full</td>
+          <td class="l">the training data itself costs −6.5</td></tr>
+        <tr class="dead"><td class="l">arm KD</td><td class="l">identical rows + KL against the same model reading the evidence</td>
+          <td class="neg">70.80</td><td class="l">ot-full</td>
+          <td class="l">tie with CE at p=0.36 — the KL term does nothing; branch closed</td></tr>
+        <tr><td class="l">S1 · self-replay anchor</td><td class="l">anchor training on the base's <em>own</em> correct answers</td>
+          <td class="pos">81.0</td><td class="l">dev-1000</td>
+          <td class="l">the retention lever: +9.7 in a controlled contrast, damage 17.3% → 3.9%</td></tr>
+        <tr class="dead"><td class="l">S2 · no anchor</td><td class="l">same facts, anchors removed</td>
+          <td class="neg">71.3</td><td class="l">dev-1000</td>
+          <td class="l">isolates the anchor as the cause, not the fact data</td></tr>
+        <tr><td class="l">S3 · aimed facts</td><td class="l">facts selected to hit the questions actually missed</td>
+          <td class="flat">80.7</td><td class="l">dev-1000</td>
+          <td class="l">aiming buys nothing over S1 — coverage was never the bottleneck</td></tr>
+        <tr class="dead"><td class="l">CPT campaign 1</td><td class="l">~200M tokens continued pretraining</td>
+          <td class="neg">69.9–71.5</td><td class="l">dev-1000</td>
+          <td class="l">below base at all 8 checkpoints</td></tr>
+        <tr class="dead"><td class="l">GRPO campaigns 1–2</td><td class="l">reinforce correct-and-well-formed answers</td>
+          <td class="flat">within noise</td><td class="l">dev-1000</td>
+          <td class="l">died against the 0.50pp A/A floor; decoding layer caps at +2.1</td></tr>
+        <tr class="dead"><td class="l">M1 / akv2 · answer-key</td><td class="l">train directly on the published key</td>
+          <td class="warn">95.55</td><td class="l">ot-full</td>
+          <td class="l">+0.40 on a clean 500 — pure memorisation, kept only as an instrument</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <h3>The one probe that explains all of them</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        Take a fact the model was just trained on and ask about it three ways. Rotate the choice
+        order and the trained model holds — 79.0 → 80.2. <strong>Reframe the question and it
+        collapses to 3.4</strong>, from a base of 2.6. So training did write something in, and what
+        it wrote was bound to the surface form it was written in. That single result explains the
+        SFT damage, the CPT failure, and why the presentation gap above is the lever: this model's
+        knowledge is stored per-phrasing, not per-fact.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Hard-negative mining — the surviving data branch</h3>
+      <p style="font-size:14px">
+        Distractors mined from the <em>student's</em> own confusions beat the 122B teacher's by
+        <strong>+8.86pp</strong> on confusability (29.45% vs 20.59%) while staying resolvable, and
+        flip the student 2.22× as often as the control. Keep rate is a brutal 23.9% — 1,783 of
+        5,648 proposals were rejected as paraphrases of the answer.
+      </p>
+      <p class="tiny" style="margin-bottom:0">
+        Confusability and resolvability are both behavioural, never judged. A negative that is
+        confusing but unresolvable is not a hard question, it is an ambiguous one, and training on
+        it teaches the model to distrust its own evidence.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATE OF PLAY ── -->
+<section>
+  <p class="eyebrow">Current state · as of 2026-08-13 07:30 UTC</p>
+  <h2>Where the run stands right now</h2>
+  <div class="verdict pass">
+    <span class="badge">Running</span>
+    <p>
+      Last night's lost batch was recovered and superseded. Eleven jobs have landed since 03:30 —
+      four training arms, six evidence passes and the contamination scan — and two are in flight.
+      The 03:25 memory-contention failure was fixed procedurally: every job now waits on the memory
+      its engine will <em>actually</em> demand, with 10 GB of headroom, instead of a flat threshold.
+      That check caught two further collisions this morning as other tenants grew on shared cards.
+    </p>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="tile hl"><div class="k">In flight · branch A</div><div class="v" style="font-size:20px">armG_full</div>
+      <div class="s">the same recipe with the holdout folded in — 10,000 rows instead of 8,543.
+        Chained: waits for evidence, checks the row count, trains, scores. ETA 08:15 UTC.</div></div>
+    <div class="tile hl"><div class="k">In flight · branch B</div><div class="v" style="font-size:20px">arm H</div>
+      <div class="s">16,000 synthetic MCQs written from the retrieved chunks, then trained on
+        questions that are <em>not</em> in the benchmark. The only clean transfer test available.</div></div>
+  </div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="tile"><div class="k">Contamination</div><div class="v" style="font-size:20px">Clear</div>
+      <div class="s">852,678 docs scanned; 9/400 flagged mechanically, all nine read by hand,
+        none is a leaked item — 0 of 93 events contain the question stem</div></div>
+    <div class="tile"><div class="k">Strong retrieval</div><div class="v">89.5%</div>
+      <div class="s">answer-in-context, against 43.0% for the config that was deployed</div></div>
+    <div class="tile"><div class="k">Second judge</div><div class="v" style="font-size:20px">122B loses</div>
+      <div class="s">74.47% against the 31B's 76.21% on the same 3,451 rows; useful only as a
+        confirming vote — where both agree, 82.39%</div></div>
+  </div>
+</section>
+
+<!-- ── PROVENANCE ── -->
+<section>
+  <p class="eyebrow">Corpus · what the contamination scan actually found</p>
+  <h2>The corpus holds the pages the questions were written from</h2>
+  <p class="note">
+    The scan was run three times because the first two were wrong — the first accumulated option
+    hits across the whole corpus rather than within one document, the second tested co-occurrence
+    correctly but a mechanical rule cannot tell leakage from a spec's own glossary. The excerpts had
+    to be read. All nine flagged questions are the same thing, and it is not contamination.
+  </p>
+  <div class="q">
+    <p class="qt">q#340 · "Which multicast routing algorithm uses flooding within a group to deliver bundles?"</p>
+    <p class="ev">
+      …also proposed four fundamental multicast routing algorithms: <b>unicast based routing (UBR)</b>,
+      where unicast is used to emulate multicast… <b>static tree based routing (STBR)</b>, a spanning
+      tree is constructed… <b>dynamic tree based routing (DTBR)</b>, where each node and bundle are
+      allocated a group id… <b>group based routing (GBR)</b>, where nodes with contemporaneous paths
+      are designated as a group and <b>within a group flooding is used to deliver bundles</b>…
+    </p>
+    <p class="cm">
+      <b>No question text, no A)/B) markers, no answer key.</b> The gold answer is one item in an
+      enumerated list and the three distractors are the other three items. The MCQ writer took the
+      page and used its neighbours as the options — which is why several options co-occur, and why
+      the model's failure mode is discriminating between statements that sit next to each other in
+      the source.
+    </p>
+  </div>
+  <p class="note" style="margin-top:14px">
+    A label-free retrieval-quality signal falls straight out of this: count how many <em>options</em>
+    appear inside one retrieved window. More is better, sharply — because it means the source page
+    was found.
+  </p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="l">passage contains the answer, and also…</th><th>rows</th>
+        <th>closed-book</th><th>+RAG</th><th>delta</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="l">0 distractors</td><td>716</td><td>89.11%</td><td>89.53%</td><td class="flat">+0.42</td></tr>
+        <tr><td class="l">1 distractor</td><td>959</td><td>81.54%</td><td>86.03%</td><td class="pos">+4.48</td></tr>
+        <tr class="us"><td class="l">≥2 distractors</td><td>2,626</td><td>76.05%</td><td>87.24%</td><td class="pos">+11.20</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tiny" style="margin-top:10px">
+    The same analysis explains why RAG's headline was a disappointing +2.00: it is
+    <strong>+7.91 where the passage hits and −2.46 where it misses</strong>, and on rows the model
+    already had right, a missing passage costs <strong>−12.10</strong>. 0.43×7.91 + 0.57×(−2.46)
+    = +2.00 exactly. Never serve retrieval ungated.
+  </p>
+</section>
+
+<!-- ── NEXT ── -->
+<section>
+  <p class="eyebrow">Next moves · revised on the evidence above</p>
+  <h2>What is actually left</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Running now</h3>
+      <ol style="font-size:14px; margin-bottom:0">
+        <li><strong>arm G_full</strong> — the leaderboard number. Same recipe over all 10,000 rows.
+        It ends the clean transfer measurement on this track, so arm G's 86.56 stays on record as
+        the honest figure and the two are always reported together.</li>
+        <li><strong>arm H</strong> — synthetic MCQs written from the retrieved chunks, distractors
+        taken from neighbouring statements exactly as the real benchmark was built. Trained on
+        questions that are not in ot-full, so a gain here is transfer, not recall.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Queued, and cheap</h3>
+      <ol style="font-size:14px; margin-bottom:0">
+        <li><strong>arm I · put the letter first.</strong> Arm E's fault was ordering, not prose:
+        <code>"ANSWER: B\n&lt;fact&gt;"</code> trains the measured distribution directly while
+        keeping the fact in the loss. If arm I ≈ arm F, rationales genuinely add nothing here and
+        the branch closes for good.</li>
+        <li><strong>Raise the flip tier.</strong> At 63.88% it is the weakest label source and the
+        model now follows it exactly, so every point of label accuracy is a point of score. Judge
+        agreement lifts it to 82.39% at reduced coverage — worth fitting properly.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    <strong>What this chapter got wrong, and how.</strong> Fifteen arms were catalogued as
+    failures — CPT, DPO, GRPO, context distillation, answer-key, synthetic facts — and each was
+    given its own explanation. They shared one: every training file used a prose target this model
+    does not reproduce. "The knowledge channel is closed" was a conclusion drawn from experiments
+    that all failed at the same line. The channel was never opened. Arm H is the first attempt to
+    walk through it.
+  </div>
+</section>
+
+</div><!-- /pane-new -->
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- ══════════ PANE: CHAPTER 1 — UP TO 7 AUG (ARCHIVE) ══════════ -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="panel" id="pane-old" role="tabpanel" aria-labelledby="tab-old" hidden>
+
+<div class="newbar" style="border-color:var(--rule); background:var(--panel-2)">
+  <span class="badge" style="background:var(--ink-3)">Archive</span>
+  <p>
+    The record as it stood on <strong>2026-08-07</strong>, preserved unedited. Its base model is
+    Qwen3-8B, so its scores are not comparable with Chapter 2's, and the CPT campaign it describes
+    as "running" has since been refuted. It is kept because the measurements that closed the
+    eval-time layer and the letter-supervision channel still stand, and they are why Chapter 2
+    starts where it does.
+  </p>
+</div>
+
+<!-- ══════════ SCOREBOARD ══════════ -->
+<section>
+  <p class="eyebrow">Scoreboard · every method measured on this track</p>
+  <h2>Twenty-two arms, one chart</h2>
+  <p class="note">
+    Bars are grouped by which eval set they were scored on — never compare across groups without
+    the A/A offset (measured: +0.2pp no-think, −0.8pp thinking between the vLLM harness and the
+    transformers stack). Controls at the bottom of the range exist to price the rest: a model that
+    only knew MCQ shape scores 39.7.
+  </p>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--crit)"></span>hurt the score</span>
+    <span><span class="swatch" style="background:var(--s2)"></span>flat / not worth the cost</span>
+    <span><span class="swatch" style="background:var(--good)"></span>helped</span>
+    <span><span class="swatch" style="background:var(--s1)"></span>best arm / running</span>
+    <span><span class="swatch" style="background:var(--warn)"></span>ceiling, not submittable</span>
+    <span><span class="swatch" style="background:var(--floor)"></span>reference point</span>
+  </div>
+  <figure class="card chartbox">
+<svg viewBox="0 0 1300 694.0" role="img" aria-label="Every method measured on this track">
+<line class="grid-line" x1="366.0" y1="24" x2="366.0" y2="660.0"/>
+<text class="ax" x="366.0" y="688.0" text-anchor="middle">20</text>
+<line class="grid-line" x1="469.2" y1="24" x2="469.2" y2="660.0"/>
+<text class="ax" x="469.2" y="688.0" text-anchor="middle">30</text>
+<line class="grid-line" x1="572.4" y1="24" x2="572.4" y2="660.0"/>
+<text class="ax" x="572.4" y="688.0" text-anchor="middle">40</text>
+<line class="grid-line" x1="675.6" y1="24" x2="675.6" y2="660.0"/>
+<text class="ax" x="675.6" y="688.0" text-anchor="middle">50</text>
+<line class="grid-line" x1="778.8" y1="24" x2="778.8" y2="660.0"/>
+<text class="ax" x="778.8" y="688.0" text-anchor="middle">60</text>
+<line class="grid-line" x1="882.0" y1="24" x2="882.0" y2="660.0"/>
+<text class="ax" x="882.0" y="688.0" text-anchor="middle">70</text>
+<line class="grid-line" x1="985.2" y1="24" x2="985.2" y2="660.0"/>
+<text class="ax" x="985.2" y="688.0" text-anchor="middle">80</text>
+<line class="grid-line" x1="1088.4" y1="24" x2="1088.4" y2="660.0"/>
+<text class="ax" x="1088.4" y="688.0" text-anchor="middle">90</text>
+<text class="lbl em" x="20" y="34.0">References &amp; controls — what the number means</text>
+<text class="ax" x="352.0" y="67.0" text-anchor="end">always answer A</text>
+<rect x="366.0" y="56.0" width="21.7" height="15" rx="3" fill="var(--floor)"/>
+<text class="val" x="394.7" y="68.0">22.10</text>
+<text class="ax" x="437.7" y="68.0">no model · 10k</text>
+<text class="ax" x="352.0" y="90.0" text-anchor="end">distractor-shape heuristic</text>
+<rect x="366.0" y="79.0" width="203.5" height="15" rx="3" fill="var(--floor)"/>
+<text class="val" x="576.5" y="91.0">39.72</text>
+<text class="ax" x="619.5" y="91.0">no model · 10k</text>
+<text class="ax" x="352.0" y="113.0" text-anchor="end">human telecom expert (paper)</text>
+<rect x="366.0" y="102.0" width="463.0" height="15" rx="3" fill="var(--floor)"/>
+<text class="val" x="836.0" y="114.0">64.86</text>
+<text class="ax" x="879.0" y="114.0">published</text>
+<text class="ax" x="352.0" y="136.0" text-anchor="end">GPT-4, TeleQnA paper 2023</text>
+<rect x="366.0" y="125.0" width="566.7" height="15" rx="3" fill="var(--floor)"/>
+<text class="val" x="939.7" y="137.0">74.91</text>
+<text class="ax" x="982.7" y="137.0">published</text>
+<text class="ax" x="352.0" y="159.0" text-anchor="end">AT&amp;T OTel-LLM-8.3B-QnA — SOTA</text>
+<rect x="366.0" y="148.0" width="734.8" height="15" rx="3" fill="var(--warn)"/>
+<text class="val" x="1092.8" y="160.0" text-anchor="end" style="fill:var(--plane)">91.20</text>
+<text class="ax" x="1050.8" y="160.0" text-anchor="end" style="fill:var(--plane);opacity:.82">400B-token CPT · published</text>
+<text class="lbl em" x="20" y="181.0">Eval-time layer — full 10,000 / held-out 9,000, no weights touched</text>
+<text class="ax" x="352.0" y="214.0" text-anchor="end">baseline no-think</text>
+<rect x="366.0" y="203.0" width="536.1" height="15" rx="3" fill="var(--ink-3)"/>
+<text class="val" x="909.1" y="215.0">71.95</text>
+<text class="ax" x="952.1" y="215.0">10k · reference point</text>
+<text class="ax" x="352.0" y="237.0" text-anchor="end">baseline no-think, rotated choices</text>
+<rect x="366.0" y="226.0" width="519.7" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="892.7" y="238.0">70.36</text>
+<text class="ax" x="935.7" y="238.0">−1.59 · 1,135 rows flip</text>
+<text class="ax" x="352.0" y="260.0" text-anchor="end">+ seed system prompt (hand-written)</text>
+<rect x="366.0" y="249.0" width="530.4" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="903.4" y="261.0">71.40</text>
+<text class="ax" x="946.4" y="261.0">9k held-out · −0.34, p=0.29</text>
+<text class="ax" x="352.0" y="283.0" text-anchor="end">+ DSPy/GEPA optimised prompt</text>
+<rect x="366.0" y="272.0" width="522.4" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="895.4" y="284.0">70.62</text>
+<text class="ax" x="938.4" y="284.0">9k held-out · −1.12, p=0.001</text>
+<text class="ax" x="352.0" y="306.0" text-anchor="end">+ GEPA fit on 10k, scored on 10k (leak ceiling)</text>
+<rect x="366.0" y="295.0" width="531.5" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="904.5" y="307.0">71.50</text>
+<text class="ax" x="947.5" y="307.0">−0.45 even with the answer key</text>
+<text class="ax" x="352.0" y="329.0" text-anchor="end">+ thinking mode</text>
+<rect x="366.0" y="318.0" width="557.0" height="15" rx="3" fill="var(--good)"/>
+<text class="val" x="930.0" y="330.0">73.97</text>
+<text class="ax" x="973.0" y="330.0">10k · +2.02, p&lt;0.001 — kept as serving mode</text>
+<text class="ax" x="352.0" y="352.0" text-anchor="end">+ thinking, rotated choices</text>
+<rect x="366.0" y="341.0" width="552.9" height="15" rx="3" fill="var(--s2)"/>
+<text class="val" x="925.9" y="353.0">73.58</text>
+<text class="ax" x="968.9" y="353.0">−0.39, p=0.24 — order-robust</text>
+<text class="ax" x="352.0" y="375.0" text-anchor="end">+ self-consistency vote, 4 permutations</text>
+<rect x="366.0" y="364.0" width="564.6" height="15" rx="3" fill="var(--s2)"/>
+<text class="val" x="937.6" y="376.0">74.71</text>
+<text class="ax" x="980.6" y="376.0">+0.74 over thinking · 4× cost</text>
+<text class="ax" x="352.0" y="398.0" text-anchor="end">oracle: correct in ANY branch</text>
+<rect x="366.0" y="387.0" width="658.9" height="15" rx="3" fill="var(--warn)"/>
+<text class="val" x="1016.9" y="399.0" text-anchor="end" style="fill:var(--plane)">83.85</text>
+<text class="ax" x="974.9" y="399.0" text-anchor="end" style="fill:var(--plane);opacity:.82">ceiling of all ensembling — not submittable</text>
+<text class="lbl em" x="20" y="420.0">Other models, measured on the same harness</text>
+<text class="ax" x="352.0" y="453.0" text-anchor="end">OTel-LLM-8B-IT (AT&amp;T's released model)</text>
+<rect x="366.0" y="442.0" width="421.8" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="794.8" y="454.0">60.87</text>
+<text class="ax" x="837.8" y="454.0">10k · −11.1 vs base</text>
+<text class="ax" x="352.0" y="476.0" text-anchor="end">Qwen3-235B-A22B</text>
+<rect x="366.0" y="465.0" width="616.1" height="15" rx="3" fill="var(--s2)"/>
+<text class="val" x="989.1" y="477.0">79.70</text>
+<text class="ax" x="1032.1" y="477.0">+5.2pp for 30× params</text>
+<text class="lbl em" x="20" y="498.0">Weights layer — dev-1000, single A/A-calibrated stack</text>
+<text class="ax" x="352.0" y="531.0" text-anchor="end">SFT, gentlest dose (0.24 epoch)</text>
+<rect x="366.0" y="520.0" width="518.1" height="15" rx="3" fill="var(--crit)"/>
+<text class="val" x="891.1" y="532.0">70.20</text>
+<text class="ax" x="934.1" y="532.0">−3.6 · damage at every dose</text>
+<text class="ax" x="352.0" y="554.0" text-anchor="end">base · no-think</text>
+<rect x="366.0" y="543.0" width="557.3" height="15" rx="3" fill="var(--ink-3)"/>
+<text class="val" x="930.3" y="555.0">74.00</text>
+<text class="ax" x="973.3" y="555.0">A/A reference</text>
+<text class="ax" x="352.0" y="577.0" text-anchor="end">DPO3@200 · no-think</text>
+<rect x="366.0" y="566.0" width="561.4" height="15" rx="3" fill="var(--good)"/>
+<text class="val" x="934.4" y="578.0">74.40</text>
+<text class="ax" x="977.4" y="578.0">+0.4</text>
+<text class="ax" x="352.0" y="600.0" text-anchor="end">base · thinking</text>
+<rect x="366.0" y="589.0" width="568.6" height="15" rx="3" fill="var(--ink-3)"/>
+<text class="val" x="941.6" y="601.0">75.10</text>
+<text class="ax" x="984.6" y="601.0">A/A reference</text>
+<text class="ax" x="352.0" y="623.0" text-anchor="end">DPO3@200 · thinking  ← best so far</text>
+<rect x="366.0" y="612.0" width="583.1" height="15" rx="3" fill="var(--s1)"/>
+<text class="val" x="956.1" y="624.0">76.50</text>
+<text class="ax" x="999.1" y="624.0">+1.4 · 52 fixed / 38 broken</text>
+<text class="ax" x="352.0" y="646.0" text-anchor="end">CPT campaign 1 · ~200M tokens</text>
+<rect x="366.0" y="635.0" width="120" height="15" rx="3" fill="none" stroke="var(--s1)" stroke-dasharray="4 3"/>
+<text class="ax" x="496.0" y="647.0" style="fill:var(--s1)">running · training now — ETA 11:45 UTC</text>
+</svg>
+    <figcaption>
+      Few-shot prompting was never run as a separate arm, and deliberately so: the GEPA
+      <em>leak-ceiling</em> experiment fits a prompt on all 10,000 rows and scores it on those same
+      rows — strictly stronger than any few-shot exemplar set — and still lands 0.45pp
+      <em>below</em> no prompt at all. Nothing in prompt space pays here.
+    </figcaption>
+  </figure>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="tile"><div class="k">Stack offset · no-think</div><div class="v">+0.2</div>
+      <div class="s">A/A 74.00 vs vLLM 73.80 — stacks agree</div></div>
+    <div class="tile"><div class="k">Stack offset · thinking</div><div class="v">−0.8</div>
+      <div class="s">A/A greedy 75.10 vs vLLM temp-0.6 75.90 — compare within one stack only</div></div>
+    <div class="tile hl"><div class="k">Best confirmed delta</div><div class="v">+1.4</div>
+      <div class="s">DPO3@200 thinking, 52 fixed / 38 broken, McNemar p=0.17</div></div>
+  </div>
+</section>
+
+<!-- ══════════ BASE DIAGNOSIS → STRATEGY ══════════ -->
+<section>
+  <p class="eyebrow">Base-model diagnosis · four probes → one strategy</p>
+  <h2>Where the 2,805 baseline errors actually live</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="l">probe (600 paired rows)</th><th class="l">transformation</th><th>accuracy</th><th>Δ pp</th><th>p</th><th class="l">reading</th></tr></thead>
+      <tbody>
+        <tr><td class="l"><code>orig</code></td><td class="l">unchanged</td><td>72.67</td><td>—</td><td>—</td><td class="l">reference</td></tr>
+        <tr><td class="l"><code>paraphrase</code></td><td class="l">rewrite question, keep terms</td><td>72.57</td><td class="flat">−0.87</td><td>0.551</td><td class="l">no memorization — score survives full rewording</td></tr>
+        <tr><td class="l"><code>perm</code></td><td class="l">rotate choice order</td><td>69.00</td><td class="neg">−3.67</td><td>0.025</td><td class="l">1,135/10,000 rows flip — ~11% sit on a knife edge</td></tr>
+        <tr class="us"><td class="l"><code>distract</code></td><td class="l">same question + gold, foreign distractors</td><td>88.50</td><td class="pos">+15.83</td><td>&lt;0.001</td><td class="l"><strong>errors live in distractor discrimination, not missing knowledge</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">Wrong · no-think</div><div class="v">2,805</div>
+      <div class="s">of 10,000</div></div>
+    <div class="tile bad"><div class="k">Hard-core</div><div class="v">2,049</div>
+      <div class="s">wrong in <em>both</em> modes</div></div>
+    <div class="tile"><div class="k">Traceable to a spec file</div><div class="v">96%</div>
+      <div class="s">1,964/2,049 hard-core errors map to one 3GPP file</div></div>
+    <div class="tile"><div class="k">TS-guessing gate</div><div class="v">4.84%</div>
+      <div class="s">masked-choice recall, monotone-declining with length = guessing, not memory</div></div>
+  </div>
+
+  <h3 style="margin-top:26px">How the baseline fails, subject by subject</h3>
+  <div class="tw" style="margin-top:10px">
+    <table>
+      <thead><tr>
+        <th class="l">subject</th><th>rows</th><th>no-think</th><th>thinking</th><th>Δ think</th>
+        <th>errors</th><th>% of all errors</th><th>hard-core</th><th>hard-core rate</th>
+        <th>5-choice share</th><th class="l">source available</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="l">Research publications</td><td>4,500</td><td>74.84</td><td>77.62</td>
+          <td class="pos">+2.78</td><td>1,132</td><td><strong>40.4%</strong></td><td>797</td>
+          <td>17.7%</td><td>66%</td><td class="l">✓ 22,178 TCC papers</td></tr>
+        <tr class="us"><td class="l">Standards specifications</td><td>2,000</td><td>61.40</td><td>61.75</td>
+          <td class="neg">+0.35</td><td>772</td><td>27.5%</td><td>597</td>
+          <td class="neg"><strong>29.8%</strong></td><td>67%</td><td class="l">✓ 3GPP Rel-8→20</td></tr>
+        <tr><td class="l">Research overview</td><td>2,000</td><td>74.25</td><td>75.55</td>
+          <td class="flat">+1.30</td><td>515</td><td>18.4%</td><td>394</td>
+          <td>19.7%</td><td>67%</td><td class="l">✓ TCC papers + OpenAlex</td></tr>
+        <tr><td class="l">Standards overview</td><td>1,000</td><td>69.70</td><td>72.20</td>
+          <td class="pos">+2.50</td><td>303</td><td>10.8%</td><td>213</td>
+          <td>21.3%</td><td>72%</td><td class="l"><span class="warn">~</span> partial (IEEE gap)</td></tr>
+        <tr><td class="l">Lexicon</td><td>500</td><td>83.40</td><td>87.20</td>
+          <td class="pos">+3.80</td><td>83</td><td>3.0%</td><td>48</td>
+          <td class="pos">9.6%</td><td>71%</td><td class="l"><span class="warn">~</span> Wikipedia/Wikidata</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Two different diseases, not one</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        <strong>Standards specifications is a knowledge gap.</strong> Worst rate in the benchmark
+        (29.8% of its rows wrong in both modes) and — decisively — 968 extra thinking tokens per
+        question buy it <strong>+0.35pp</strong>. Reasoning cannot reconstruct a 3GPP clause the
+        model never read. <strong>Research publications is a discrimination problem at scale.</strong>
+        Its per-row rate is unremarkable (17.7%), but at 4,500 rows it still owns
+        <strong>40.4% of all errors</strong>, and thinking pays there (+2.78pp) — the knowledge is
+        present, the selection is shaky.
+      </p>
+    </div>
+    <div class="card">
+      <h3>What that split dictates</h3>
+      <p style="font-size:14px; margin-bottom:0">
+        Two-thirds of hard-core errors in every subject are 5-choice questions — more near-miss
+        distractors, more chances to be pulled off. The strategy follows directly: CPT feeds spec
+        and paper text to close the Standards-spec knowledge hole, while thinking + preference
+        calibration works the Research-publications mass. Lexicon needs nothing (9.6% rate, 3.0% of
+        errors); the 1,000-row Standards-overview slice is the only place where a corpus gap
+        (paywalled IEEE) still limits what any method can do.
+      </p>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:20px">
+    The eval-time layer was measured shut before any training: prompt optimisation (DSPy seed → GEPA)
+    scored <strong>−1.12pp</strong> on held-out — negative even with the full answer key leaked into
+    the prompt (−0.45, i.e. zero exploitable headroom); self-consistency vote +0.7pp against an
+    oracle of 83.85%; thinking +2.02pp overall but only +0.35 on the hardest subject.
+  </p>
+  <div class="tw" style="margin-top:8px">
+    <table>
+      <thead><tr><th class="l">direction</th><th class="l">measured result</th><th class="l">verdict</th></tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l">Bigger base model</td><td class="l">qwen3-235b = +5.2pp for 30× params; specialist post-training buys +16.7pp at 8B</td><td class="neg">rejected</td></tr>
+        <tr class="dead"><td class="l">RAG at inference</td><td class="l">strongest scorer on paper — excluded by the closed-book track constraint</td><td class="neg">rejected</td></tr>
+        <tr class="dead"><td class="l">Distill from published OTel weights</td><td class="l">the 91.2% QnA model was never released; released -IT scores 60.87% (−11 vs base)</td><td class="neg">rejected</td></tr>
+        <tr class="dead"><td class="l">SFT on OTel-606k directly</td><td class="l">teaches RAG-robustness (16.5% refusal rows), only 154 MCQ records</td><td class="neg">rejected as main lever</td></tr>
+        <tr class="dead"><td class="l">AdaptKey-Nemotron-30b corpus</td><td class="l">contaminated — see data section</td><td class="neg">blocked</td></tr>
+        <tr class="dead"><td class="l">Prompt / vote / thinking</td><td class="l">−1.12 / +0.7 / +0.35 on hardest subject</td><td class="neg">exhausted</td></tr>
+        <tr class="us"><td class="l">Generate hard-negative MCQs from specs → train</td><td class="l">targets the measured error shape; 96% of hard-core errors have a downloadable source</td><td class="pos">chosen</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout ok" style="margin-top:14px">
+    <strong>Strategy in three sentences.</strong> (1) The model already knows the answer on most rows
+    it misses — it loses to near-synonym distractors. (2) That skill is trainable: questions whose
+    distractors differ by one release, one value, one sibling message name. (3) The raw material is
+    public 3GPP text — and 96% of hard-core errors trace back to a specific spec file.
+  </div>
+</section>
+
+<!-- ══════════ DATA SOURCES & COVERAGE ══════════ -->
+<section>
+  <p class="eyebrow">Data · sources, contamination, test coverage</p>
+  <h2>Four corpora pulled, one blocked, 93.5% of the test covered</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="l">repo</th><th>size</th><th class="l">contents</th><th class="l">contamination scan → role</th></tr></thead>
+      <tbody>
+        <tr class="us"><td class="l"><code>GSMA/3GPP</code></td><td>3.14 GB</td>
+          <td class="l">15,052 markdown spec files, Rel-8 → Rel-20</td>
+          <td class="l">source text, nothing to leak — <strong>primary generation source</strong> (11,296 chunks)</td></tr>
+        <tr><td class="l"><code>GSMA/Telco-Common-Corpus</code></td><td>8.9 GB</td>
+          <td class="l">1.78M docs · ~10B tokens: 64k IEEE open-access, 10k RFC + 40k drafts, 120k patents, OpenAlex, Wikidata</td>
+          <td class="l">telecom filter → 22,178 papers → literature MCQs + <strong>CPT stream</strong></td></tr>
+        <tr><td class="l"><code>farbodtavakkoli/OTel-LLM</code></td><td>1.4 GB</td>
+          <td class="l">606,237 RAG-style SFT records, apache-2.0</td>
+          <td class="l">8-gram flags 530/10,000 → tail-verify leaves <strong>15 (0.15%)</strong> — clean; used as coverage instrument, not a training lever</td></tr>
+        <tr class="dead"><td class="l"><code>AdaptKey/AdaptKey-Nemotron-30b</code></td><td>5.08 GB</td>
+          <td class="l">1,303,277 telecom records</td>
+          <td class="l"><strong>~9,986/10,000 TeleQnA test rows verbatim with answers + 864/864 TeleLogs test — blocked entirely</strong>; deleting the hits wouldn't help, the hits <em>are</em> the knowledge content</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <figure class="card chartbox">
+      <svg viewBox="0 0 430 250" role="img" aria-label="Test coverage by source">
+        <text class="lbl" x="20" y="26">Research pubs + overview · 6,500 rows</text>
+        <rect x="20" y="32" width="390" height="15" rx="3" fill="var(--good)"/>
+        <text class="lbl" x="20" y="70">3GPP Rel-14→19 · 1,810 rows</text>
+        <rect x="20" y="76" width="108.6" height="15" rx="3" fill="var(--good)"/>
+        <text class="lbl" x="20" y="114">Lexicon · 500 rows (Wikidata, partial)</text>
+        <rect x="20" y="120" width="30" height="15" rx="3" fill="var(--warn)"/>
+        <text class="lbl" x="20" y="158">TCP/IP · 118 rows (RFCs)</text>
+        <rect x="20" y="164" width="7.1" height="15" rx="3" fill="var(--good)"/>
+        <text class="lbl" x="20" y="202">IEEE 802.x · 517 + C95.1 · 130 rows</text>
+        <rect x="20" y="208" width="38.8" height="15" rx="3" fill="var(--crit)"/>
+        <text class="ax" x="20" y="242">green = source downloaded · red = no legal source found</text>
+      </svg>
+      <figcaption>
+        <strong>93.5%</strong> of test rows have a downloadable source document. The remaining gap is
+        652 IEEE rows — C95.1 alone is 130 rows from a single paywalled standard, the highest
+        points-per-page density in the benchmark.
+      </figcaption>
+    </figure>
+    <div class="card">
+      <h3>Independent coverage check — errors are not a corpus gap</h3>
+      <div class="grid g2" style="gap:10px; margin-top:10px">
+        <div class="tile"><div class="k">All test rows</div><div class="v">94.5%</div>
+          <div class="s">≥50% of a row's rare terms co-occur in one OTel-606k record</div></div>
+        <div class="tile"><div class="k">Hard-core errors</div><div class="v">94.1%</div>
+          <div class="s">covered at the same rate → failure is intrinsic, not missing text</div></div>
+      </div>
+      <p class="tiny" style="margin-top:12px; margin-bottom:0">
+        Two-stage scanning is mandatory both ways: 8-gram shingles over-count when questions share
+        phrasing templates (530 → 15 after tail-verification on OTel) and under-count on short rows.
+        Every third-party corpus goes through <code>scan_contamination.py</code> +
+        <code>verify_contamination.py</code> before first use — that rule is what caught AdaptKey.
+      </p>
+      <div class="grid g3" style="gap:10px; margin-top:12px">
+        <div class="tile"><div class="k">train_v3</div><div class="v" style="font-size:22px">40,730</div>
+          <div class="s">21,293 spec + 19,437 lit</div></div>
+        <div class="tile"><div class="k">DPO pairs</div><div class="v" style="font-size:22px">49,780</div>
+          <div class="s">25,080 fix + 24,700 anchors</div></div>
+        <div class="tile"><div class="k">CPT stream</div><div class="v" style="font-size:22px">~200M</div>
+          <div class="s">tokens, error-targeted</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PIPELINE ══════════ -->
+<section>
+  <p class="eyebrow">Pipeline · corpus → data → training → eval</p>
+  <h2>The whole machine in seven steps</h2>
+  <div class="card">
+    <div class="step"><div class="n">1</div><div class="b">
+      <h3>Source corpora — clean, verified</h3>
+      <p><strong>3GPP specs</strong> (error-density-ranked, 11,296 chunks) + <strong>Telco-Common-Corpus</strong>
+      (22,178 telecom-filtered papers, ~400M tokens; 1.5B-token reserve). Contamination scan: 15/10,000
+      8-gram hits (noise). A third-party corpus shipping 9,986/10,000 test rows was caught and rejected.</p>
+    </div></div>
+    <div class="step"><div class="n">2</div><div class="b">
+      <h3>Synthetic MCQ generation — self-hosted teacher</h3>
+      <p>Qwen3.5-35B-A3B generates from chunks: <strong>62,390 raw questions</strong> (specs) +
+      literature batch. No external APIs touch benchmark-adjacent data.</p>
+    </div></div>
+    <div class="step"><div class="n">3</div><div class="b">
+      <h3>Eight quality gates + student gate</h3>
+      <p>Format/answerability/style gates keep <strong>39,827 (63.8%)</strong>; the student model then
+      sits the exam — its real mistakes become the teaching signal. Literature adds
+      <strong>41,564</strong> gated questions.</p>
+    </div></div>
+    <div class="step"><div class="n">4</div><div class="b">
+      <h3>Training sets</h3>
+      <p><code>train_v3.jsonl</code> <strong>40,730</strong> (21,293 spec + 19,437 literature) ·
+      DPO pairs <strong>25,080 fix + 24,700 anchors</strong> · CPT corpus <strong>~200M tokens</strong>
+      (error-targeted selection).</p>
+    </div></div>
+    <div class="step"><div class="n">5</div><div class="b">
+      <h3>Training arcs</h3>
+      <p>SFT (2 runs, failed) → single-token DPO (4 recipes, best +1.4 thinking) →
+      <strong>CPT now running</strong> → GRPO-on-thinking planned.</p>
+    </div></div>
+    <div class="step"><div class="n">6</div><div class="b">
+      <h3>Eval discipline</h3>
+      <p><strong>dev-1000</strong> (400+600 stratified real rows) for all selection and diagnosis ·
+      <strong>held-out 9,000 frozen</strong> — exactly one final eval, for the final model only ·
+      never train on real test rows · A/A calibration before any cross-stack comparison.</p>
+    </div></div>
+    <div class="step"><div class="n">7</div><div class="b">
+      <h3>Diagnosis loop</h3>
+      <p>Every failed run is measured to death before the next move: dose-response, per-row flips,
+      coverage-vs-fix correlation. The failures picked the current channel.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════ DECISION TREE ══════════ -->
+<section>
+  <p class="eyebrow">Decision tree · how each move was chosen</p>
+  <h2>Six questions, each answered with a measurement</h2>
+  <p class="note">
+    Nothing on this tree was decided by intuition. Every branch is a probe or an ablation that had
+    to return a number before the next branch was allowed to open — which is why the dead ends are
+    drawn here rather than deleted: they are what makes the surviving lane credible.
+  </p>
+  <figure class="card chartbox" style="margin-top:14px">
+<svg viewBox="0 0 900 608.0" role="img" aria-label="Decision ladder: six questions, each answered by a measurement">
+<line x1="18" y1="66.5" x2="18" y2="547.5" stroke="var(--rule)" stroke-width="1.6"/>
+<text class="lbl em" x="34.0" y="62.5">Q1 · is the 71.95%</text>
+<text class="lbl" x="34.0" y="78.5">just memorised?</text>
+<circle cx="18" cy="66.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="34.0" width="666.0" height="65.0" rx="10" fill="color-mix(in srgb,var(--crit) 8%,transparent)" stroke="var(--crit)"/>
+<text class="lbl em" x="235.0" y="55.0">NO — four independent probes agree</text>
+<text class="ax" x="235.0" y="72.0">paraphrase −0.87pp (p=0.55) · rotation is an order effect, not recall</text>
+<text class="ax" x="235.0" y="86.0">TS-guessing recall falls as the masked choice gets longer = guessing</text>
+<text class="lbl em" x="34.0" y="147.5">Q2 · knowledge gap or</text>
+<text class="lbl" x="34.0" y="163.5">discrimination gap?</text>
+<circle cx="18" cy="151.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="119.0" width="666.0" height="65.0" rx="10" fill="color-mix(in srgb,var(--good) 8%,transparent)" stroke="var(--good)"/>
+<text class="lbl em" x="235.0" y="140.0">DISCRIMINATION — for most of the errors</text>
+<text class="ax" x="235.0" y="157.0">distract probe +15.83pp (p&lt;0.001): the gold answer is already known</text>
+<text class="ax" x="235.0" y="171.0">exception: Standards-spec gains only +0.35 from thinking = a real gap</text>
+<text class="lbl em" x="34.0" y="238.5">Q3 · can the cheap</text>
+<text class="lbl" x="34.0" y="254.5">eval-time layer</text>
+<text class="lbl" x="34.0" y="270.5">harvest it?</text>
+<circle cx="18" cy="250.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="204.0" width="214.0" height="93.0" rx="10" fill="color-mix(in srgb,var(--crit) 8%,transparent)" stroke="var(--crit)"/>
+<text class="lbl em" x="235.0" y="225.0">Prompt search · DSPy → GEPA</text>
+<text class="ax" x="235.0" y="242.0">held-out −1.12pp; even the</text>
+<text class="ax" x="235.0" y="256.0">answer-key leak ceiling is</text>
+<text class="ax" x="235.0" y="270.0">−0.45</text>
+<text class="floor-lbl" x="235.0" y="284.0" style="fill:var(--crit)">CLOSED</text>
+<rect x="448.0" y="204.0" width="214.0" height="93.0" rx="10" fill="color-mix(in srgb,var(--crit) 8%,transparent)" stroke="var(--crit)"/>
+<text class="lbl em" x="461.0" y="225.0">Self-consistency vote ×4</text>
+<text class="ax" x="461.0" y="242.0">+0.74pp for 4× the cost; the</text>
+<text class="ax" x="461.0" y="256.0">83.85 oracle stays out of</text>
+<text class="ax" x="461.0" y="270.0">reach</text>
+<text class="floor-lbl" x="461.0" y="284.0" style="fill:var(--crit)">CLOSED</text>
+<rect x="674.0" y="204.0" width="214.0" height="93.0" rx="10" fill="color-mix(in srgb,var(--good) 8%,transparent)" stroke="var(--good)"/>
+<text class="lbl em" x="687.0" y="225.0">Thinking mode</text>
+<text class="ax" x="687.0" y="242.0">+2.02pp and order-robust,</text>
+<text class="ax" x="687.0" y="256.0">but only +0.35 where it</text>
+<text class="ax" x="687.0" y="270.0">matters</text>
+<text class="floor-lbl" x="687.0" y="284.0" style="fill:var(--good)">KEPT AS SERVING MODE</text>
+<text class="lbl em" x="34.0" y="344.5">Q4 · which weight</text>
+<text class="lbl" x="34.0" y="360.5">channel teaches</text>
+<text class="lbl" x="34.0" y="376.5">discrimination?</text>
+<circle cx="18" cy="356.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="317.0" width="327.0" height="79.0" rx="10" fill="color-mix(in srgb,var(--crit) 8%,transparent)" stroke="var(--crit)"/>
+<text class="lbl em" x="235.0" y="338.0">SFT on gold letters</text>
+<text class="ax" x="235.0" y="355.0">−3.6pp at the gentlest dose; breaks 3 rows</text>
+<text class="ax" x="235.0" y="369.0">per 2 taught</text>
+<text class="floor-lbl" x="235.0" y="383.0" style="fill:var(--crit)">FAILED — a method problem, not a dose problem</text>
+<rect x="561.0" y="317.0" width="327.0" height="79.0" rx="10" fill="color-mix(in srgb,var(--good) 8%,transparent)" stroke="var(--good)"/>
+<text class="lbl em" x="574.0" y="338.0">Single-token DPO + anchors</text>
+<text class="ax" x="574.0" y="355.0">KL anchor caps the damage; best 76.50</text>
+<text class="ax" x="574.0" y="369.0">thinking (+1.4)</text>
+<text class="floor-lbl" x="574.0" y="383.0" style="fill:var(--good)">KEPT — but the net stalls at +4..6 rows</text>
+<text class="lbl em" x="34.0" y="444.5">Q5 · why does DPO</text>
+<text class="lbl" x="34.0" y="460.5">plateau there?</text>
+<circle cx="18" cy="448.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="416.0" width="666.0" height="65.0" rx="10" fill="color-mix(in srgb,var(--warn) 10%,transparent)" stroke="var(--warn)"/>
+<text class="lbl em" x="235.0" y="437.0">The letter channel carries ~1 bit per question</text>
+<text class="ax" x="235.0" y="454.0">fix-rate is FLAT against training-pair similarity (23.7 / 22.7 / 24.3 / 21.4%)</text>
+<text class="ax" x="235.0" y="468.0">164 dev rows stay wrong in all four arms — calibration moved, knowledge did not</text>
+<text class="lbl em" x="34.0" y="535.5">Q6 · which channel</text>
+<text class="lbl" x="34.0" y="551.5">actually carries</text>
+<text class="lbl" x="34.0" y="567.5">facts?</text>
+<circle cx="18" cy="547.5" r="4.5" fill="var(--panel)" stroke="var(--s1)" stroke-width="2"/>
+<rect x="222.0" y="501.0" width="214.0" height="93.0" rx="10" fill="color-mix(in srgb,var(--warn) 10%,transparent)" stroke="var(--warn)"/>
+<text class="lbl em" x="235.0" y="522.0">CPT on source text</text>
+<text class="ax" x="235.0" y="539.0">192.6M tokens,</text>
+<text class="ax" x="235.0" y="553.0">error-targeted; the AT&amp;T</text>
+<text class="ax" x="235.0" y="567.0">lever at 1/2000 dose</text>
+<text class="floor-lbl" x="235.0" y="581.0" style="fill:var(--warn)">RUNNING NOW</text>
+<rect x="448.0" y="501.0" width="214.0" height="93.0" rx="10" fill="none" stroke="var(--s1)" stroke-dasharray="5 4"/>
+<text class="lbl em" x="461.0" y="522.0">GRPO on thinking traces</text>
+<text class="ax" x="461.0" y="539.0">rewards whole reasoning</text>
+<text class="ax" x="461.0" y="553.0">paths; closes pass@k →</text>
+<text class="ax" x="461.0" y="567.0">pass@1</text>
+<text class="floor-lbl" x="461.0" y="581.0" style="fill:var(--s1)">PLANNED · TRL staged</text>
+<rect x="674.0" y="501.0" width="214.0" height="93.0" rx="10" fill="color-mix(in srgb,var(--crit) 8%,transparent)" stroke="var(--crit)"/>
+<text class="lbl em" x="687.0" y="522.0">RAG at inference</text>
+<text class="ax" x="687.0" y="539.0">the strongest scorer on</text>
+<text class="ax" x="687.0" y="553.0">paper; closed-book track</text>
+<text class="ax" x="687.0" y="567.0">forbids it</text>
+<text class="floor-lbl" x="687.0" y="581.0" style="fill:var(--crit)">BLOCKED BY RULES</text>
+</svg>
+    <figcaption>
+      Read top to bottom. Red = closed by measurement, green = survived, amber = running,
+      dashed = queued. The one branch that never opened — RAG — is closed by the track's
+      closed-book rule, not by a number.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ══════════ TRAINING ARCS ══════════ -->
+<section>
+  <p class="eyebrow">Training arcs · what fixed, what broke</p>
+  <h2>Six letter-supervised runs, one shared ceiling</h2>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--crit)"></span>rows broken (was right → now wrong)</span>
+    <span><span class="swatch" style="background:var(--good)"></span>rows fixed (was wrong → now right)</span>
+  </div>
+  <figure class="card chartbox">
+    <svg viewBox="0 0 860 246" role="img" aria-label="Fixed vs broken rows per training arm">
+      <line class="axis-line" x1="480" y1="8" x2="480" y2="222"/>
+      <g>
+        <text class="lbl" x="40" y="34">SFT run 1</text>
+        <rect x="141.2" y="22" width="338.8" height="20" rx="3" fill="var(--crit)"/>
+        <rect x="480" y="22" width="220" height="20" rx="3" fill="var(--good)"/>
+        <text class="val" x="135" y="37" text-anchor="end">−154</text>
+        <text class="val" x="706" y="37">+100</text>
+      </g>
+      <g>
+        <text class="lbl" x="40" y="76">SFT run 2 · gentlest dose</text>
+        <rect x="229.2" y="64" width="250.8" height="20" rx="3" fill="var(--crit)"/>
+        <rect x="480" y="64" width="171.6" height="20" rx="3" fill="var(--good)"/>
+        <text class="val" x="223" y="79" text-anchor="end">−114</text>
+        <text class="val" x="658" y="79">+78</text>
+      </g>
+      <g>
+        <text class="lbl" x="40" y="118">DPO2@100 · anchors</text>
+        <rect x="460.2" y="106" width="19.8" height="20" rx="3" fill="var(--crit)"/>
+        <rect x="480" y="106" width="28.6" height="20" rx="3" fill="var(--good)"/>
+        <text class="val" x="454" y="121" text-anchor="end">−9</text>
+        <text class="val" x="515" y="121">+13</text>
+      </g>
+      <g>
+        <text class="lbl" x="40" y="160">DPO3@200 · asymmetric β</text>
+        <rect x="420.6" y="148" width="59.4" height="20" rx="3" fill="var(--crit)"/>
+        <rect x="480" y="148" width="68.2" height="20" rx="3" fill="var(--good)"/>
+        <text class="val" x="414" y="163" text-anchor="end">−27</text>
+        <text class="val" x="555" y="163">+31</text>
+      </g>
+      <g>
+        <text class="lbl em" x="40" y="202">DPO3@200 · thinking</text>
+        <rect x="396.4" y="190" width="83.6" height="20" rx="3" fill="var(--crit)"/>
+        <rect x="480" y="190" width="114.4" height="20" rx="3" fill="var(--good)"/>
+        <text class="val" x="390" y="205" text-anchor="end">−38</text>
+        <text class="val" x="601" y="205">+52</text>
+      </g>
+    </svg>
+    <figcaption>
+      SFT destroys ~3 rows for every 2 it teaches, at every dose — damage is immediate
+      (−3.6pp at 0.24 epoch), gains saturate at ~85 rows. DPO's KL anchor caps the damage,
+      but net never exceeds +4..+6 no-think / +14 thinking across all four recipes.
+    </figcaption>
+  </figure>
+  <div class="tw" style="margin-top:14px">
+    <table>
+      <thead><tr><th class="l">arm</th><th class="l">idea</th><th>dev-1000</th><th class="l">verdict</th></tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l">SFT r16 ×2</td><td class="l">gold-letter max-likelihood</td><td class="neg">66.9–70.2</td><td class="l">regression at every dose</td></tr>
+        <tr class="dead"><td class="l">DPO1 β0.2 / DPO4 multi-neg</td><td class="l">fix pairs only / all distractors</td><td class="neg">72.0 / 73.9</td><td class="l">below base / churn up, net flat</td></tr>
+        <tr><td class="l">DPO2 β0.5 + anchors</td><td class="l">anchor pairs stop drift</td><td class="pos">74.4</td><td class="l">first arm above base</td></tr>
+        <tr class="us"><td class="l">DPO3 asymmetric β</td><td class="l">loose leash to learn, tight leash to hold</td><td class="pos">74.4 / 76.5 think</td><td class="l">best checkpoint — kept</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ DIAGNOSIS ══════════ -->
+<section>
+  <p class="eyebrow">Diagnosis · why the ceiling exists</p>
+  <h2>Fixes don't correlate with training data — the letter channel can't carry facts</h2>
+  <div class="grid g2">
+    <figure class="card chartbox">
+      <svg viewBox="0 0 430 240" role="img" aria-label="Fix rate by similarity to training pool">
+        <line class="grid-line" x1="30" y1="86.6" x2="420" y2="86.6"/><text class="ax" x="26" y="90" text-anchor="end">20</text>
+        <line class="grid-line" x1="30" y1="143.3" x2="420" y2="143.3"/><text class="ax" x="26" y="147" text-anchor="end">10</text>
+        <line class="axis-line" x1="30" y1="200" x2="420" y2="200"/><text class="ax" x="26" y="204" text-anchor="end">0</text>
+        <rect x="40" y="65.7" width="70" height="134.3" rx="3" fill="var(--s1)"/>
+        <rect x="140" y="71.4" width="70" height="128.6" rx="3" fill="var(--s1)"/>
+        <rect x="240" y="62.3" width="70" height="137.7" rx="3" fill="var(--s1)"/>
+        <rect x="340" y="78.7" width="70" height="121.3" rx="3" fill="var(--s1)"/>
+        <text class="val" x="75" y="58" text-anchor="middle">23.7%</text>
+        <text class="val" x="175" y="64" text-anchor="middle">22.7%</text>
+        <text class="val" x="275" y="55" text-anchor="middle">24.3%</text>
+        <text class="val" x="375" y="71" text-anchor="middle">21.4%</text>
+        <text class="ax" x="75" y="218" text-anchor="middle">sim &lt;.15</text>
+        <text class="ax" x="175" y="218" text-anchor="middle">.15–.25</text>
+        <text class="ax" x="275" y="218" text-anchor="middle">.25–.35</text>
+        <text class="ax" x="375" y="218" text-anchor="middle">&gt;.35</text>
+      </svg>
+      <figcaption>
+        <strong>The decisive figure.</strong> Fix-rate of baseline errors vs similarity to the
+        nearest DPO training pair: flat. Even a near-duplicate pair (sim 0.78) failed to fix its
+        sibling question. One bit per question ("the answer is C") moves letter calibration,
+        not knowledge.
+      </figcaption>
+    </figure>
+    <figure class="card chartbox">
+      <svg viewBox="0 0 430 240" role="img" aria-label="Persistent errors by subject">
+        <text class="lbl" x="20" y="30">Research publications</text>
+        <rect x="20" y="38" width="297" height="16" rx="3" fill="var(--s2)"/><text class="val" x="323" y="51">66</text>
+        <text class="lbl" x="20" y="74">Standards specifications</text>
+        <rect x="20" y="82" width="225" height="16" rx="3" fill="var(--s2)"/><text class="val" x="251" y="95">50</text>
+        <text class="lbl" x="20" y="118">Research overview</text>
+        <rect x="20" y="126" width="130.5" height="16" rx="3" fill="var(--s2)"/><text class="val" x="156" y="139">29</text>
+        <text class="lbl" x="20" y="162">Standards overview</text>
+        <rect x="20" y="170" width="72" height="16" rx="3" fill="var(--s2)"/><text class="val" x="98" y="183">16</text>
+        <text class="lbl" x="20" y="206">Lexicon</text>
+        <rect x="20" y="214" width="13.5" height="16" rx="3" fill="var(--s2)"/><text class="val" x="39" y="227">3</text>
+      </svg>
+      <figcaption>
+        164 rows wrong in all four arms (base/tuned × no-think/thinking). 111/164 are 5-choice.
+        The two big blocks need <em>source knowledge</em>: papers and spec details.
+      </figcaption>
+    </figure>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    The +15.8pp distractor probe put the knowledge partly <em>inside</em> the model; the flat
+    fix-rate proves letter supervision cannot pull it out or add to it. Two channels remain:
+    <strong>CPT</strong> writes facts into the weights; <strong>GRPO on thinking traces</strong>
+    trains the selection process that harvests them. Closed-book rules exclude eval-time RAG.
+  </div>
+</section>
+
+<!-- ══════════ CPT ══════════ -->
+<section>
+  <p class="eyebrow">Now running · CPT campaign 1</p>
+  <h2>Continued pretraining: the knowledge channel, error-targeted</h2>
+  <div class="grid g4">
+    <div class="tile hl"><div class="k">Stream</div><div class="v">~200M</div>
+      <div class="s">tokens · packed 4096 · one epoch</div></div>
+    <div class="tile"><div class="k">Targeted papers</div><div class="v">7,421</div>
+      <div class="s">top-5 nearest per wrong dev question (310 errors)</div></div>
+    <div class="tile"><div class="k">Breadth + specs</div><div class="v">1,484 + 11,296</div>
+      <div class="s">anti-overfit sample · all spec chunks</div></div>
+    <div class="tile"><div class="k">Format anchors</div><div class="v">1 / 30</div>
+      <div class="s">MCQ row per 30 docs — keeps "ANSWER: X" alive</div></div>
+  </div>
+  <div class="meta" style="margin-top:12px">
+    <span class="chip"><b>Adapter</b> LoRA r=64 α=128, all linear</span>
+    <span class="chip"><b>LR</b> 1e-4 cosine</span>
+    <span class="chip"><b>Batch</b> 8 × 4096 × accum 4</span>
+    <span class="chip"><b>Wall</b> ~9–10 h on one H200</span>
+    <span class="chip"><b>Eval</b> dev-1000 at every 200-step checkpoint</span>
+  </div>
+  <div class="verdict watch">
+    <span class="badge">Running</span>
+    <p>Queued 2026-08-07 03:10 UTC, 1,470 steps at 20.4 s/step. Health confirmed at checkpoint 200:
+    loss <strong>1.483 → 1.356</strong> (perplexity 4.41 → 3.88, −12%), gradient norm steady at
+    0.06–0.08, LR warmed to 1e-4 as scheduled — the adapter is absorbing the corpus, not idling.
+    This dose is ~1/2,000 of AT&amp;T's 400B-token campaign: a signal probe, not the full lever. If
+    dev-1000 moves without format breakage, the 1.5B-token reserve
+    (<code>tcc_research.jsonl</code>) scales the dose next.</p>
+  </div>
+  <p class="tiny" style="margin-top:10px">
+    Aside worth recording: the trainer printed no loss lines to stdout, so the run looked opaque
+    from the log. The numbers above were recovered from <code>trainer_state.json</code> inside the
+    checkpoint — the one file in there that is world-readable when the pod writes as root. Worth
+    knowing before waiting eight hours on a silent job.
+  </p>
+</section>
+
+<!-- ══════════ NEXT ══════════ -->
+<section>
+  <p class="eyebrow">Next moves</p>
+  <h2>What happens after CPT</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3>If CPT shows signal</h3>
+      <ol style="font-size:14px; margin-bottom:0">
+        <li>Scale dose from the 1.5B-token reserve corpus.</li>
+        <li>Re-run the student gate on the CPT model → rebuild DPO pairs from its <em>new</em> confusions → thin calibration layer on top.</li>
+        <li>GRPO on thinking traces (TRL is staged in <code>venv-grpo</code>): reward correct-and-well-formed answers over synthetic prompts — trains selection, closes the pass@k→pass@1 gap the 83.85% oracle exposed.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Standing discipline</h3>
+      <ol style="font-size:14px; margin-bottom:0">
+        <li>Held-out 9,000 stays frozen — one eval, final model only (pipeline staged: merge → vLLM → official harness config).</li>
+        <li>Re-run all memorisation probes on any fine-tuned checkpoint before reporting.</li>
+        <li>No letter-supervision scaling — the channel ceiling is measured, six times.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</div><!-- /pane-old -->
+
+<hr>
+<p class="tiny">
+  <strong>Chapter 2 sources</strong> — <code>runs/teleqna-sft/results/</code>:
+  <code>landscape/</code> and <code>otfull_arms/</code> (all 10,000-row arm scores),
+  <code>passk_otfull_{base,p1,p2,cot}/</code> (the presentation sweep, 320k generations),
+  <code>ceiling/</code> (explanation-in-context and its shuffled control),
+  <code>rag/ctx_delta_expl.json</code> + <code>ctx_failure_anatomy.json</code> (retrieval split and residue),
+  <code>rag/mined_neg_*.json</code> (hard-negative mining), <code>otel31b/</code> and
+  <code>vllm122b/</code> (model landscape), <code>dev1000_cpt1_step*.json</code> (the CPT curve),
+  <code>probe_viewtransfer.json</code> (rotation vs reframing), <code>error_buckets.json</code>.
+  <br><br>
+  <strong>Chapter 1 sources</strong> — <code>runs/teleqna-sft/results/</code> (dev1000_*.json,
+  dev1000think_*.json, dev1000_base_aa_*.json, diag_coverage.json),
+  <code>runs/bench4/teleqna/results/b0_*</code> (official-stack baselines),
+  <code>runs/bench4/synth/data/</code> (generation + gates + train_v3),
+  <code>runs/teleqna-sft/data/cpt_corpus.jsonl</code> (CPT stream). Full Vietnamese build narrative
+  preserved in <code>journey.vi.html</code>.
+  <br><br>
+  Chapter 1 last updated 2026-08-07 · Chapter 2 last updated 2026-08-13.
+</p>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs [role="tab"]'));
+  function select(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { select(tab); });
+    tab.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var next = tabs[(i + d + tabs.length) % tabs.length];
+      next.focus(); select(next);
+    });
+  });
+  select(tabs[0]);
+})();
+</script>
+
+</main>

@@ -1,0 +1,3308 @@
+{
+  "corpus": "thirdparty/gsma-3gpp",
+  "hardcore_rows": 2049,
+  "rows_explained_by_some_file": 1964,
+  "min_frac": 0.6,
+  "top_files": [
+    {
+      "file": "marked/Rel-17/21_series/21917/raw.md",
+      "n_errors_explained": 1276,
+      "subjects": {
+        "Research publications": 407,
+        "Standards specifications": 483,
+        "Standards overview": 164,
+        "Research overview": 181,
+        "Lexicon": 41
+      }
+    },
+    {
+      "file": "marked/Rel-16/21_series/21916/raw.md",
+      "n_errors_explained": 1259,
+      "subjects": {
+        "Research publications": 400,
+        "Standards specifications": 473,
+        "Standards overview": 171,
+        "Research overview": 176,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23501/raw.md",
+      "n_errors_explained": 1180,
+      "subjects": {
+        "Standards specifications": 461,
+        "Research publications": 348,
+        "Standards overview": 160,
+        "Research overview": 173,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-15/21_series/21915/raw.md",
+      "n_errors_explained": 1175,
+      "subjects": {
+        "Research publications": 359,
+        "Standards overview": 158,
+        "Standards specifications": 454,
+        "Research overview": 168,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-20/23_series/23501/raw.md",
+      "n_errors_explained": 1172,
+      "subjects": {
+        "Standards specifications": 457,
+        "Research publications": 350,
+        "Standards overview": 157,
+        "Research overview": 169,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-18/36_series/36300/raw.md",
+      "n_errors_explained": 1170,
+      "subjects": {
+        "Research publications": 385,
+        "Standards specifications": 437,
+        "Standards overview": 147,
+        "Research overview": 161,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23501/raw.md",
+      "n_errors_explained": 1165,
+      "subjects": {
+        "Standards specifications": 455,
+        "Research publications": 346,
+        "Standards overview": 156,
+        "Research overview": 169,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-19/36_series/36300/raw.md",
+      "n_errors_explained": 1152,
+      "subjects": {
+        "Research publications": 377,
+        "Standards specifications": 434,
+        "Standards overview": 145,
+        "Research overview": 157,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-17/36_series/36300/raw.md",
+      "n_errors_explained": 1142,
+      "subjects": {
+        "Research publications": 374,
+        "Standards specifications": 434,
+        "Standards overview": 143,
+        "Research overview": 153,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-16/22_series/22804/raw.md",
+      "n_errors_explained": 1141,
+      "subjects": {
+        "Research publications": 414,
+        "Standards specifications": 356,
+        "Standards overview": 134,
+        "Research overview": 205,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-16/36_series/36300/raw.md",
+      "n_errors_explained": 1130,
+      "subjects": {
+        "Research publications": 366,
+        "Standards overview": 143,
+        "Standards specifications": 428,
+        "Research overview": 153,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-14/23_series/23799/raw.md",
+      "n_errors_explained": 1090,
+      "subjects": {
+        "Standards specifications": 402,
+        "Research publications": 326,
+        "Standards overview": 150,
+        "Research overview": 174,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-20/22_series/22261/raw.md",
+      "n_errors_explained": 1074,
+      "subjects": {
+        "Standards specifications": 377,
+        "Research publications": 342,
+        "Standards overview": 137,
+        "Research overview": 187,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-8/45_series/45912/raw.md",
+      "n_errors_explained": 1066,
+      "subjects": {
+        "Research publications": 440,
+        "Standards specifications": 316,
+        "Standards overview": 94,
+        "Research overview": 188,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26804/raw.md",
+      "n_errors_explained": 1064,
+      "subjects": {
+        "Standards specifications": 353,
+        "Standards overview": 128,
+        "Research publications": 365,
+        "Research overview": 184,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-14/45_series/45912/raw.md",
+      "n_errors_explained": 1063,
+      "subjects": {
+        "Research publications": 438,
+        "Standards specifications": 318,
+        "Standards overview": 94,
+        "Research overview": 185,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-13/45_series/45912/raw.md",
+      "n_errors_explained": 1062,
+      "subjects": {
+        "Research publications": 437,
+        "Standards specifications": 317,
+        "Standards overview": 95,
+        "Research overview": 185,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-17/45_series/45912/raw.md",
+      "n_errors_explained": 1061,
+      "subjects": {
+        "Research publications": 437,
+        "Standards specifications": 315,
+        "Standards overview": 94,
+        "Research overview": 187,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-9/45_series/45912/raw.md",
+      "n_errors_explained": 1061,
+      "subjects": {
+        "Research publications": 436,
+        "Standards specifications": 318,
+        "Standards overview": 95,
+        "Research overview": 184,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-16/45_series/45912/raw.md",
+      "n_errors_explained": 1060,
+      "subjects": {
+        "Research publications": 438,
+        "Standards specifications": 316,
+        "Standards overview": 92,
+        "Research overview": 186,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-12/45_series/45912/raw.md",
+      "n_errors_explained": 1056,
+      "subjects": {
+        "Research publications": 435,
+        "Standards specifications": 313,
+        "Standards overview": 93,
+        "Research overview": 186,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-11/45_series/45912/raw.md",
+      "n_errors_explained": 1055,
+      "subjects": {
+        "Research publications": 435,
+        "Standards specifications": 314,
+        "Standards overview": 93,
+        "Research overview": 185,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-10/45_series/45912/raw.md",
+      "n_errors_explained": 1053,
+      "subjects": {
+        "Research publications": 436,
+        "Standards specifications": 314,
+        "Standards overview": 93,
+        "Research overview": 182,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38300/raw.md",
+      "n_errors_explained": 1033,
+      "subjects": {
+        "Standards specifications": 410,
+        "Research publications": 321,
+        "Standards overview": 133,
+        "Research overview": 135,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-18/38_series/38300/raw.md",
+      "n_errors_explained": 1021,
+      "subjects": {
+        "Research publications": 320,
+        "Standards overview": 135,
+        "Standards specifications": 405,
+        "Research overview": 127,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-18/36_series/36331/raw.md",
+      "n_errors_explained": 1004,
+      "subjects": {
+        "Research publications": 316,
+        "Standards specifications": 405,
+        "Standards overview": 135,
+        "Research overview": 120,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22261/raw.md",
+      "n_errors_explained": 996,
+      "subjects": {
+        "Standards specifications": 353,
+        "Research publications": 318,
+        "Standards overview": 125,
+        "Research overview": 170,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-14/21_series/21914/raw.md",
+      "n_errors_explained": 990,
+      "subjects": {
+        "Research publications": 307,
+        "Standards overview": 128,
+        "Standards specifications": 379,
+        "Research overview": 141,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-15/45_series/45912/raw.md",
+      "n_errors_explained": 984,
+      "subjects": {
+        "Research publications": 420,
+        "Standards specifications": 286,
+        "Standards overview": 82,
+        "Research overview": 170,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-15/22_series/22804/raw.md",
+      "n_errors_explained": 983,
+      "subjects": {
+        "Research publications": 355,
+        "Standards specifications": 312,
+        "Research overview": 167,
+        "Standards overview": 119,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-18/26_series/26114/raw.md",
+      "n_errors_explained": 958,
+      "subjects": {
+        "Standards specifications": 339,
+        "Research publications": 328,
+        "Standards overview": 110,
+        "Research overview": 146,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-19/36_series/36331/raw.md",
+      "n_errors_explained": 957,
+      "subjects": {
+        "Standards specifications": 396,
+        "Research publications": 290,
+        "Standards overview": 133,
+        "Research overview": 109,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26114/raw.md",
+      "n_errors_explained": 945,
+      "subjects": {
+        "Standards specifications": 335,
+        "Research publications": 323,
+        "Standards overview": 109,
+        "Research overview": 143,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-17/38_series/38300/raw.md",
+      "n_errors_explained": 944,
+      "subjects": {
+        "Standards specifications": 391,
+        "Research publications": 283,
+        "Standards overview": 124,
+        "Research overview": 114,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-17/36_series/36331/raw.md",
+      "n_errors_explained": 942,
+      "subjects": {
+        "Standards specifications": 391,
+        "Research publications": 285,
+        "Standards overview": 131,
+        "Research overview": 107,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26253/raw.md",
+      "n_errors_explained": 934,
+      "subjects": {
+        "Standards specifications": 250,
+        "Research publications": 406,
+        "Standards overview": 74,
+        "Research overview": 183,
+        "Lexicon": 21
+      }
+    },
+    {
+      "file": "marked/Rel-13/45_series/45050/raw.md",
+      "n_errors_explained": 922,
+      "subjects": {
+        "Standards specifications": 266,
+        "Standards overview": 77,
+        "Research publications": 381,
+        "Research overview": 169,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-14/45_series/45050/raw.md",
+      "n_errors_explained": 920,
+      "subjects": {
+        "Standards specifications": 267,
+        "Standards overview": 76,
+        "Research publications": 379,
+        "Research overview": 169,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38331/raw.md",
+      "n_errors_explained": 913,
+      "subjects": {
+        "Standards specifications": 394,
+        "Research publications": 272,
+        "Standards overview": 115,
+        "Research overview": 104,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-18/38_series/38331/raw.md",
+      "n_errors_explained": 912,
+      "subjects": {
+        "Research publications": 276,
+        "Standards specifications": 389,
+        "Standards overview": 115,
+        "Research overview": 103,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-15/45_series/45050/raw.md",
+      "n_errors_explained": 907,
+      "subjects": {
+        "Standards specifications": 260,
+        "Standards overview": 72,
+        "Research publications": 378,
+        "Research overview": 168,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-16/45_series/45050/raw.md",
+      "n_errors_explained": 907,
+      "subjects": {
+        "Standards specifications": 260,
+        "Standards overview": 72,
+        "Research publications": 379,
+        "Research overview": 167,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23401/raw.md",
+      "n_errors_explained": 907,
+      "subjects": {
+        "Standards specifications": 393,
+        "Research publications": 250,
+        "Standards overview": 114,
+        "Research overview": 113,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-17/45_series/45050/raw.md",
+      "n_errors_explained": 904,
+      "subjects": {
+        "Standards specifications": 258,
+        "Standards overview": 72,
+        "Research publications": 378,
+        "Research overview": 167,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-14/22_series/22891/raw.md",
+      "n_errors_explained": 898,
+      "subjects": {
+        "Research publications": 287,
+        "Standards specifications": 299,
+        "Standards overview": 113,
+        "Research overview": 169,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23502/raw.md",
+      "n_errors_explained": 893,
+      "subjects": {
+        "Research publications": 214,
+        "Standards specifications": 416,
+        "Standards overview": 129,
+        "Research overview": 100,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-20/23_series/23502/raw.md",
+      "n_errors_explained": 888,
+      "subjects": {
+        "Research publications": 213,
+        "Standards specifications": 416,
+        "Standards overview": 122,
+        "Research overview": 102,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23401/raw.md",
+      "n_errors_explained": 885,
+      "subjects": {
+        "Standards specifications": 383,
+        "Research publications": 245,
+        "Standards overview": 111,
+        "Research overview": 108,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-16/38_series/38821/raw.md",
+      "n_errors_explained": 883,
+      "subjects": {
+        "Research publications": 293,
+        "Standards specifications": 334,
+        "Standards overview": 99,
+        "Research overview": 135,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-14/25_series/25331/raw.md",
+      "n_errors_explained": 874,
+      "subjects": {
+        "Research publications": 282,
+        "Standards overview": 98,
+        "Standards specifications": 356,
+        "Research overview": 104,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-8/32_series/32808/raw.md",
+      "n_errors_explained": 860,
+      "subjects": {
+        "Research publications": 257,
+        "Standards overview": 112,
+        "Standards specifications": 314,
+        "Research overview": 138,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23401/raw.md",
+      "n_errors_explained": 857,
+      "subjects": {
+        "Standards specifications": 379,
+        "Research publications": 227,
+        "Standards overview": 109,
+        "Research overview": 104,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23700-91/raw.md",
+      "n_errors_explained": 856,
+      "subjects": {
+        "Research publications": 245,
+        "Standards specifications": 337,
+        "Standards overview": 103,
+        "Research overview": 142,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-18/24_series/24229/raw.md",
+      "n_errors_explained": 854,
+      "subjects": {
+        "Standards specifications": 354,
+        "Research publications": 229,
+        "Standards overview": 117,
+        "Research overview": 115,
+        "Lexicon": 39
+      }
+    },
+    {
+      "file": "marked/Rel-14/38_series/38803/raw.md",
+      "n_errors_explained": 850,
+      "subjects": {
+        "Research publications": 362,
+        "Standards specifications": 235,
+        "Standards overview": 74,
+        "Research overview": 159,
+        "Lexicon": 20
+      }
+    },
+    {
+      "file": "marked/Rel-15/26_series/26114/raw.md",
+      "n_errors_explained": 845,
+      "subjects": {
+        "Standards specifications": 308,
+        "Research publications": 285,
+        "Standards overview": 97,
+        "Research overview": 122,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-17/38_series/38331/raw.md",
+      "n_errors_explained": 838,
+      "subjects": {
+        "Research publications": 242,
+        "Standards specifications": 378,
+        "Standards overview": 110,
+        "Research overview": 80,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22856/raw.md",
+      "n_errors_explained": 831,
+      "subjects": {
+        "Research publications": 255,
+        "Standards specifications": 295,
+        "Research overview": 143,
+        "Standards overview": 106,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-19/27_series/27007/raw.md",
+      "n_errors_explained": 830,
+      "subjects": {
+        "Standards specifications": 369,
+        "Research publications": 213,
+        "Standards overview": 126,
+        "Research overview": 85,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22867/raw.md",
+      "n_errors_explained": 826,
+      "subjects": {
+        "Research publications": 275,
+        "Standards specifications": 271,
+        "Standards overview": 103,
+        "Research overview": 144,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38769/raw.md",
+      "n_errors_explained": 824,
+      "subjects": {
+        "Research publications": 309,
+        "Standards specifications": 281,
+        "Research overview": 133,
+        "Lexicon": 24,
+        "Standards overview": 77
+      }
+    },
+    {
+      "file": "marked/Rel-18/27_series/27007/raw.md",
+      "n_errors_explained": 823,
+      "subjects": {
+        "Standards specifications": 366,
+        "Research publications": 210,
+        "Standards overview": 126,
+        "Research overview": 84,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-17/25_series/25331/raw.md",
+      "n_errors_explained": 808,
+      "subjects": {
+        "Standards specifications": 344,
+        "Research publications": 254,
+        "Standards overview": 90,
+        "Research overview": 87,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-19/33_series/33501/raw.md",
+      "n_errors_explained": 798,
+      "subjects": {
+        "Standards specifications": 356,
+        "Research publications": 199,
+        "Standards overview": 114,
+        "Research overview": 94,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23700-81/raw.md",
+      "n_errors_explained": 792,
+      "subjects": {
+        "Standards specifications": 338,
+        "Standards overview": 98,
+        "Research publications": 212,
+        "Research overview": 113,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-17/27_series/27007/raw.md",
+      "n_errors_explained": 791,
+      "subjects": {
+        "Standards specifications": 355,
+        "Research publications": 199,
+        "Standards overview": 119,
+        "Research overview": 81,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-17/36_series/36523-3/raw.md",
+      "n_errors_explained": 787,
+      "subjects": {
+        "Research publications": 227,
+        "Standards overview": 106,
+        "Research overview": 88,
+        "Standards specifications": 336,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23060/raw.md",
+      "n_errors_explained": 786,
+      "subjects": {
+        "Standards specifications": 353,
+        "Research publications": 200,
+        "Standards overview": 93,
+        "Research overview": 100,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-18/26_series/26928/raw.md",
+      "n_errors_explained": 783,
+      "subjects": {
+        "Standards specifications": 233,
+        "Research publications": 282,
+        "Standards overview": 88,
+        "Research overview": 153,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23060/raw.md",
+      "n_errors_explained": 783,
+      "subjects": {
+        "Standards specifications": 353,
+        "Research publications": 196,
+        "Standards overview": 94,
+        "Research overview": 100,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-12/45_series/45050/raw.md",
+      "n_errors_explained": 781,
+      "subjects": {
+        "Standards specifications": 214,
+        "Standards overview": 62,
+        "Research publications": 333,
+        "Research overview": 149,
+        "Lexicon": 23
+      }
+    },
+    {
+      "file": "marked/Rel-16/26_series/26928/raw.md",
+      "n_errors_explained": 781,
+      "subjects": {
+        "Standards specifications": 235,
+        "Research publications": 280,
+        "Standards overview": 89,
+        "Research overview": 150,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-15/23_series/23060/raw.md",
+      "n_errors_explained": 779,
+      "subjects": {
+        "Standards specifications": 353,
+        "Research publications": 193,
+        "Standards overview": 94,
+        "Research overview": 99,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23060/raw.md",
+      "n_errors_explained": 779,
+      "subjects": {
+        "Standards specifications": 352,
+        "Research publications": 194,
+        "Standards overview": 94,
+        "Research overview": 99,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-14/23_series/23060/raw.md",
+      "n_errors_explained": 778,
+      "subjects": {
+        "Standards specifications": 348,
+        "Research publications": 195,
+        "Standards overview": 96,
+        "Research overview": 99,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-20/33_series/33501/raw.md",
+      "n_errors_explained": 777,
+      "subjects": {
+        "Standards specifications": 353,
+        "Research publications": 182,
+        "Standards overview": 114,
+        "Research overview": 93,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38508-1/raw.md",
+      "n_errors_explained": 776,
+      "subjects": {
+        "Research publications": 206,
+        "Standards specifications": 358,
+        "Standards overview": 114,
+        "Research overview": 73,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-16/21_series/21905/raw.md",
+      "n_errors_explained": 775,
+      "subjects": {
+        "Research publications": 220,
+        "Standards overview": 98,
+        "Standards specifications": 329,
+        "Lexicon": 41,
+        "Research overview": 87
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26928/raw.md",
+      "n_errors_explained": 775,
+      "subjects": {
+        "Standards specifications": 236,
+        "Research publications": 276,
+        "Standards overview": 88,
+        "Research overview": 148,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-18/24_series/24008/raw.md",
+      "n_errors_explained": 769,
+      "subjects": {
+        "Standards specifications": 342,
+        "Research publications": 202,
+        "Standards overview": 97,
+        "Research overview": 87,
+        "Lexicon": 41
+      }
+    },
+    {
+      "file": "marked/Rel-12/23_series/23703/raw.md",
+      "n_errors_explained": 768,
+      "subjects": {
+        "Research publications": 190,
+        "Standards overview": 102,
+        "Standards specifications": 321,
+        "Research overview": 120,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-19/24_series/24008/raw.md",
+      "n_errors_explained": 768,
+      "subjects": {
+        "Standards specifications": 341,
+        "Research publications": 203,
+        "Standards overview": 97,
+        "Research overview": 86,
+        "Lexicon": 41
+      }
+    },
+    {
+      "file": "marked/Rel-15/27_series/27007/raw.md",
+      "n_errors_explained": 767,
+      "subjects": {
+        "Standards specifications": 351,
+        "Research publications": 193,
+        "Standards overview": 110,
+        "Research overview": 78,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-17/24_series/24008/raw.md",
+      "n_errors_explained": 762,
+      "subjects": {
+        "Standards specifications": 338,
+        "Research publications": 201,
+        "Standards overview": 98,
+        "Research overview": 85,
+        "Lexicon": 40
+      }
+    },
+    {
+      "file": "marked/Rel-18/33_series/33501/raw.md",
+      "n_errors_explained": 762,
+      "subjects": {
+        "Standards specifications": 340,
+        "Research publications": 182,
+        "Standards overview": 110,
+        "Research overview": 96,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-9/33_series/33821/raw.md",
+      "n_errors_explained": 761,
+      "subjects": {
+        "Standards specifications": 296,
+        "Research publications": 230,
+        "Standards overview": 87,
+        "Research overview": 114,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-14/21_series/21905/raw.md",
+      "n_errors_explained": 760,
+      "subjects": {
+        "Research publications": 218,
+        "Standards overview": 95,
+        "Standards specifications": 322,
+        "Lexicon": 41,
+        "Research overview": 84
+      }
+    },
+    {
+      "file": "marked/Rel-17/21_series/21905/raw.md",
+      "n_errors_explained": 760,
+      "subjects": {
+        "Research publications": 213,
+        "Standards overview": 93,
+        "Standards specifications": 329,
+        "Lexicon": 41,
+        "Research overview": 84
+      }
+    },
+    {
+      "file": "marked/Rel-15/26_series/26346/raw.md",
+      "n_errors_explained": 759,
+      "subjects": {
+        "Research publications": 220,
+        "Standards specifications": 317,
+        "Standards overview": 83,
+        "Research overview": 105,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-13/21_series/21905/raw.md",
+      "n_errors_explained": 757,
+      "subjects": {
+        "Research publications": 216,
+        "Standards overview": 94,
+        "Standards specifications": 322,
+        "Lexicon": 41,
+        "Research overview": 84
+      }
+    },
+    {
+      "file": "marked/Rel-8/33_series/33821/raw.md",
+      "n_errors_explained": 757,
+      "subjects": {
+        "Standards specifications": 295,
+        "Research publications": 227,
+        "Standards overview": 86,
+        "Lexicon": 34,
+        "Research overview": 115
+      }
+    },
+    {
+      "file": "marked/Rel-19/36_series/36508/raw.md",
+      "n_errors_explained": 756,
+      "subjects": {
+        "Research publications": 216,
+        "Standards overview": 97,
+        "Standards specifications": 335,
+        "Research overview": 76,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-16/24_series/24008/raw.md",
+      "n_errors_explained": 752,
+      "subjects": {
+        "Standards specifications": 338,
+        "Research publications": 197,
+        "Standards overview": 95,
+        "Research overview": 84,
+        "Lexicon": 38
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23228/raw.md",
+      "n_errors_explained": 752,
+      "subjects": {
+        "Standards overview": 103,
+        "Research publications": 187,
+        "Research overview": 99,
+        "Standards specifications": 326,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-15/21_series/21905/raw.md",
+      "n_errors_explained": 750,
+      "subjects": {
+        "Research publications": 213,
+        "Standards overview": 92,
+        "Standards specifications": 322,
+        "Lexicon": 41,
+        "Research overview": 82
+      }
+    },
+    {
+      "file": "marked/Rel-14/26_series/26346/raw.md",
+      "n_errors_explained": 743,
+      "subjects": {
+        "Research publications": 219,
+        "Standards specifications": 309,
+        "Standards overview": 78,
+        "Research overview": 102,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22840/raw.md",
+      "n_errors_explained": 740,
+      "subjects": {
+        "Research publications": 233,
+        "Standards specifications": 266,
+        "Research overview": 128,
+        "Lexicon": 26,
+        "Standards overview": 87
+      }
+    },
+    {
+      "file": "marked/Rel-15/38_series/38811/raw.md",
+      "n_errors_explained": 738,
+      "subjects": {
+        "Standards specifications": 229,
+        "Standards overview": 71,
+        "Research publications": 301,
+        "Research overview": 121,
+        "Lexicon": 16
+      }
+    },
+    {
+      "file": "marked/Rel-14/24_series/24008/raw.md",
+      "n_errors_explained": 735,
+      "subjects": {
+        "Standards specifications": 328,
+        "Research publications": 192,
+        "Standards overview": 91,
+        "Research overview": 83,
+        "Lexicon": 41
+      }
+    },
+    {
+      "file": "marked/Rel-11/23_series/23888/raw.md",
+      "n_errors_explained": 734,
+      "subjects": {
+        "Standards overview": 91,
+        "Standards specifications": 312,
+        "Research publications": 191,
+        "Research overview": 103,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26346/raw.md",
+      "n_errors_explained": 731,
+      "subjects": {
+        "Research publications": 208,
+        "Standards specifications": 308,
+        "Standards overview": 84,
+        "Research overview": 99,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23700-60/raw.md",
+      "n_errors_explained": 727,
+      "subjects": {
+        "Standards specifications": 295,
+        "Research publications": 213,
+        "Standards overview": 83,
+        "Research overview": 111,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-13/26_series/26938/raw.md",
+      "n_errors_explained": 726,
+      "subjects": {
+        "Research publications": 247,
+        "Standards overview": 83,
+        "Research overview": 118,
+        "Standards specifications": 252,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-15/29_series/29891/raw.md",
+      "n_errors_explained": 725,
+      "subjects": {
+        "Standards specifications": 310,
+        "Standards overview": 94,
+        "Research publications": 188,
+        "Research overview": 101,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-12/21_series/21905/raw.md",
+      "n_errors_explained": 724,
+      "subjects": {
+        "Research publications": 203,
+        "Standards overview": 89,
+        "Standards specifications": 316,
+        "Lexicon": 41,
+        "Research overview": 75
+      }
+    },
+    {
+      "file": "marked/Rel-14/26_series/26938/raw.md",
+      "n_errors_explained": 724,
+      "subjects": {
+        "Research publications": 247,
+        "Standards overview": 84,
+        "Research overview": 117,
+        "Standards specifications": 250,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-16/29_series/29891/raw.md",
+      "n_errors_explained": 724,
+      "subjects": {
+        "Standards specifications": 311,
+        "Standards overview": 92,
+        "Research publications": 188,
+        "Research overview": 101,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-13/45_series/45820/raw.md",
+      "n_errors_explained": 723,
+      "subjects": {
+        "Standards overview": 70,
+        "Standards specifications": 271,
+        "Research publications": 253,
+        "Research overview": 103,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-16/26_series/26938/raw.md",
+      "n_errors_explained": 723,
+      "subjects": {
+        "Research publications": 247,
+        "Standards overview": 84,
+        "Research overview": 118,
+        "Standards specifications": 248,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26938/raw.md",
+      "n_errors_explained": 723,
+      "subjects": {
+        "Research publications": 248,
+        "Standards overview": 83,
+        "Research overview": 117,
+        "Standards specifications": 249,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-18/33_series/33809/raw.md",
+      "n_errors_explained": 719,
+      "subjects": {
+        "Research publications": 200,
+        "Standards specifications": 295,
+        "Research overview": 110,
+        "Standards overview": 90,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26445/raw.md",
+      "n_errors_explained": 719,
+      "subjects": {
+        "Standards specifications": 199,
+        "Research publications": 312,
+        "Research overview": 133,
+        "Lexicon": 18,
+        "Standards overview": 57
+      }
+    },
+    {
+      "file": "marked/Rel-10/21_series/21905/raw.md",
+      "n_errors_explained": 718,
+      "subjects": {
+        "Research publications": 203,
+        "Standards overview": 89,
+        "Standards specifications": 311,
+        "Lexicon": 41,
+        "Research overview": 74
+      }
+    },
+    {
+      "file": "marked/Rel-12/26_series/26938/raw.md",
+      "n_errors_explained": 718,
+      "subjects": {
+        "Research publications": 245,
+        "Standards overview": 83,
+        "Research overview": 117,
+        "Standards specifications": 247,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-15/26_series/26938/raw.md",
+      "n_errors_explained": 718,
+      "subjects": {
+        "Research publications": 246,
+        "Standards overview": 84,
+        "Research overview": 116,
+        "Standards specifications": 246,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23228/raw.md",
+      "n_errors_explained": 717,
+      "subjects": {
+        "Research publications": 181,
+        "Standards overview": 100,
+        "Research overview": 92,
+        "Standards specifications": 307,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-17/34_series/34123-3/raw.md",
+      "n_errors_explained": 717,
+      "subjects": {
+        "Standards specifications": 308,
+        "Research publications": 207,
+        "Standards overview": 86,
+        "Research overview": 87,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-16/26_series/26445/raw.md",
+      "n_errors_explained": 716,
+      "subjects": {
+        "Standards specifications": 195,
+        "Research publications": 310,
+        "Research overview": 134,
+        "Lexicon": 18,
+        "Standards overview": 59
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26445/raw.md",
+      "n_errors_explained": 715,
+      "subjects": {
+        "Standards specifications": 195,
+        "Research publications": 309,
+        "Research overview": 134,
+        "Lexicon": 18,
+        "Standards overview": 59
+      }
+    },
+    {
+      "file": "marked/Rel-18/26_series/26804/raw.md",
+      "n_errors_explained": 715,
+      "subjects": {
+        "Standards overview": 101,
+        "Standards specifications": 283,
+        "Research publications": 195,
+        "Research overview": 109,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-11/21_series/21905/raw.md",
+      "n_errors_explained": 714,
+      "subjects": {
+        "Research publications": 201,
+        "Standards overview": 87,
+        "Standards specifications": 311,
+        "Lexicon": 41,
+        "Research overview": 74
+      }
+    },
+    {
+      "file": "marked/Rel-14/26_series/26445/raw.md",
+      "n_errors_explained": 714,
+      "subjects": {
+        "Standards specifications": 197,
+        "Research publications": 309,
+        "Research overview": 132,
+        "Lexicon": 18,
+        "Standards overview": 58
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22837/raw.md",
+      "n_errors_explained": 714,
+      "subjects": {
+        "Research publications": 241,
+        "Standards specifications": 227,
+        "Standards overview": 89,
+        "Research overview": 135,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26346/raw.md",
+      "n_errors_explained": 712,
+      "subjects": {
+        "Research publications": 200,
+        "Standards specifications": 296,
+        "Standards overview": 83,
+        "Research overview": 101,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-20/28_series/28552/raw.md",
+      "n_errors_explained": 710,
+      "subjects": {
+        "Standards specifications": 352,
+        "Research publications": 164,
+        "Standards overview": 89,
+        "Lexicon": 31,
+        "Research overview": 74
+      }
+    },
+    {
+      "file": "marked/Rel-9/45_series/45050/raw.md",
+      "n_errors_explained": 710,
+      "subjects": {
+        "Standards specifications": 203,
+        "Standards overview": 60,
+        "Research publications": 302,
+        "Research overview": 128,
+        "Lexicon": 17
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23228/raw.md",
+      "n_errors_explained": 706,
+      "subjects": {
+        "Research publications": 172,
+        "Standards overview": 101,
+        "Research overview": 91,
+        "Standards specifications": 305,
+        "Lexicon": 37
+      }
+    },
+    {
+      "file": "marked/Rel-11/45_series/45050/raw.md",
+      "n_errors_explained": 705,
+      "subjects": {
+        "Standards specifications": 196,
+        "Standards overview": 58,
+        "Research publications": 305,
+        "Research overview": 129,
+        "Lexicon": 17
+      }
+    },
+    {
+      "file": "marked/Rel-18/24_series/24501/raw.md",
+      "n_errors_explained": 705,
+      "subjects": {
+        "Standards specifications": 339,
+        "Research publications": 154,
+        "Standards overview": 108,
+        "Research overview": 75,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-13/26_series/26346/raw.md",
+      "n_errors_explained": 699,
+      "subjects": {
+        "Research publications": 199,
+        "Standards specifications": 292,
+        "Standards overview": 77,
+        "Research overview": 98,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-8/23_series/23882/raw.md",
+      "n_errors_explained": 698,
+      "subjects": {
+        "Standards overview": 97,
+        "Standards specifications": 306,
+        "Research publications": 171,
+        "Lexicon": 33,
+        "Research overview": 91
+      }
+    },
+    {
+      "file": "marked/Rel-10/45_series/45050/raw.md",
+      "n_errors_explained": 694,
+      "subjects": {
+        "Standards specifications": 194,
+        "Standards overview": 57,
+        "Research publications": 299,
+        "Research overview": 128,
+        "Lexicon": 16
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23288/raw.md",
+      "n_errors_explained": 693,
+      "subjects": {
+        "Standards specifications": 324,
+        "Research publications": 159,
+        "Standards overview": 91,
+        "Lexicon": 30,
+        "Research overview": 89
+      }
+    },
+    {
+      "file": "marked/Rel-8/45_series/45050/raw.md",
+      "n_errors_explained": 692,
+      "subjects": {
+        "Standards specifications": 192,
+        "Standards overview": 56,
+        "Research publications": 301,
+        "Research overview": 127,
+        "Lexicon": 16
+      }
+    },
+    {
+      "file": "marked/Rel-15/26_series/26445/raw.md",
+      "n_errors_explained": 682,
+      "subjects": {
+        "Standards specifications": 193,
+        "Research publications": 292,
+        "Research overview": 128,
+        "Lexicon": 17,
+        "Standards overview": 52
+      }
+    },
+    {
+      "file": "marked/Rel-19/29_series/29274/raw.md",
+      "n_errors_explained": 682,
+      "subjects": {
+        "Standards specifications": 328,
+        "Research publications": 160,
+        "Standards overview": 100,
+        "Lexicon": 27,
+        "Research overview": 67
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26918/raw.md",
+      "n_errors_explained": 680,
+      "subjects": {
+        "Research publications": 276,
+        "Standards specifications": 191,
+        "Standards overview": 72,
+        "Research overview": 121,
+        "Lexicon": 20
+      }
+    },
+    {
+      "file": "marked/Rel-15/26_series/26918/raw.md",
+      "n_errors_explained": 679,
+      "subjects": {
+        "Research publications": 273,
+        "Standards specifications": 194,
+        "Standards overview": 70,
+        "Research overview": 123,
+        "Lexicon": 19
+      }
+    },
+    {
+      "file": "marked/Rel-18/26_series/26998/raw.md",
+      "n_errors_explained": 678,
+      "subjects": {
+        "Research publications": 234,
+        "Standards overview": 77,
+        "Standards specifications": 204,
+        "Research overview": 140,
+        "Lexicon": 23
+      }
+    },
+    {
+      "file": "marked/Rel-19/28_series/28552/raw.md",
+      "n_errors_explained": 678,
+      "subjects": {
+        "Standards specifications": 338,
+        "Research publications": 157,
+        "Standards overview": 86,
+        "Lexicon": 27,
+        "Research overview": 70
+      }
+    },
+    {
+      "file": "marked/Rel-15/23_series/23228/raw.md",
+      "n_errors_explained": 677,
+      "subjects": {
+        "Research publications": 167,
+        "Standards overview": 95,
+        "Research overview": 84,
+        "Standards specifications": 295,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-16/26_series/26918/raw.md",
+      "n_errors_explained": 673,
+      "subjects": {
+        "Research publications": 270,
+        "Standards specifications": 190,
+        "Standards overview": 72,
+        "Research overview": 121,
+        "Lexicon": 20
+      }
+    },
+    {
+      "file": "marked/Rel-17/29_series/29274/raw.md",
+      "n_errors_explained": 671,
+      "subjects": {
+        "Standards specifications": 325,
+        "Research publications": 157,
+        "Standards overview": 99,
+        "Lexicon": 27,
+        "Research overview": 63
+      }
+    },
+    {
+      "file": "marked/Rel-18/29_series/29274/raw.md",
+      "n_errors_explained": 670,
+      "subjects": {
+        "Standards specifications": 325,
+        "Research publications": 156,
+        "Standards overview": 98,
+        "Lexicon": 27,
+        "Research overview": 64
+      }
+    },
+    {
+      "file": "marked/Rel-12/23_series/23887/raw.md",
+      "n_errors_explained": 667,
+      "subjects": {
+        "Standards specifications": 301,
+        "Research publications": 167,
+        "Standards overview": 83,
+        "Research overview": 84,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-20/22_series/22989/raw.md",
+      "n_errors_explained": 666,
+      "subjects": {
+        "Standards specifications": 277,
+        "Research publications": 185,
+        "Standards overview": 88,
+        "Lexicon": 28,
+        "Research overview": 88
+      }
+    },
+    {
+      "file": "marked/Rel-20/23_series/23434/raw.md",
+      "n_errors_explained": 666,
+      "subjects": {
+        "Standards overview": 99,
+        "Standards specifications": 323,
+        "Research overview": 76,
+        "Lexicon": 30,
+        "Research publications": 138
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22874/raw.md",
+      "n_errors_explained": 664,
+      "subjects": {
+        "Research publications": 230,
+        "Standards specifications": 216,
+        "Standards overview": 70,
+        "Research overview": 129,
+        "Lexicon": 19
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26998/raw.md",
+      "n_errors_explained": 662,
+      "subjects": {
+        "Research publications": 228,
+        "Standards overview": 79,
+        "Standards specifications": 196,
+        "Research overview": 137,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26822/raw.md",
+      "n_errors_explained": 659,
+      "subjects": {
+        "Research publications": 240,
+        "Standards specifications": 216,
+        "Standards overview": 78,
+        "Research overview": 102,
+        "Lexicon": 23
+      }
+    },
+    {
+      "file": "marked/Rel-19/33_series/33128/raw.md",
+      "n_errors_explained": 658,
+      "subjects": {
+        "Standards specifications": 336,
+        "Standards overview": 103,
+        "Research publications": 131,
+        "Research overview": 56,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-19/29_series/29244/raw.md",
+      "n_errors_explained": 657,
+      "subjects": {
+        "Standards specifications": 308,
+        "Research publications": 164,
+        "Standards overview": 90,
+        "Lexicon": 27,
+        "Research overview": 68
+      }
+    },
+    {
+      "file": "marked/Rel-13/27_series/27007/raw.md",
+      "n_errors_explained": 656,
+      "subjects": {
+        "Standards specifications": 302,
+        "Research publications": 175,
+        "Standards overview": 82,
+        "Research overview": 64,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-14/23_series/23228/raw.md",
+      "n_errors_explained": 653,
+      "subjects": {
+        "Research publications": 166,
+        "Standards overview": 86,
+        "Research overview": 85,
+        "Standards specifications": 280,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-15/29_series/29890/raw.md",
+      "n_errors_explained": 650,
+      "subjects": {
+        "Standards specifications": 301,
+        "Research publications": 164,
+        "Standards overview": 80,
+        "Research overview": 73,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-16/29_series/29890/raw.md",
+      "n_errors_explained": 649,
+      "subjects": {
+        "Standards specifications": 301,
+        "Research publications": 165,
+        "Standards overview": 80,
+        "Research overview": 71,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22989/raw.md",
+      "n_errors_explained": 649,
+      "subjects": {
+        "Standards specifications": 269,
+        "Research publications": 175,
+        "Standards overview": 88,
+        "Lexicon": 29,
+        "Research overview": 88
+      }
+    },
+    {
+      "file": "marked/Rel-14/38_series/38912/raw.md",
+      "n_errors_explained": 647,
+      "subjects": {
+        "Research publications": 195,
+        "Standards specifications": 274,
+        "Standards overview": 79,
+        "Lexicon": 28,
+        "Research overview": 71
+      }
+    },
+    {
+      "file": "marked/Rel-17/38_series/38912/raw.md",
+      "n_errors_explained": 646,
+      "subjects": {
+        "Research publications": 193,
+        "Standards specifications": 275,
+        "Standards overview": 79,
+        "Lexicon": 28,
+        "Research overview": 71
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26804/raw.md",
+      "n_errors_explained": 641,
+      "subjects": {
+        "Standards overview": 89,
+        "Standards specifications": 262,
+        "Research publications": 171,
+        "Research overview": 95,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-15/38_series/38912/raw.md",
+      "n_errors_explained": 640,
+      "subjects": {
+        "Research publications": 190,
+        "Standards specifications": 273,
+        "Standards overview": 78,
+        "Lexicon": 28,
+        "Research overview": 71
+      }
+    },
+    {
+      "file": "marked/Rel-15/29_series/29274/raw.md",
+      "n_errors_explained": 639,
+      "subjects": {
+        "Standards specifications": 315,
+        "Research publications": 150,
+        "Standards overview": 86,
+        "Lexicon": 26,
+        "Research overview": 62
+      }
+    },
+    {
+      "file": "marked/Rel-16/38_series/38912/raw.md",
+      "n_errors_explained": 638,
+      "subjects": {
+        "Research publications": 189,
+        "Standards specifications": 272,
+        "Standards overview": 78,
+        "Lexicon": 28,
+        "Research overview": 71
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23434/raw.md",
+      "n_errors_explained": 637,
+      "subjects": {
+        "Standards overview": 102,
+        "Standards specifications": 311,
+        "Research overview": 68,
+        "Lexicon": 31,
+        "Research publications": 125
+      }
+    },
+    {
+      "file": "marked/Rel-13/23_series/23228/raw.md",
+      "n_errors_explained": 636,
+      "subjects": {
+        "Research publications": 156,
+        "Standards overview": 85,
+        "Research overview": 81,
+        "Standards specifications": 278,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-13/45_series/45914/raw.md",
+      "n_errors_explained": 635,
+      "subjects": {
+        "Standards specifications": 181,
+        "Research publications": 282,
+        "Research overview": 104,
+        "Lexicon": 16,
+        "Standards overview": 52
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23757/raw.md",
+      "n_errors_explained": 634,
+      "subjects": {
+        "Standards overview": 91,
+        "Standards specifications": 311,
+        "Research publications": 139,
+        "Lexicon": 22,
+        "Research overview": 71
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23288/raw.md",
+      "n_errors_explained": 633,
+      "subjects": {
+        "Standards specifications": 310,
+        "Research publications": 134,
+        "Standards overview": 87,
+        "Research overview": 75,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-9/45_series/45914/raw.md",
+      "n_errors_explained": 633,
+      "subjects": {
+        "Standards specifications": 175,
+        "Research publications": 287,
+        "Research overview": 107,
+        "Lexicon": 15,
+        "Standards overview": 49
+      }
+    },
+    {
+      "file": "marked/Rel-17/26_series/26805/raw.md",
+      "n_errors_explained": 632,
+      "subjects": {
+        "Research publications": 211,
+        "Standards specifications": 214,
+        "Research overview": 102,
+        "Standards overview": 77,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23700-80/raw.md",
+      "n_errors_explained": 632,
+      "subjects": {
+        "Standards overview": 84,
+        "Research publications": 153,
+        "Standards specifications": 281,
+        "Research overview": 89,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23203/raw.md",
+      "n_errors_explained": 632,
+      "subjects": {
+        "Standards specifications": 298,
+        "Research publications": 149,
+        "Standards overview": 89,
+        "Lexicon": 33,
+        "Research overview": 63
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23203/raw.md",
+      "n_errors_explained": 630,
+      "subjects": {
+        "Standards specifications": 297,
+        "Research publications": 149,
+        "Standards overview": 89,
+        "Lexicon": 32,
+        "Research overview": 63
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22101/raw.md",
+      "n_errors_explained": 626,
+      "subjects": {
+        "Standards overview": 95,
+        "Standards specifications": 272,
+        "Research overview": 86,
+        "Research publications": 141,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22104/raw.md",
+      "n_errors_explained": 626,
+      "subjects": {
+        "Research publications": 207,
+        "Standards specifications": 205,
+        "Standards overview": 81,
+        "Lexicon": 26,
+        "Research overview": 107
+      }
+    },
+    {
+      "file": "marked/Rel-14/45_series/45914/raw.md",
+      "n_errors_explained": 623,
+      "subjects": {
+        "Standards specifications": 173,
+        "Research publications": 280,
+        "Research overview": 104,
+        "Lexicon": 16,
+        "Standards overview": 50
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22101/raw.md",
+      "n_errors_explained": 622,
+      "subjects": {
+        "Standards overview": 95,
+        "Standards specifications": 273,
+        "Research overview": 85,
+        "Research publications": 138,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22989/raw.md",
+      "n_errors_explained": 621,
+      "subjects": {
+        "Standards specifications": 264,
+        "Research publications": 167,
+        "Standards overview": 84,
+        "Lexicon": 27,
+        "Research overview": 79
+      }
+    },
+    {
+      "file": "marked/Rel-20/28_series/28541/raw.md",
+      "n_errors_explained": 621,
+      "subjects": {
+        "Standards specifications": 315,
+        "Research publications": 125,
+        "Standards overview": 95,
+        "Research overview": 54,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-10/45_series/45914/raw.md",
+      "n_errors_explained": 616,
+      "subjects": {
+        "Standards specifications": 169,
+        "Research publications": 276,
+        "Research overview": 107,
+        "Lexicon": 15,
+        "Standards overview": 49
+      }
+    },
+    {
+      "file": "marked/Rel-13/23_series/23779/raw.md",
+      "n_errors_explained": 616,
+      "subjects": {
+        "Standards specifications": 277,
+        "Research publications": 145,
+        "Standards overview": 87,
+        "Research overview": 76,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-18/24_series/24301/raw.md",
+      "n_errors_explained": 616,
+      "subjects": {
+        "Standards specifications": 305,
+        "Research publications": 124,
+        "Standards overview": 90,
+        "Research overview": 68,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-19/28_series/28541/raw.md",
+      "n_errors_explained": 616,
+      "subjects": {
+        "Standards specifications": 311,
+        "Research publications": 125,
+        "Standards overview": 94,
+        "Lexicon": 32,
+        "Research overview": 54
+      }
+    },
+    {
+      "file": "marked/Rel-8/24_series/24229/raw.md",
+      "n_errors_explained": 616,
+      "subjects": {
+        "Standards specifications": 283,
+        "Research publications": 145,
+        "Standards overview": 78,
+        "Research overview": 76,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23503/raw.md",
+      "n_errors_explained": 615,
+      "subjects": {
+        "Standards specifications": 321,
+        "Research publications": 122,
+        "Standards overview": 92,
+        "Research overview": 51,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-12/25_series/25701/raw.md",
+      "n_errors_explained": 614,
+      "subjects": {
+        "Research publications": 232,
+        "Standards specifications": 211,
+        "Standards overview": 58,
+        "Research overview": 97,
+        "Lexicon": 16
+      }
+    },
+    {
+      "file": "marked/Rel-18/33_series/33128/raw.md",
+      "n_errors_explained": 613,
+      "subjects": {
+        "Standards specifications": 317,
+        "Standards overview": 97,
+        "Research publications": 114,
+        "Research overview": 54,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-12/45_series/45914/raw.md",
+      "n_errors_explained": 612,
+      "subjects": {
+        "Standards specifications": 169,
+        "Research publications": 275,
+        "Research overview": 105,
+        "Lexicon": 15,
+        "Standards overview": 48
+      }
+    },
+    {
+      "file": "marked/Rel-17/22_series/22832/raw.md",
+      "n_errors_explained": 611,
+      "subjects": {
+        "Research publications": 156,
+        "Standards specifications": 240,
+        "Standards overview": 95,
+        "Research overview": 96,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-16/45_series/45914/raw.md",
+      "n_errors_explained": 610,
+      "subjects": {
+        "Standards specifications": 169,
+        "Research publications": 276,
+        "Research overview": 104,
+        "Lexicon": 14,
+        "Standards overview": 47
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23724/raw.md",
+      "n_errors_explained": 608,
+      "subjects": {
+        "Research publications": 140,
+        "Standards specifications": 300,
+        "Standards overview": 86,
+        "Lexicon": 26,
+        "Research overview": 56
+      }
+    },
+    {
+      "file": "marked/Rel-16/25_series/25331/raw.md",
+      "n_errors_explained": 608,
+      "subjects": {
+        "Standards specifications": 290,
+        "Research publications": 168,
+        "Standards overview": 69,
+        "Research overview": 56,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23700-07/raw.md",
+      "n_errors_explained": 608,
+      "subjects": {
+        "Standards specifications": 302,
+        "Standards overview": 93,
+        "Research publications": 125,
+        "Lexicon": 32,
+        "Research overview": 56
+      }
+    },
+    {
+      "file": "marked/Rel-13/25_series/25331/raw.md",
+      "n_errors_explained": 607,
+      "subjects": {
+        "Standards specifications": 289,
+        "Research publications": 168,
+        "Standards overview": 70,
+        "Research overview": 55,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-18/29_series/29244/raw.md",
+      "n_errors_explained": 607,
+      "subjects": {
+        "Standards specifications": 292,
+        "Research publications": 149,
+        "Standards overview": 83,
+        "Lexicon": 25,
+        "Research overview": 58
+      }
+    },
+    {
+      "file": "marked/Rel-11/45_series/45914/raw.md",
+      "n_errors_explained": 606,
+      "subjects": {
+        "Standards specifications": 166,
+        "Research publications": 276,
+        "Research overview": 102,
+        "Lexicon": 13,
+        "Standards overview": 49
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23503/raw.md",
+      "n_errors_explained": 606,
+      "subjects": {
+        "Standards specifications": 318,
+        "Research publications": 117,
+        "Standards overview": 92,
+        "Research overview": 50,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-14/23_series/23203/raw.md",
+      "n_errors_explained": 605,
+      "subjects": {
+        "Standards specifications": 294,
+        "Research publications": 135,
+        "Standards overview": 86,
+        "Lexicon": 32,
+        "Research overview": 58
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23748/raw.md",
+      "n_errors_explained": 605,
+      "subjects": {
+        "Standards specifications": 269,
+        "Research publications": 139,
+        "Standards overview": 96,
+        "Research overview": 77,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-15/23_series/23203/raw.md",
+      "n_errors_explained": 604,
+      "subjects": {
+        "Standards specifications": 289,
+        "Research publications": 137,
+        "Standards overview": 84,
+        "Lexicon": 32,
+        "Research overview": 62
+      }
+    },
+    {
+      "file": "marked/Rel-17/22_series/22889/raw.md",
+      "n_errors_explained": 604,
+      "subjects": {
+        "Standards specifications": 260,
+        "Research publications": 157,
+        "Standards overview": 81,
+        "Lexicon": 28,
+        "Research overview": 78
+      }
+    },
+    {
+      "file": "marked/Rel-12/33_series/33868/raw.md",
+      "n_errors_explained": 603,
+      "subjects": {
+        "Standards specifications": 257,
+        "Research publications": 151,
+        "Standards overview": 78,
+        "Research overview": 88,
+        "Lexicon": 29
+      }
+    },
+    {
+      "file": "marked/Rel-16/38_series/38820/raw.md",
+      "n_errors_explained": 603,
+      "subjects": {
+        "Standards specifications": 176,
+        "Standards overview": 50,
+        "Research publications": 261,
+        "Research overview": 102,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23203/raw.md",
+      "n_errors_explained": 603,
+      "subjects": {
+        "Standards specifications": 291,
+        "Research publications": 133,
+        "Standards overview": 88,
+        "Lexicon": 32,
+        "Research overview": 59
+      }
+    },
+    {
+      "file": "marked/Rel-17/45_series/45914/raw.md",
+      "n_errors_explained": 603,
+      "subjects": {
+        "Standards specifications": 168,
+        "Research publications": 271,
+        "Research overview": 101,
+        "Lexicon": 15,
+        "Standards overview": 48
+      }
+    },
+    {
+      "file": "marked/Rel-13/23_series/23060/raw.md",
+      "n_errors_explained": 602,
+      "subjects": {
+        "Standards specifications": 294,
+        "Standards overview": 73,
+        "Research overview": 70,
+        "Lexicon": 31,
+        "Research publications": 134
+      }
+    },
+    {
+      "file": "marked/Rel-9/36_series/36523-3/raw.md",
+      "n_errors_explained": 599,
+      "subjects": {
+        "Research publications": 156,
+        "Standards specifications": 289,
+        "Standards overview": 78,
+        "Lexicon": 24,
+        "Research overview": 52
+      }
+    },
+    {
+      "file": "marked/Rel-14/29_series/29274/raw.md",
+      "n_errors_explained": 597,
+      "subjects": {
+        "Standards specifications": 292,
+        "Research publications": 144,
+        "Standards overview": 76,
+        "Lexicon": 26,
+        "Research overview": 59
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38521-2/raw.md",
+      "n_errors_explained": 597,
+      "subjects": {
+        "Research publications": 232,
+        "Standards specifications": 229,
+        "Standards overview": 43,
+        "Research overview": 78,
+        "Lexicon": 15
+      }
+    },
+    {
+      "file": "marked/Rel-20/23_series/23503/raw.md",
+      "n_errors_explained": 596,
+      "subjects": {
+        "Standards specifications": 315,
+        "Research publications": 116,
+        "Standards overview": 89,
+        "Lexicon": 29,
+        "Research overview": 47
+      }
+    },
+    {
+      "file": "marked/Rel-9/21_series/21905/raw.md",
+      "n_errors_explained": 596,
+      "subjects": {
+        "Research publications": 159,
+        "Standards overview": 66,
+        "Standards specifications": 271,
+        "Lexicon": 41,
+        "Research overview": 59
+      }
+    },
+    {
+      "file": "marked/Rel-16/37_series/37977/raw.md",
+      "n_errors_explained": 594,
+      "subjects": {
+        "Research publications": 250,
+        "Standards specifications": 184,
+        "Standards overview": 53,
+        "Research overview": 93,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-16/22_series/22101/raw.md",
+      "n_errors_explained": 593,
+      "subjects": {
+        "Standards overview": 90,
+        "Standards specifications": 257,
+        "Research overview": 79,
+        "Research publications": 135,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-17/37_series/37977/raw.md",
+      "n_errors_explained": 593,
+      "subjects": {
+        "Research publications": 250,
+        "Standards specifications": 179,
+        "Standards overview": 51,
+        "Research overview": 99,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-14/37_series/37977/raw.md",
+      "n_errors_explained": 592,
+      "subjects": {
+        "Research publications": 245,
+        "Standards specifications": 187,
+        "Standards overview": 54,
+        "Research overview": 92,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23783/raw.md",
+      "n_errors_explained": 592,
+      "subjects": {
+        "Standards overview": 75,
+        "Standards specifications": 284,
+        "Lexicon": 30,
+        "Research publications": 136,
+        "Research overview": 67
+      }
+    },
+    {
+      "file": "marked/Rel-8/24_series/24801/raw.md",
+      "n_errors_explained": 591,
+      "subjects": {
+        "Research publications": 126,
+        "Standards overview": 81,
+        "Standards specifications": 273,
+        "Lexicon": 39,
+        "Research overview": 72
+      }
+    },
+    {
+      "file": "marked/Rel-8/21_series/21905/raw.md",
+      "n_errors_explained": 590,
+      "subjects": {
+        "Research publications": 155,
+        "Standards overview": 65,
+        "Standards specifications": 271,
+        "Lexicon": 41,
+        "Research overview": 58
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23734/raw.md",
+      "n_errors_explained": 588,
+      "subjects": {
+        "Standards overview": 89,
+        "Standards specifications": 272,
+        "Research publications": 129,
+        "Lexicon": 30,
+        "Research overview": 68
+      }
+    },
+    {
+      "file": "marked/Rel-15/29_series/29002/raw.md",
+      "n_errors_explained": 587,
+      "subjects": {
+        "Standards specifications": 299,
+        "Research publications": 127,
+        "Research overview": 58,
+        "Standards overview": 67,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-17/29_series/29002/raw.md",
+      "n_errors_explained": 586,
+      "subjects": {
+        "Standards specifications": 303,
+        "Research publications": 123,
+        "Standards overview": 68,
+        "Lexicon": 35,
+        "Research overview": 57
+      }
+    },
+    {
+      "file": "marked/Rel-19/24_series/24229/raw.md",
+      "n_errors_explained": 586,
+      "subjects": {
+        "Standards specifications": 288,
+        "Research publications": 125,
+        "Standards overview": 79,
+        "Research overview": 64,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-16/29_series/29002/raw.md",
+      "n_errors_explained": 584,
+      "subjects": {
+        "Standards specifications": 301,
+        "Research publications": 125,
+        "Research overview": 57,
+        "Standards overview": 67,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-16/34_series/34121-1/raw.md",
+      "n_errors_explained": 584,
+      "subjects": {
+        "Research publications": 194,
+        "Standards specifications": 251,
+        "Standards overview": 55,
+        "Research overview": 59,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-19/29_series/29002/raw.md",
+      "n_errors_explained": 584,
+      "subjects": {
+        "Standards specifications": 299,
+        "Research publications": 126,
+        "Standards overview": 68,
+        "Research overview": 56,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-16/33_series/33108/raw.md",
+      "n_errors_explained": 583,
+      "subjects": {
+        "Standards specifications": 271,
+        "Research publications": 134,
+        "Standards overview": 75,
+        "Research overview": 70,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-17/33_series/33108/raw.md",
+      "n_errors_explained": 583,
+      "subjects": {
+        "Standards specifications": 272,
+        "Research publications": 135,
+        "Standards overview": 76,
+        "Lexicon": 33,
+        "Research overview": 67
+      }
+    },
+    {
+      "file": "marked/Rel-20/22_series/22101/raw.md",
+      "n_errors_explained": 583,
+      "subjects": {
+        "Standards overview": 87,
+        "Standards specifications": 265,
+        "Research overview": 79,
+        "Research publications": 122,
+        "Lexicon": 30
+      }
+    },
+    {
+      "file": "marked/Rel-18/38_series/38858/raw.md",
+      "n_errors_explained": 582,
+      "subjects": {
+        "Research publications": 252,
+        "Standards specifications": 165,
+        "Standards overview": 51,
+        "Research overview": 102,
+        "Lexicon": 12
+      }
+    },
+    {
+      "file": "marked/Rel-10/23_series/23228/raw.md",
+      "n_errors_explained": 581,
+      "subjects": {
+        "Standards overview": 79,
+        "Research overview": 72,
+        "Standards specifications": 263,
+        "Research publications": 135,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-18/22_series/22104/raw.md",
+      "n_errors_explained": 581,
+      "subjects": {
+        "Research publications": 196,
+        "Standards specifications": 195,
+        "Standards overview": 74,
+        "Lexicon": 24,
+        "Research overview": 92
+      }
+    },
+    {
+      "file": "marked/Rel-9/23_series/23228/raw.md",
+      "n_errors_explained": 581,
+      "subjects": {
+        "Standards overview": 79,
+        "Standards specifications": 260,
+        "Research publications": 134,
+        "Lexicon": 33,
+        "Research overview": 75
+      }
+    },
+    {
+      "file": "marked/Rel-18/29_series/29002/raw.md",
+      "n_errors_explained": 580,
+      "subjects": {
+        "Standards specifications": 298,
+        "Research publications": 124,
+        "Research overview": 56,
+        "Standards overview": 67,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-14/38_series/38802/raw.md",
+      "n_errors_explained": 579,
+      "subjects": {
+        "Research publications": 227,
+        "Standards specifications": 199,
+        "Standards overview": 61,
+        "Research overview": 77,
+        "Lexicon": 15
+      }
+    },
+    {
+      "file": "marked/Rel-15/22_series/22101/raw.md",
+      "n_errors_explained": 578,
+      "subjects": {
+        "Standards overview": 87,
+        "Standards specifications": 255,
+        "Research overview": 76,
+        "Research publications": 129,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-15/37_series/37977/raw.md",
+      "n_errors_explained": 578,
+      "subjects": {
+        "Research publications": 244,
+        "Standards specifications": 176,
+        "Standards overview": 52,
+        "Research overview": 90,
+        "Lexicon": 16
+      }
+    },
+    {
+      "file": "marked/Rel-15/45_series/45914/raw.md",
+      "n_errors_explained": 577,
+      "subjects": {
+        "Standards specifications": 161,
+        "Research publications": 263,
+        "Research overview": 96,
+        "Standards overview": 46,
+        "Lexicon": 11
+      }
+    },
+    {
+      "file": "marked/Rel-19/33_series/33108/raw.md",
+      "n_errors_explained": 577,
+      "subjects": {
+        "Standards specifications": 261,
+        "Research publications": 140,
+        "Standards overview": 75,
+        "Research overview": 68,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-12/25_series/25700/raw.md",
+      "n_errors_explained": 576,
+      "subjects": {
+        "Research publications": 218,
+        "Standards specifications": 207,
+        "Standards overview": 52,
+        "Research overview": 80,
+        "Lexicon": 19
+      }
+    },
+    {
+      "file": "marked/Rel-14/29_series/29002/raw.md",
+      "n_errors_explained": 576,
+      "subjects": {
+        "Standards specifications": 298,
+        "Research publications": 123,
+        "Research overview": 54,
+        "Standards overview": 65,
+        "Lexicon": 36
+      }
+    },
+    {
+      "file": "marked/Rel-16/24_series/24301/raw.md",
+      "n_errors_explained": 576,
+      "subjects": {
+        "Standards specifications": 288,
+        "Research publications": 113,
+        "Standards overview": 86,
+        "Lexicon": 28,
+        "Research overview": 61
+      }
+    },
+    {
+      "file": "marked/Rel-17/29_series/29244/raw.md",
+      "n_errors_explained": 576,
+      "subjects": {
+        "Standards specifications": 283,
+        "Research publications": 134,
+        "Standards overview": 79,
+        "Lexicon": 26,
+        "Research overview": 54
+      }
+    },
+    {
+      "file": "marked/Rel-18/28_series/28552/raw.md",
+      "n_errors_explained": 575,
+      "subjects": {
+        "Standards specifications": 296,
+        "Research publications": 131,
+        "Standards overview": 72,
+        "Research overview": 52,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-17/22_series/22101/raw.md",
+      "n_errors_explained": 573,
+      "subjects": {
+        "Standards overview": 84,
+        "Standards specifications": 257,
+        "Research overview": 78,
+        "Research publications": 123,
+        "Lexicon": 31
+      }
+    },
+    {
+      "file": "marked/Rel-11/27_series/27007/raw.md",
+      "n_errors_explained": 572,
+      "subjects": {
+        "Standards specifications": 272,
+        "Research publications": 147,
+        "Standards overview": 74,
+        "Research overview": 51,
+        "Lexicon": 28
+      }
+    },
+    {
+      "file": "marked/Rel-15/33_series/33108/raw.md",
+      "n_errors_explained": 572,
+      "subjects": {
+        "Standards specifications": 269,
+        "Research publications": 130,
+        "Standards overview": 73,
+        "Research overview": 67,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-19/33_series/33127/raw.md",
+      "n_errors_explained": 572,
+      "subjects": {
+        "Standards specifications": 274,
+        "Standards overview": 94,
+        "Research overview": 60,
+        "Lexicon": 30,
+        "Research publications": 114
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23228/raw.md",
+      "n_errors_explained": 571,
+      "subjects": {
+        "Standards overview": 78,
+        "Standards specifications": 270,
+        "Lexicon": 33,
+        "Research overview": 74,
+        "Research publications": 116
+      }
+    },
+    {
+      "file": "marked/Rel-8/45_series/45914/raw.md",
+      "n_errors_explained": 571,
+      "subjects": {
+        "Standards specifications": 165,
+        "Research publications": 256,
+        "Research overview": 93,
+        "Lexicon": 14,
+        "Standards overview": 43
+      }
+    },
+    {
+      "file": "marked/Rel-15/22_series/22261/raw.md",
+      "n_errors_explained": 570,
+      "subjects": {
+        "Standards specifications": 216,
+        "Standards overview": 74,
+        "Research publications": 162,
+        "Research overview": 96,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23434/raw.md",
+      "n_errors_explained": 570,
+      "subjects": {
+        "Standards overview": 94,
+        "Standards specifications": 291,
+        "Research overview": 52,
+        "Lexicon": 29,
+        "Research publications": 104
+      }
+    },
+    {
+      "file": "marked/Rel-14/22_series/22101/raw.md",
+      "n_errors_explained": 568,
+      "subjects": {
+        "Standards overview": 81,
+        "Standards specifications": 249,
+        "Research overview": 77,
+        "Research publications": 129,
+        "Lexicon": 32
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23752/raw.md",
+      "n_errors_explained": 565,
+      "subjects": {
+        "Standards overview": 94,
+        "Standards specifications": 279,
+        "Research publications": 120,
+        "Lexicon": 22,
+        "Research overview": 50
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26501/raw.md",
+      "n_errors_explained": 564,
+      "subjects": {
+        "Standards overview": 81,
+        "Standards specifications": 262,
+        "Research publications": 136,
+        "Lexicon": 27,
+        "Research overview": 58
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23716/raw.md",
+      "n_errors_explained": 557,
+      "subjects": {
+        "Standards specifications": 272,
+        "Research publications": 122,
+        "Standards overview": 82,
+        "Lexicon": 32,
+        "Research overview": 49
+      }
+    },
+    {
+      "file": "marked/Rel-16/22_series/22889/raw.md",
+      "n_errors_explained": 555,
+      "subjects": {
+        "Standards specifications": 236,
+        "Research publications": 147,
+        "Standards overview": 72,
+        "Lexicon": 26,
+        "Research overview": 74
+      }
+    },
+    {
+      "file": "marked/Rel-17/38_series/38521-2/raw.md",
+      "n_errors_explained": 553,
+      "subjects": {
+        "Standards specifications": 210,
+        "Standards overview": 40,
+        "Research publications": 218,
+        "Research overview": 71,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-18/29_series/29512/raw.md",
+      "n_errors_explained": 552,
+      "subjects": {
+        "Standards specifications": 296,
+        "Research publications": 114,
+        "Standards overview": 77,
+        "Research overview": 41,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-19/29_series/29512/raw.md",
+      "n_errors_explained": 552,
+      "subjects": {
+        "Standards specifications": 300,
+        "Research publications": 110,
+        "Standards overview": 79,
+        "Research overview": 41,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-20/23_series/23280/raw.md",
+      "n_errors_explained": 552,
+      "subjects": {
+        "Standards overview": 80,
+        "Standards specifications": 281,
+        "Lexicon": 30,
+        "Research publications": 112,
+        "Research overview": 49
+      }
+    },
+    {
+      "file": "marked/Rel-14/33_series/33108/raw.md",
+      "n_errors_explained": 547,
+      "subjects": {
+        "Standards specifications": 249,
+        "Research publications": 124,
+        "Standards overview": 74,
+        "Research overview": 67,
+        "Lexicon": 33
+      }
+    },
+    {
+      "file": "marked/Rel-16/34_series/34229-1/raw.md",
+      "n_errors_explained": 547,
+      "subjects": {
+        "Standards specifications": 264,
+        "Research publications": 129,
+        "Research overview": 45,
+        "Standards overview": 74,
+        "Lexicon": 35
+      }
+    },
+    {
+      "file": "marked/Rel-19/26_series/26114/raw.md",
+      "n_errors_explained": 545,
+      "subjects": {
+        "Research publications": 153,
+        "Standards overview": 79,
+        "Standards specifications": 238,
+        "Research overview": 55,
+        "Lexicon": 20
+      }
+    },
+    {
+      "file": "marked/Rel-14/44_series/44060/raw.md",
+      "n_errors_explained": 544,
+      "subjects": {
+        "Standards specifications": 257,
+        "Research publications": 148,
+        "Standards overview": 60,
+        "Research overview": 52,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38305/raw.md",
+      "n_errors_explained": 544,
+      "subjects": {
+        "Research publications": 155,
+        "Standards specifications": 232,
+        "Standards overview": 74,
+        "Research overview": 59,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38473/raw.md",
+      "n_errors_explained": 544,
+      "subjects": {
+        "Research publications": 105,
+        "Standards specifications": 302,
+        "Standards overview": 82,
+        "Research overview": 35,
+        "Lexicon": 20
+      }
+    },
+    {
+      "file": "marked/Rel-12/29_series/29002/raw.md",
+      "n_errors_explained": 542,
+      "subjects": {
+        "Standards specifications": 283,
+        "Standards overview": 62,
+        "Research publications": 114,
+        "Research overview": 49,
+        "Lexicon": 34
+      }
+    },
+    {
+      "file": "marked/Rel-19/44_series/44060/raw.md",
+      "n_errors_explained": 542,
+      "subjects": {
+        "Standards specifications": 258,
+        "Research publications": 144,
+        "Standards overview": 61,
+        "Research overview": 52,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-16/38_series/38889/raw.md",
+      "n_errors_explained": 541,
+      "subjects": {
+        "Research publications": 161,
+        "Standards specifications": 242,
+        "Standards overview": 68,
+        "Research overview": 55,
+        "Lexicon": 15
+      }
+    },
+    {
+      "file": "marked/Rel-16/44_series/44060/raw.md",
+      "n_errors_explained": 541,
+      "subjects": {
+        "Standards specifications": 257,
+        "Research publications": 143,
+        "Standards overview": 61,
+        "Research overview": 53,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-17/44_series/44060/raw.md",
+      "n_errors_explained": 541,
+      "subjects": {
+        "Standards specifications": 258,
+        "Research publications": 144,
+        "Standards overview": 60,
+        "Research overview": 52,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-9/33_series/33937/raw.md",
+      "n_errors_explained": 541,
+      "subjects": {
+        "Research publications": 152,
+        "Standards specifications": 210,
+        "Standards overview": 60,
+        "Research overview": 94,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23791/raw.md",
+      "n_errors_explained": 540,
+      "subjects": {
+        "Standards specifications": 263,
+        "Research publications": 118,
+        "Standards overview": 72,
+        "Research overview": 64,
+        "Lexicon": 23
+      }
+    },
+    {
+      "file": "marked/Rel-8/26_series/26234/raw.md",
+      "n_errors_explained": 540,
+      "subjects": {
+        "Standards specifications": 204,
+        "Research publications": 181,
+        "Standards overview": 51,
+        "Research overview": 80,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-13/37_series/37977/raw.md",
+      "n_errors_explained": 539,
+      "subjects": {
+        "Research publications": 231,
+        "Standards specifications": 165,
+        "Standards overview": 47,
+        "Research overview": 83,
+        "Lexicon": 13
+      }
+    },
+    {
+      "file": "marked/Rel-14/33_series/33937/raw.md",
+      "n_errors_explained": 539,
+      "subjects": {
+        "Research publications": 154,
+        "Standards specifications": 205,
+        "Standards overview": 61,
+        "Research overview": 94,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23737/raw.md",
+      "n_errors_explained": 539,
+      "subjects": {
+        "Research publications": 141,
+        "Standards specifications": 232,
+        "Standards overview": 70,
+        "Research overview": 73,
+        "Lexicon": 23
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23280/raw.md",
+      "n_errors_explained": 538,
+      "subjects": {
+        "Standards overview": 72,
+        "Standards specifications": 265,
+        "Lexicon": 31,
+        "Research publications": 119,
+        "Research overview": 51
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23402/raw.md",
+      "n_errors_explained": 538,
+      "subjects": {
+        "Standards specifications": 279,
+        "Standards overview": 72,
+        "Lexicon": 30,
+        "Research publications": 104,
+        "Research overview": 53
+      }
+    },
+    {
+      "file": "marked/Rel-14/26_series/26234/raw.md",
+      "n_errors_explained": 537,
+      "subjects": {
+        "Research publications": 169,
+        "Standards specifications": 208,
+        "Standards overview": 59,
+        "Research overview": 75,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-19/22_series/22916/raw.md",
+      "n_errors_explained": 537,
+      "subjects": {
+        "Standards specifications": 160,
+        "Research publications": 178,
+        "Standards overview": 76,
+        "Research overview": 102,
+        "Lexicon": 21
+      }
+    },
+    {
+      "file": "marked/Rel-13/33_series/33937/raw.md",
+      "n_errors_explained": 536,
+      "subjects": {
+        "Research publications": 154,
+        "Standards specifications": 205,
+        "Standards overview": 59,
+        "Research overview": 93,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-18/38_series/38423/raw.md",
+      "n_errors_explained": 536,
+      "subjects": {
+        "Standards specifications": 282,
+        "Standards overview": 79,
+        "Research publications": 106,
+        "Lexicon": 25,
+        "Research overview": 44
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23700-84/raw.md",
+      "n_errors_explained": 536,
+      "subjects": {
+        "Standards specifications": 239,
+        "Standards overview": 69,
+        "Research publications": 121,
+        "Lexicon": 26,
+        "Research overview": 81
+      }
+    },
+    {
+      "file": "marked/Rel-19/44_series/44018/raw.md",
+      "n_errors_explained": 536,
+      "subjects": {
+        "Standards specifications": 266,
+        "Research publications": 137,
+        "Standards overview": 59,
+        "Research overview": 47,
+        "Lexicon": 27
+      }
+    },
+    {
+      "file": "marked/Rel-12/25_series/25800/raw.md",
+      "n_errors_explained": 535,
+      "subjects": {
+        "Standards specifications": 167,
+        "Research publications": 215,
+        "Standards overview": 42,
+        "Research overview": 97,
+        "Lexicon": 14
+      }
+    },
+    {
+      "file": "marked/Rel-17/37_series/37941/raw.md",
+      "n_errors_explained": 534,
+      "subjects": {
+        "Research publications": 242,
+        "Standards specifications": 163,
+        "Research overview": 78,
+        "Standards overview": 36,
+        "Lexicon": 15
+      }
+    },
+    {
+      "file": "marked/Rel-18/23_series/23402/raw.md",
+      "n_errors_explained": 534,
+      "subjects": {
+        "Standards specifications": 279,
+        "Standards overview": 72,
+        "Lexicon": 31,
+        "Research publications": 99,
+        "Research overview": 53
+      }
+    },
+    {
+      "file": "marked/Rel-17/23_series/23402/raw.md",
+      "n_errors_explained": 533,
+      "subjects": {
+        "Standards specifications": 277,
+        "Standards overview": 73,
+        "Lexicon": 30,
+        "Research publications": 99,
+        "Research overview": 54
+      }
+    },
+    {
+      "file": "marked/Rel-13/26_series/26234/raw.md",
+      "n_errors_explained": 532,
+      "subjects": {
+        "Research publications": 165,
+        "Standards specifications": 208,
+        "Standards overview": 57,
+        "Research overview": 76,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-15/23_series/23402/raw.md",
+      "n_errors_explained": 532,
+      "subjects": {
+        "Standards specifications": 278,
+        "Standards overview": 73,
+        "Research publications": 99,
+        "Lexicon": 31,
+        "Research overview": 51
+      }
+    },
+    {
+      "file": "marked/Rel-16/23_series/23402/raw.md",
+      "n_errors_explained": 532,
+      "subjects": {
+        "Standards specifications": 280,
+        "Standards overview": 72,
+        "Research publications": 101,
+        "Lexicon": 29,
+        "Research overview": 50
+      }
+    },
+    {
+      "file": "marked/Rel-15/33_series/33937/raw.md",
+      "n_errors_explained": 531,
+      "subjects": {
+        "Research publications": 151,
+        "Standards specifications": 203,
+        "Standards overview": 57,
+        "Research overview": 95,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-19/38_series/38423/raw.md",
+      "n_errors_explained": 531,
+      "subjects": {
+        "Standards specifications": 286,
+        "Research publications": 105,
+        "Standards overview": 76,
+        "Research overview": 40,
+        "Lexicon": 24
+      }
+    },
+    {
+      "file": "marked/Rel-8/33_series/33820/raw.md",
+      "n_errors_explained": 531,
+      "subjects": {
+        "Research publications": 148,
+        "Standards specifications": 210,
+        "Research overview": 79,
+        "Standards overview": 72,
+        "Lexicon": 22
+      }
+    },
+    {
+      "file": "marked/Rel-14/38_series/38801/raw.md",
+      "n_errors_explained": 530,
+      "subjects": {
+        "Lexicon": 23,
+        "Standards specifications": 215,
+        "Standards overview": 88,
+        "Research publications": 143,
+        "Research overview": 61
+      }
+    },
+    {
+      "file": "marked/Rel-13/25_series/25423/raw.md",
+      "n_errors_explained": 529,
+      "subjects": {
+        "Standards specifications": 249,
+        "Research publications": 141,
+        "Standards overview": 61,
+        "Research overview": 52,
+        "Lexicon": 26
+      }
+    },
+    {
+      "file": "marked/Rel-19/23_series/23700-70/raw.md",
+      "n_errors_explained": 529,
+      "subjects": {
+        "Standards specifications": 242,
+        "Research publications": 136,
+        "Standards overview": 69,
+        "Research overview": 65,
+        "Lexicon": 17
+      }
+    },
+    {
+      "file": "marked/Rel-12/33_series/33937/raw.md",
+      "n_errors_explained": 528,
+      "subjects": {
+        "Research publications": 146,
+        "Standards specifications": 205,
+        "Standards overview": 58,
+        "Research overview": 94,
+        "Lexicon": 25
+      }
+    },
+    {
+      "file": "marked/Rel-17/38_series/38523-3/raw.md",
+      "n_errors_explained": 528,
+      "subjects": {
+        "Research publications": 127,
+        "Standards overview": 71,
+        "Standards specifications": 281,
+        "Research overview": 34,
+        "Lexicon": 15
+      }
+    }
+  ]
+}

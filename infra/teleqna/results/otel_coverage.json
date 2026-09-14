@@ -1,0 +1,72 @@
+{
+  "sft": "thirdparty/otel-llm-data/OTel-LLM-Data.jsonl",
+  "records": 606237,
+  "max_df": 100,
+  "no_rare_terms": 8,
+  "overall": {
+    "n": 9992,
+    "full": 2231,
+    "ge80": 4202,
+    "ge50": 9441,
+    "lt20": 0,
+    "mean": 0.746
+  },
+  "by_subject": {
+    "Lexicon": {
+      "n": 500,
+      "full": 189,
+      "ge80": 268,
+      "ge50": 481,
+      "lt20": 0,
+      "mean": 0.7968
+    },
+    "Research overview": {
+      "n": 1997,
+      "full": 466,
+      "ge80": 911,
+      "ge50": 1916,
+      "lt20": 0,
+      "mean": 0.7607
+    },
+    "Research publications": {
+      "n": 4496,
+      "full": 974,
+      "ge80": 1847,
+      "ge50": 4277,
+      "lt20": 0,
+      "mean": 0.7452
+    },
+    "Standards overview": {
+      "n": 1000,
+      "full": 217,
+      "ge80": 417,
+      "ge50": 965,
+      "lt20": 0,
+      "mean": 0.7487
+    },
+    "Standards specifications": {
+      "n": 1999,
+      "full": 385,
+      "ge80": 759,
+      "ge50": 1802,
+      "lt20": 0,
+      "mean": 0.7188
+    }
+  },
+  "hardcore_errors": {
+    "n": 2049,
+    "full": 351,
+    "ge80": 718,
+    "ge50": 1929,
+    "lt20": 0,
+    "mean": 0.7199
+  },
+  "rest": {
+    "n": 7943,
+    "full": 1880,
+    "ge80": 3484,
+    "ge50": 7512,
+    "lt20": 0,
+    "mean": 0.7527
+  }
+}

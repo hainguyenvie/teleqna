@@ -1,0 +1,30 @@
+hard-core rows with rare terms: 2049
+corpus files: 15055
+  ...2000/15055 files, 1692/2049 errors matched
+  ...4000/15055 files, 1748/2049 errors matched
+  ...6000/15055 files, 1882/2049 errors matched
+  ...8000/15055 files, 1911/2049 errors matched
+  ...10000/15055 files, 1933/2049 errors matched
+  ...12000/15055 files, 1957/2049 errors matched
+  ...14000/15055 files, 1964/2049 errors matched
+{
+  "corpus": "thirdparty/gsma-3gpp",
+  "hardcore_rows": 2049,
+  "rows_explained_by_some_file": 1964,
+  "min_frac": 0.6
+}
+  1276  marked/Rel-17/21_series/21917/raw.md
+  1259  marked/Rel-16/21_series/21916/raw.md
+  1180  marked/Rel-18/23_series/23501/raw.md
+  1175  marked/Rel-15/21_series/21915/raw.md
+  1172  marked/Rel-20/23_series/23501/raw.md
+  1170  marked/Rel-18/36_series/36300/raw.md
+  1165  marked/Rel-19/23_series/23501/raw.md
+  1152  marked/Rel-19/36_series/36300/raw.md
+  1142  marked/Rel-17/36_series/36300/raw.md
+  1141  marked/Rel-16/22_series/22804/raw.md
+  1130  marked/Rel-16/36_series/36300/raw.md
+  1090  marked/Rel-14/23_series/23799/raw.md
+  1074  marked/Rel-20/22_series/22261/raw.md
+  1066  marked/Rel-8/45_series/45912/raw.md
+  1064  marked/Rel-19/26_series/26804/raw.md

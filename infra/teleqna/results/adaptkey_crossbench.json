@@ -1,0 +1,56 @@
+{
+  "corpus": "infra/teleqna/adaptlkey_nemotron_data/train.jsonl",
+  "records": 1303277,
+  "k": 8,
+  "matched": {
+    "srsranbench": {
+      "hit": 1,
+      "total": 1502,
+      "frac": 0.0007
+    },
+    "telelogs864": {
+      "hit": 864,
+      "total": 864,
+      "frac": 1.0
+    }
+  },
+  "note": "lower bound; items shorter than k words cannot be detected",
+  "examples": [
+    {
+      "target": "telelogs864",
+      "item": 0,
+      "shingle": "c1: the serving cell's downtilt angle is too",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    },
+    {
+      "target": "telelogs864",
+      "item": 637,
+      "shingle": "layer1 dl rb num (including 0) 2025-05-07 11:03:33.000000|128.148154|32.624705|11|745|-85.82|6.95|1007.21|865|491|-|-|-|-90.02|-97.51|-|-|-|199.75",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    },
+    {
+      "target": "telelogs864",
+      "item": 634,
+      "shingle": "aau 1 0000277|29|128.147378|32.624764|100|11|4|0|default|21|745|32t32r|34.9|nr aau 1 0000659|49|128.149809|32.625702|230|4|13|0|scenario_3|18|984|64t64r|34.9|nr aau 2",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    },
+    {
+      "target": "telelogs864",
+      "item": 632,
+      "shingle": "aau 1 0000659|49|128.149809|32.625702|230|4|13|0|scenario_3|18|984|64t64r|34.9|nr aau 2 0000659|51|128.149771|32.625683|310|4|8|5|scenario_8|16|491|32t32r|34.9|nr aau 1",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    },
+    {
+      "target": "telelogs864",
+      "item": 0,
+      "shingle": "c1: the serving cell's downtilt angle is too",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    },
+    {
+      "target": "telelogs864",
+      "item": 689,
+      "shingle": "layer1 dl rb num (including 0) 2025-05-07 11:07:33.000000|128.14562|32.620987|7|405|-84.49|9.55|897.87|454|650|-|-|-|-88.64|-92.39|-|-|-|186.08",
+      "corpus_record": "System: You are an expert telecommunications engineer. Answer questions accurately based on the provided context and your knowledge of telecom standards (3GPP, IETF, ITU, TM Forum). Think through problems step by step and provide concise answers. User: Analyze the 5G wireless network drive-test user plane data and engineering parameters. Identify the reason for the throughput dropping below 600Mbp"
+    }
+  ]
+}

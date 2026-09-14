@@ -1,0 +1,98 @@
+{
+  "total": 10000,
+  "correct": 7848,
+  "accuracy": 0.7848,
+  "stderr": 0.0041,
+  "parse_failures": 5,
+  "request_errors": 0,
+  "truncated": 4,
+  "predicted_letter_distribution": {
+    "<none>": 5,
+    "A": 2144,
+    "B": 2271,
+    "C": 2238,
+    "D": 2135,
+    "E": 1207
+  },
+  "accuracy_by_subject": {
+    "Lexicon": {
+      "correct": 452,
+      "total": 500,
+      "accuracy": 0.904
+    },
+    "Research overview": {
+      "correct": 1573,
+      "total": 2000,
+      "accuracy": 0.7865
+    },
+    "Research publications": {
+      "correct": 3657,
+      "total": 4500,
+      "accuracy": 0.8127
+    },
+    "Standards overview": {
+      "correct": 792,
+      "total": 1000,
+      "accuracy": 0.792
+    },
+    "Standards specifications": {
+      "correct": 1374,
+      "total": 2000,
+      "accuracy": 0.687
+    }
+  },
+  "accuracy_by_gold_letter": {
+    "A": {
+      "correct": 1677,
+      "total": 2210,
+      "accuracy": 0.7588
+    },
+    "B": {
+      "correct": 1706,
+      "total": 2179,
+      "accuracy": 0.7829
+    },
+    "C": {
+      "correct": 1726,
+      "total": 2169,
+      "accuracy": 0.7958
+    },
+    "D": {
+      "correct": 1729,
+      "total": 2153,
+      "accuracy": 0.8031
+    },
+    "E": {
+      "correct": 1010,
+      "total": 1289,
+      "accuracy": 0.7836
+    }
+  },
+  "accuracy_by_choice_count": {
+    "2": {
+      "correct": 14,
+      "total": 16,
+      "accuracy": 0.875
+    },
+    "3": {
+      "correct": 70,
+      "total": 87,
+      "accuracy": 0.8046
+    },
+    "4": {
+      "correct": 2735,
+      "total": 3456,
+      "accuracy": 0.7914
+    },
+    "5": {
+      "correct": 5029,
+      "total": 6441,
+      "accuracy": 0.7808
+    }
+  },
+  "mean_completion_tokens": 1010.3,
+  "model": "Qwen/Qwen3.5-122B-A10B-FP8",
+  "thinking": true,
+  "max_tokens": 16000,
+  "n": 10000
+}

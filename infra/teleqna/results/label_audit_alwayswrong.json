@@ -1,0 +1,862 @@
+{
+ "what": "single-rater audit of the 160 dev-1000 rows where all 8 sampled rollouts of base Qwen3-8B were wrong",
+ "source_of_truth": "the gold `explanation` field from netop-team/TeleQnA.zip, aligned 10000/10000 by question string",
+ "rater": "one rater (Claude, this session). NOT independently confirmed - a second rater is required before these counts are quoted as final.",
+ "categories": {
+  "A": "gold uniquely supported by its explanation and by the option set - a model that knew the fact would answer it",
+  "B": "self-contained but under-determined: two or more options defensible, or a 'main/primary/key' judgment that only the source document settles",
+  "C": "broken: the explanation contradicts the gold, supports more than one option, restates the stem, or the gold is factually wrong"
+ },
+ "counts": {
+  "C": 20,
+  "B": 41,
+  "A": 99
+ },
+ "rows": {
+  "teleqna-00003": {
+   "n": 1,
+   "subject": "Standards specifications",
+   "category": "C",
+   "why": "explanation restricts to devices that have a short address; gold 'All devices' contradicts it"
+  },
+  "teleqna-00008": {
+   "n": 2,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-00021": {
+   "n": 3,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-00098": {
+   "n": 4,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-00108": {
+   "n": 5,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-00117": {
+   "n": 6,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-00119": {
+   "n": 7,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-00268": {
+   "n": 8,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-00300": {
+   "n": 9,
+   "subject": "Standards overview",
+   "category": "C",
+   "why": "stem asks 100Base-T, explanation answers 10Base-T"
+  },
+  "teleqna-00326": {
+   "n": 10,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-00329": {
+   "n": 11,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-00369": {
+   "n": 12,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-00370": {
+   "n": 13,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-00400": {
+   "n": 14,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-00694": {
+   "n": 15,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-00724": {
+   "n": 16,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "capacity-scaling claim inverted; neither MISO nor SIMO grows linearly in n without CSIT"
+  },
+  "teleqna-00876": {
+   "n": 17,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-00906": {
+   "n": 18,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-00913": {
+   "n": 19,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-01092": {
+   "n": 20,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-01161": {
+   "n": 21,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-01244": {
+   "n": 22,
+   "subject": "Lexicon",
+   "category": "A"
+  },
+  "teleqna-01274": {
+   "n": 23,
+   "subject": "Standards specifications",
+   "category": "C",
+   "why": "stem and explanation are circular; both 16 dB and 20 dB appear in the stem"
+  },
+  "teleqna-01295": {
+   "n": 24,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-01384": {
+   "n": 25,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-01439": {
+   "n": 26,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-01553": {
+   "n": 27,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-01593": {
+   "n": 28,
+   "subject": "Research overview",
+   "category": "C",
+   "why": "orthogonal NMF does not factor into 'two orthogonal matrices'; nonnegativity is retained"
+  },
+  "teleqna-01689": {
+   "n": 29,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "explanation supports options C and D simultaneously"
+  },
+  "teleqna-01762": {
+   "n": 30,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-01776": {
+   "n": 31,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-01883": {
+   "n": 32,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02063": {
+   "n": 33,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02077": {
+   "n": 34,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-02106": {
+   "n": 35,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-02130": {
+   "n": 36,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-02214": {
+   "n": 37,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-02307": {
+   "n": 38,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02319": {
+   "n": 39,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-02543": {
+   "n": 40,
+   "subject": "Research overview",
+   "category": "C",
+   "why": "sparsification is update compression (option A); the explanation defines device selection"
+  },
+  "teleqna-02576": {
+   "n": 41,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-02600": {
+   "n": 42,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02658": {
+   "n": 43,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-02665": {
+   "n": 44,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-02686": {
+   "n": 45,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02802": {
+   "n": 46,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-02855": {
+   "n": 47,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-02879": {
+   "n": 48,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "explanation supports D and E; C is the canonical definition of CBG-based HARQ"
+  },
+  "teleqna-02880": {
+   "n": 49,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-02925": {
+   "n": 50,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-02966": {
+   "n": 51,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-03055": {
+   "n": 52,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-03066": {
+   "n": 53,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-03274": {
+   "n": 54,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-03360": {
+   "n": 55,
+   "subject": "Research overview",
+   "category": "C",
+   "why": "gold describes the setting of centralized CSS, not an attack scenario"
+  },
+  "teleqna-03404": {
+   "n": 56,
+   "subject": "Standards overview",
+   "category": "C",
+   "why": "Class A has the fewest networks; the explanation ('126 network addresses') contradicts 'largest'"
+  },
+  "teleqna-03418": {
+   "n": 57,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-03464": {
+   "n": 58,
+   "subject": "Standards overview",
+   "category": "B"
+  },
+  "teleqna-03553": {
+   "n": 59,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-03565": {
+   "n": 60,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-03627": {
+   "n": 61,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-03638": {
+   "n": 62,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-03722": {
+   "n": 63,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-03735": {
+   "n": 64,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-03751": {
+   "n": 65,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-03853": {
+   "n": 66,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-04117": {
+   "n": 67,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-04181": {
+   "n": 68,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-04234": {
+   "n": 69,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-04281": {
+   "n": 70,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-04293": {
+   "n": 71,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-04344": {
+   "n": 72,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-04364": {
+   "n": 73,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-04546": {
+   "n": 74,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-04635": {
+   "n": 75,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-04648": {
+   "n": 76,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-04755": {
+   "n": 77,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-04762": {
+   "n": 78,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-04772": {
+   "n": 79,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-04774": {
+   "n": 80,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-04876": {
+   "n": 81,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "TM definition inverted: gold says H has a component along propagation, the explanation says it has none"
+  },
+  "teleqna-04889": {
+   "n": 82,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "maximum-entropy density under a variance constraint is Gaussian; Laplace unsupported as posed"
+  },
+  "teleqna-05052": {
+   "n": 83,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05070": {
+   "n": 84,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-05074": {
+   "n": 85,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05078": {
+   "n": 86,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-05227": {
+   "n": 87,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05231": {
+   "n": 88,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-05406": {
+   "n": 89,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05496": {
+   "n": 90,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-05508": {
+   "n": 91,
+   "subject": "Research overview",
+   "category": "C",
+   "why": "gold restates the stem ('Free-Space Optical Channels'); explanation is vacuous"
+  },
+  "teleqna-05552": {
+   "n": 92,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-05566": {
+   "n": 93,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05645": {
+   "n": 94,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-05650": {
+   "n": 95,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-05710": {
+   "n": 96,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-05805": {
+   "n": 97,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-05833": {
+   "n": 98,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-06096": {
+   "n": 99,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-06105": {
+   "n": 100,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-06139": {
+   "n": 101,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-06149": {
+   "n": 102,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-06226": {
+   "n": 103,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-06231": {
+   "n": 104,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06280": {
+   "n": 105,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-06302": {
+   "n": 106,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06373": {
+   "n": 107,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-06407": {
+   "n": 108,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06473": {
+   "n": 109,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "explanation names posterior mean AND posterior precision - two options correct"
+  },
+  "teleqna-06575": {
+   "n": 110,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-06651": {
+   "n": 111,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-06693": {
+   "n": 112,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06706": {
+   "n": 113,
+   "subject": "Standards specifications",
+   "category": "C",
+   "why": "explanation contains both option A and option B"
+  },
+  "teleqna-06730": {
+   "n": 114,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06773": {
+   "n": 115,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-06867": {
+   "n": 116,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-06883": {
+   "n": 117,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-06987": {
+   "n": 118,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-07015": {
+   "n": 119,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-07252": {
+   "n": 120,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-07278": {
+   "n": 121,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-07403": {
+   "n": 122,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "explanation supports both A (mobile energy transporters) and D (power quality)"
+  },
+  "teleqna-07469": {
+   "n": 123,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-07505": {
+   "n": 124,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-07608": {
+   "n": 125,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-07751": {
+   "n": 126,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-07849": {
+   "n": 127,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "explanation lists five components spanning options A-E"
+  },
+  "teleqna-07878": {
+   "n": 128,
+   "subject": "Standards specifications",
+   "category": "C",
+   "why": "explanation says nothing about stateless vs stateful mode"
+  },
+  "teleqna-07881": {
+   "n": 129,
+   "subject": "Standards specifications",
+   "category": "B"
+  },
+  "teleqna-07883": {
+   "n": 130,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-07936": {
+   "n": 131,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-07993": {
+   "n": 132,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-08106": {
+   "n": 133,
+   "subject": "Research publications",
+   "category": "C",
+   "why": "sphere-packing / sphere-covering assignment is reversed w.r.t. standard information theory"
+  },
+  "teleqna-08227": {
+   "n": 134,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-08291": {
+   "n": 135,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-08307": {
+   "n": 136,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-08364": {
+   "n": 137,
+   "subject": "Standards specifications",
+   "category": "C",
+   "why": "CCO is coverage-and-capacity optimisation, unrelated to positioning"
+  },
+  "teleqna-08426": {
+   "n": 138,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-08447": {
+   "n": 139,
+   "subject": "Research publications",
+   "category": "B"
+  },
+  "teleqna-08546": {
+   "n": 140,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-08760": {
+   "n": 141,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-08783": {
+   "n": 142,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-08835": {
+   "n": 143,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-08894": {
+   "n": 144,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-09138": {
+   "n": 145,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-09185": {
+   "n": 146,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-09223": {
+   "n": 147,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09239": {
+   "n": 148,
+   "subject": "Research overview",
+   "category": "A"
+  },
+  "teleqna-09260": {
+   "n": 149,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09344": {
+   "n": 150,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-09498": {
+   "n": 151,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09515": {
+   "n": 152,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09665": {
+   "n": 153,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09678": {
+   "n": 154,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-09781": {
+   "n": 155,
+   "subject": "Standards specifications",
+   "category": "A"
+  },
+  "teleqna-09798": {
+   "n": 156,
+   "subject": "Standards overview",
+   "category": "A"
+  },
+  "teleqna-09799": {
+   "n": 157,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-09801": {
+   "n": 158,
+   "subject": "Research overview",
+   "category": "B"
+  },
+  "teleqna-09821": {
+   "n": 159,
+   "subject": "Research publications",
+   "category": "A"
+  },
+  "teleqna-09856": {
+   "n": 160,
+   "subject": "Research overview",
+   "category": "A"
+  }
+ },
+ "by_subject": {
+  "Standards specifications": {
+   "C": 5,
+   "A": 34,
+   "B": 6
+  },
+  "Research overview": {
+   "B": 14,
+   "A": 13,
+   "C": 4
+  },
+  "Standards overview": {
+   "A": 15,
+   "C": 2,
+   "B": 1
+  },
+  "Research publications": {
+   "B": 20,
+   "C": 9,
+   "A": 36
+  },
+  "Lexicon": {
+   "A": 1
+  }
+ }
+}

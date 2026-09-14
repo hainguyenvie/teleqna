@@ -1,0 +1,137 @@
+# A second runner on the four GPUs the device plugin will not give us.
+#
+# hgx046 has no schedulable GPU left: every one of the 8 nvidia.com/gpu
+# allocations is taken, and a pod that asks for one is rejected at kubelet
+# admission with "Requested: 1, Available: 0". Four of those cards (2, 3, 5, 7)
+# are nonetheless physically idle at 134 MiB, held by pods in namespaces this
+# service account cannot list.
+#
+# There is a second door. The node's container runtime exposes GPUs through
+# CDI, and a pod that declares runtimeClassName: nvidia gets them injected
+# without consuming a device-plugin allocation. tensara-dev-0 has been running
+# the opera project on GPU 6 this way for over a day. Three details, each found
+# by a failed probe:
+#
+#   1. runtimeClassName: nvidia is mandatory. Without it the pod starts but has
+#      no driver at all — nvidia-smi is not even on PATH.
+#   2. NVIDIA_VISIBLE_DEVICES must be "all". This node's CDI registry only has
+#      the `all` device; both UUID and index forms die at container creation
+#      with "unresolvable CDI devices management.nvidia.com/gpu=2". So the
+#      container sees all eight cards and CUDA_VISIBLE_DEVICES does the pinning.
+#   3. cpu requests must be tiny. The node is at 191600m of 192000m requested,
+#      so anything asking for a whole core is rejected OutOfcpu — a failure that
+#      has nothing to do with GPUs and reads very confusingly if you are
+#      expecting a GPU error. Requests are what admission checks; limits still
+#      allow bursting to 8 cores when the node is idle.
+#
+# Two things this does NOT give you. The isolation is soft: the container can
+# see all eight cards, so every job must set CUDA_VISIBLE_DEVICES itself rather
+# than trust a default — GPU 1 is the teleqna CPT run and GPUs 4 and 6 belong to
+# other people. And there is no scheduler protection: if whoever holds the
+# allocation for 2/3/5/7 starts using it, both sides OOM and neither wins.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teleqna-spare4
+  namespace: tensara
+  labels:
+    app: teleqna-spare4
+    owner: h2n
+spec:
+  restartPolicy: Never
+  nodeName: hgx046
+  runtimeClassName: nvidia
+  containers:
+    - name: main
+      image: pytorch/pytorch:2.8.0-cuda12.8-cudnn9-devel
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          set -u
+          ROOT=/workspace/teleqna-spare4
+          mkdir -p "$ROOT/jobs" "$ROOT/done" "$ROOT/results" "$ROOT/models"
+          chmod -R 0777 "$ROOT/jobs" "$ROOT/done" "$ROOT/results" "$ROOT/models" 2>/dev/null || true
+          echo "runner up $(date -Iseconds) $(hostname)"
+          echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+          nvidia-smi -L || true
+          while true; do
+            for job in "$ROOT"/jobs/*.sh; do
+              [ -e "$job" ] || continue
+              name=$(basename "$job" .sh)
+              mv "$job" "$ROOT/done/$name.running" || continue
+              setsid bash "$ROOT/done/$name.running" > "$ROOT/done/$name.log" 2>&1 &
+              pid=$!
+              while kill -0 "$pid" 2>/dev/null; do
+                if [ -e "$ROOT/done/$name.kill" ]; then
+                  kill -- -"$pid" 2>/dev/null || true
+                  sleep 2
+                  kill -9 -- -"$pid" 2>/dev/null || true
+                  rm -f "$ROOT/done/$name.kill"
+                fi
+                sleep 5
+              done
+              wait "$pid"
+              rc=$?
+              mv "$ROOT/done/$name.running" "$ROOT/done/$name.rc$rc"
+              chmod -R 0777 "$ROOT/done" "$ROOT/results" "$ROOT/models" 2>/dev/null || true
+            done
+            sleep 5
+          done
+      resources:
+        # No nvidia.com/gpu here on purpose — that is the door that is shut.
+        requests:
+          cpu: "200m"
+          memory: 8Gi
+        limits:
+          # 32, not 8. The limit is a hard CFS quota, and torch sizes its OMP
+          # pool from the NODE's 192 cores, not from the quota — so four eval
+          # processes inside an 8-core quota spawned ~768 threads and throttled
+          # to a standstill: the 16 GB base model loaded in 3 s while the 0.7 GB
+          # LoRA adapter crawled at 36 MB/min with the GPUs at 0%. OMP_NUM_THREADS
+          # below is the other half of the fix; raising the quota alone is not
+          # enough. requests stays at 200m so admission still passes.
+          cpu: "32"
+          memory: 192Gi
+      env:
+        # all + pin, because index and UUID forms are unresolvable on this node
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "compute,utility"
+        - name: CUDA_VISIBLE_DEVICES
+          value: "2,3,5,7"
+        - name: TORCH_CUDA_ARCH_LIST
+          value: "9.0"
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: HF_DATASETS_OFFLINE
+          value: "1"
+        - name: TOKENIZERS_PARALLELISM
+          value: "false"
+        # torch reads the node's core count, not the cgroup quota; without this
+        # every process opens a 192-thread pool and they fight over the quota.
+        - name: OMP_NUM_THREADS
+          value: "8"
+        - name: PYTORCH_CUDA_ALLOC_CONF
+          value: expandable_segments:True
+      volumeMounts:
+        - name: project
+          mountPath: /workspace/teleqna-spare4
+        - name: telelogs-base
+          mountPath: /workspace/telelogs-base
+          readOnly: true
+        - name: shm
+          mountPath: /dev/shm
+  volumes:
+    - name: project
+      hostPath:
+        path: /mnt/registry/tensara-home/projects/telelogs/runs/teleqna-spare4
+        type: DirectoryOrCreate
+    - name: telelogs-base
+      hostPath:
+        path: /mnt/registry/tensara-home/projects/telelogs
+        type: Directory
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 32Gi

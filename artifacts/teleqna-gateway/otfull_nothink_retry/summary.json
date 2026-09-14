@@ -1,0 +1,71 @@
+{
+  "total": 9,
+  "correct": 7,
+  "accuracy": 0.7778,
+  "stderr": 0.1386,
+  "parse_failures": 0,
+  "request_errors": 0,
+  "truncated": 0,
+  "predicted_letter_distribution": {
+    "A": 2,
+    "C": 4,
+    "D": 1,
+    "E": 2
+  },
+  "accuracy_by_subject": {
+    "Research overview": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1.0
+    },
+    "Research publications": {
+      "correct": 5,
+      "total": 7,
+      "accuracy": 0.7143
+    },
+    "Standards overview": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1.0
+    }
+  },
+  "accuracy_by_gold_letter": {
+    "A": {
+      "correct": 2,
+      "total": 2,
+      "accuracy": 1.0
+    },
+    "B": {
+      "correct": 0,
+      "total": 1,
+      "accuracy": 0.0
+    },
+    "C": {
+      "correct": 4,
+      "total": 4,
+      "accuracy": 1.0
+    },
+    "D": {
+      "correct": 1,
+      "total": 2,
+      "accuracy": 0.5
+    }
+  },
+  "accuracy_by_choice_count": {
+    "4": {
+      "correct": 3,
+      "total": 3,
+      "accuracy": 1.0
+    },
+    "5": {
+      "correct": 4,
+      "total": 6,
+      "accuracy": 0.6667
+    }
+  },
+  "mean_completion_tokens": 225.0,
+  "model": "Qwen/Qwen3.5-122B-A10B-FP8",
+  "thinking": false,
+  "max_tokens": 2048,
+  "n": 9
+}

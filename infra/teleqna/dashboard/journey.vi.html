@@ -1,0 +1,1884 @@
+<title>TeleQnA — hành trình chọn hướng, và dữ liệu đang được sinh ra</title>
+<style>
+  :root{
+    color-scheme: light;
+    --plane:#f5f8fc; --panel:#ffffff; --panel-2:#f0f4fa;
+    --rule:#dbe4ef; --rule-soft:#eaf0f7;
+    --ink:#0f1c2b; --ink-2:#54687d; --ink-3:#8496a7;
+    --s1:#2a78d6; --s1-wash:rgba(42,120,214,.12);
+    --s2:#eb6834; --s2-wash:rgba(235,104,52,.12);
+    --good:#0ca30c; --warn:#b07d00; --crit:#d03b3b;
+    --floor:#8496a7;
+    --shadow:0 1px 2px rgba(15,28,43,.05), 0 10px 28px rgba(15,28,43,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])){
+      color-scheme: dark;
+      --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+      --rule:#26374e; --rule-soft:#1b283d;
+      --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+      --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+      --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+      --good:#26b326; --warn:#fab219; --crit:#e05c5c;
+      --floor:#7b8ea5;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --plane:#0a1018; --panel:#111c2d; --panel-2:#162336;
+    --rule:#26374e; --rule-soft:#1b283d;
+    --ink:#e9f0fa; --ink-2:#9db0c6; --ink-3:#7b8ea5;
+    --s1:#3987e5; --s1-wash:rgba(57,135,229,.18);
+    --s2:#d95926; --s2-wash:rgba(217,89,38,.18);
+    --good:#26b326; --warn:#fab219; --crit:#e05c5c;
+    --floor:#7b8ea5;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px rgba(0,0,0,.38);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--plane); color:var(--ink);
+    font:15px/1.66 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  main{width:min(1080px,93vw); margin:0 auto; padding:44px 0 110px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  h1{font-size:clamp(29px,4.1vw,44px); line-height:1.09; letter-spacing:-.028em;
+     margin:0 0 14px; font-weight:800; text-wrap:balance; max-width:22ch}
+  h2{font-size:clamp(20px,2.3vw,26px); letter-spacing:-.02em; font-weight:750;
+     margin:0 0 6px; text-wrap:balance}
+  h3{font-size:16.5px; letter-spacing:-.012em; font-weight:700; margin:0 0 6px}
+  p{margin:0 0 12px; max-width:72ch}
+  .lede{font-size:17px; color:var(--ink-2); max-width:70ch; margin-bottom:0}
+  .eyebrow{font-size:11px; font-weight:750; letter-spacing:.13em; text-transform:uppercase;
+     color:var(--ink-3); margin:0 0 10px; display:flex; align-items:center; gap:10px}
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--rule)}
+  .note{font-size:13.8px; color:var(--ink-2); max-width:76ch}
+  .tiny{font-size:12px; color:var(--ink-3); max-width:78ch}
+  a{color:var(--s1)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.87em;
+    background:var(--panel-2); border:1px solid var(--rule); border-radius:5px; padding:1px 5px}
+  strong{font-weight:700}
+  :focus-visible{outline:2px solid var(--s1); outline-offset:2px; border-radius:4px}
+
+  section{margin-top:58px}
+  .card{background:var(--panel); border:1px solid var(--rule); border-radius:14px;
+    padding:22px; box-shadow:var(--shadow)}
+  .grid{display:grid; gap:14px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  @media(max-width:900px){.g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))} .g2{grid-template-columns:1fr}}
+  @media(max-width:560px){.g4,.g3{grid-template-columns:1fr}}
+
+  .masthead{border-bottom:1px solid var(--rule); padding-bottom:26px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+  .chip{font-size:11.5px; font-weight:650; padding:4px 10px; border-radius:999px;
+    border:1px solid var(--rule); background:var(--panel); color:var(--ink-2); white-space:nowrap}
+  .chip b{color:var(--ink); font-weight:750}
+
+  .tile{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:16px 17px}
+  .tile .k{font-size:10.5px; font-weight:750; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .tile .v{font-size:30px; font-weight:800; letter-spacing:-.03em; margin:8px 0 3px; line-height:1}
+  .tile .s{font-size:12.5px; color:var(--ink-2); line-height:1.45}
+  .tile.hl{border-color:color-mix(in srgb,var(--s1) 42%,transparent); background:var(--s1-wash)}
+  .tile.bad{border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+
+  .verdict{display:flex; gap:14px; align-items:flex-start; border-radius:12px; padding:16px 18px;
+    border:1px solid; margin-top:16px}
+  .verdict .badge{flex:none; font-size:10.5px; font-weight:800; letter-spacing:.09em;
+    text-transform:uppercase; padding:4px 10px; border-radius:999px; color:#fff; margin-top:2px}
+  .verdict.pass{border-color:color-mix(in srgb,var(--good) 40%,transparent);
+    background:color-mix(in srgb,var(--good) 9%,transparent)}
+  .verdict.pass .badge{background:var(--good)}
+  .verdict.watch{border-color:color-mix(in srgb,var(--warn) 45%,transparent);
+    background:color-mix(in srgb,var(--warn) 10%,transparent)}
+  .verdict.watch .badge{background:var(--warn); color:#1a1200}
+  .verdict.stop{border-color:color-mix(in srgb,var(--crit) 42%,transparent);
+    background:color-mix(in srgb,var(--crit) 9%,transparent)}
+  .verdict.stop .badge{background:var(--crit)}
+  .verdict p{margin:0; font-size:14px}
+
+  .tw{border:1px solid var(--rule); border-radius:12px; overflow-x:auto; background:var(--panel)}
+  table{width:100%; border-collapse:collapse; font-size:13.4px; font-variant-numeric:tabular-nums}
+  th,td{padding:9px 13px; text-align:right; border-bottom:1px solid var(--rule-soft); white-space:nowrap}
+  th{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3);
+    background:var(--panel-2); font-weight:750}
+  th:first-child,td:first-child{text-align:left}
+  td.l,th.l{text-align:left; white-space:normal}
+  tbody tr:last-child td{border-bottom:0}
+  tr.us td{background:var(--s1-wash); font-weight:700}
+  tr.dead td{color:var(--ink-3)}
+  .pos{color:var(--good); font-weight:700}
+  .neg{color:var(--crit); font-weight:700}
+  .flat{color:var(--ink-3); font-weight:700}
+  .warn{color:var(--warn); font-weight:700}
+
+  figure{margin:0}
+  figcaption{font-size:12.5px; color:var(--ink-2); margin-top:10px; max-width:78ch}
+  .chartbox{overflow-x:auto}
+  svg{display:block; width:100%; height:auto; max-width:100%}
+  .ax{font-size:11px; fill:var(--ink-3); font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .lbl{font-size:12.5px; fill:var(--ink-2)}
+  .lbl.em{fill:var(--ink); font-weight:700}
+  .val{font-size:12px; fill:var(--ink); font-weight:700; font-family:ui-monospace,Menlo,monospace}
+  .grid-line{stroke:var(--rule-soft); stroke-width:1}
+  .axis-line{stroke:var(--rule); stroke-width:1}
+  .floor-line{stroke:var(--floor); stroke-width:1.5; stroke-dasharray:4 3}
+  .floor-lbl{font-size:11px; fill:var(--floor); font-weight:700}
+
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin:2px 0 14px; font-size:12.5px; color:var(--ink-2)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .swatch{width:11px; height:11px; border-radius:3px; flex:none}
+
+  .callout{border-left:3px solid var(--s1); padding:2px 0 2px 16px; margin:18px 0;
+    color:var(--ink); font-size:15px; max-width:70ch}
+  .callout.alarm{border-left-color:var(--crit)}
+  .callout.ok{border-left-color:var(--good)}
+  details{margin-top:14px; border-top:1px solid var(--rule); padding-top:12px}
+  summary{cursor:pointer; font-size:12.5px; font-weight:700; color:var(--ink-2)}
+  summary::marker{color:var(--ink-3)}
+  details[open] summary{margin-bottom:12px}
+  ul,ol{margin:0 0 12px; padding-left:20px; max-width:72ch}
+  li{margin-bottom:7px}
+  hr{border:0; border-top:1px solid var(--rule); margin:34px 0}
+
+  /* question cards */
+  .q{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:16px 18px;
+     box-shadow:var(--shadow)}
+  .q .qh{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+  .q .qt{font-size:14.5px; font-weight:650; margin:0 0 10px; max-width:none}
+  .q ol.ch{list-style:none; padding:0; margin:0 0 10px; max-width:none}
+  .q ol.ch li{display:flex; gap:9px; align-items:flex-start; font-size:13.6px; margin-bottom:5px;
+     padding:5px 8px; border-radius:7px; border:1px solid transparent}
+  .q ol.ch li .k{font-family:ui-monospace,Menlo,monospace; font-weight:700; color:var(--ink-3); flex:none}
+  .q ol.ch li.gold{background:color-mix(in srgb,var(--good) 10%,transparent);
+     border-color:color-mix(in srgb,var(--good) 34%,transparent)}
+  .q ol.ch li.gold .k{color:var(--good)}
+  .q ol.ch li.picked{background:color-mix(in srgb,var(--crit) 10%,transparent);
+     border-color:color-mix(in srgb,var(--crit) 34%,transparent)}
+  .q ol.ch li.picked .k{color:var(--crit)}
+  .q .ev{font-size:12.6px; color:var(--ink-2); border-left:3px solid var(--rule);
+     padding-left:11px; margin-top:10px; font-style:italic}
+  .q .cm{font-size:13px; margin-top:11px; padding-top:10px; border-top:1px dashed var(--rule);
+     color:var(--ink-2)}
+  .q .cm b{color:var(--ink)}
+  .q.bad{border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+  .tagd{background:color-mix(in srgb,var(--s2) 14%,transparent);
+     border-color:color-mix(in srgb,var(--s2) 40%,transparent); color:var(--ink)}
+  .tagg{background:color-mix(in srgb,var(--good) 12%,transparent);
+     border-color:color-mix(in srgb,var(--good) 36%,transparent); color:var(--ink)}
+  .tagr{background:color-mix(in srgb,var(--crit) 12%,transparent);
+     border-color:color-mix(in srgb,var(--crit) 38%,transparent); color:var(--ink)}
+
+  .defn{background:var(--panel-2); border:1px solid var(--rule); border-radius:11px; padding:14px 16px}
+  .defn h3{font-size:14px; margin-bottom:5px}
+  .defn p{font-size:13.2px; color:var(--ink-2); margin:0; max-width:none}
+
+  .step{display:flex; gap:14px; align-items:flex-start; padding:14px 0;
+     border-bottom:1px solid var(--rule-soft)}
+  .step:last-child{border-bottom:0}
+  .step .n{flex:none; width:30px; height:30px; border-radius:9px; background:var(--s1-wash);
+     border:1px solid color-mix(in srgb,var(--s1) 35%,transparent); color:var(--s1);
+     font-weight:800; font-size:13px; display:grid; place-items:center; font-family:ui-monospace,Menlo,monospace}
+  .step .b{flex:1}
+  .step .b p{margin:4px 0 0; font-size:13.5px; color:var(--ink-2)}
+</style>
+
+<main>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <p class="eyebrow">GSMA Open Telco · teleqna · nhật ký kỹ thuật</p>
+  <h1>Hành trình chọn hướng cho TeleQnA</h1>
+  <p class="lede">
+    Mục tiêu: một model <strong>closed-book</strong> (không RAG lúc chạy) đạt điểm cao trên
+    TeleQnA — 10.000 câu trắc nghiệm viễn thông, cột lớn nhất của bảng xếp hạng GSMA.
+    Điểm xuất phát là Qwen3-8B, <strong>71,95%</strong>. Trang này ghi lại toàn bộ đường đi:
+    đo cái gì, loại bỏ hướng nào và vì sao, rồi tại sao cuối cùng chỉ còn một cần gạt —
+    <em>sinh dữ liệu huấn luyện hard-negative từ chính các bản spec 3GPP</em>.
+  </p>
+  <div class="meta">
+    <span class="chip"><b>Benchmark</b> GSMA/ot-full · teleqna · 10.000 dòng</span>
+    <span class="chip"><b>Base</b> Qwen/Qwen3-8B</span>
+    <span class="chip"><b>Baseline</b> 71,95% no-think / 73,97% thinking</span>
+    <span class="chip"><b>SOTA</b> 91,20% (AT&amp;T OTel-LLM-8.3B-QnA)</span>
+    <span class="chip"><b>Tập train</b> 40.730 câu (<code>train_v3.jsonl</code> — spec + literature)</span>
+    <span class="chip"><b>Cập nhật</b> 2026-08-06</span>
+  </div>
+</header>
+
+<!-- ══════════ 0. TỪ ĐIỂN ══════════ -->
+<section>
+  <p class="eyebrow">Trước hết · các khái niệm dùng xuyên suốt</p>
+  <h2>Mười định nghĩa, không có cái nào là ẩn dụ</h2>
+  <p class="note" style="margin-top:10px">
+    Mọi con số phía dưới đều dựa vào đúng nghĩa hẹp của các từ này. Đọc lướt phần này thì
+    các phần sau sẽ mơ hồ.
+  </p>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="defn"><h3>Closed-book</h3><p>
+      Lúc trả lời, model chỉ có prompt gốc của harness — không tra cứu, không chèn tài liệu.
+      Đối lập là <em>RAG</em>. Ta chọn closed-book vì kiến thức nằm trong trọng số thì con số
+      công bố mới tái lập được, và vì yêu cầu của dự án là không dùng RAG.</p></div>
+    <div class="defn"><h3>Distractor</h3><p>
+      Ba đến bốn phương án sai của một câu trắc nghiệm. Chất lượng distractor quyết định độ
+      khó nhiều hơn bản thân câu hỏi — đây là phát hiện trung tâm của toàn bộ trang này.</p></div>
+    <div class="defn"><h3>Hard negative</h3><p>
+      Distractor chỉ sai <em>một chi tiết tối thiểu</em> so với đáp án đúng: lệch một số
+      release, lệch một giá trị/đơn vị kề bên, hoặc là một tên bản tin/thủ tục/IE anh em có
+      thật. Ví dụ đúng là <code>NPUSCH</code> thì distractor là <code>PUSCH</code>, không phải
+      &ldquo;một loại cáp quang&rdquo;.</p></div>
+    <div class="defn"><h3>Hard-core error</h3><p>
+      Câu mà baseline sai ở <em>cả</em> hai chế độ no-think và thinking. Có 2.049 câu như vậy.
+      Đây là tập lỗi thật, đã loại phần nhiễu do model dao động.</p></div>
+    <div class="defn"><h3>McNemar (paired)</h3><p>
+      Hai lần chạy trên cùng tập câu thì chỉ những dòng <em>bất đồng</em> mang thông tin.
+      McNemar kiểm định trên riêng các cặp đó. Nói &ldquo;tăng 1 điểm&rdquo; mà không kèm số
+      cặp bất đồng là nói một nửa sự thật.</p></div>
+    <div class="defn"><h3>Contamination</h3><p>
+      Dữ liệu huấn luyện chứa chính các dòng test. Model học thuộc và điểm số mất hết ý nghĩa.
+      Trong track này contamination là <em>giả thuyết mặc định</em>, phải chứng minh ngược lại,
+      vì TeleQnA đã công khai trên GitHub từ 2023.</p></div>
+    <div class="defn"><h3>Groundedness (verbatim)</h3><p>
+      Mỗi câu sinh ra phải kèm một trích dẫn <em>nguyên văn</em> 5–30 từ từ đoạn spec gốc. Cổng
+      lọc kiểm tra trích dẫn đó có thật sự là substring của chunk hay không. Nhờ vậy tính
+      &ldquo;có căn cứ&rdquo; là thứ được <em>kiểm tra</em>, không phải được một model khác
+      <em>phán</em>.</p></div>
+    <div class="defn"><h3>Chunk</h3><p>
+      Một mẩu văn bản spec 700–1.800 từ, cắt theo tiêu đề markdown, đủ dài để chứa ngữ cảnh ra
+      đề và đủ ngắn để nhét trọn vào prompt. Chunk là đơn vị đầu vào của bước sinh đề.</p></div>
+    <div class="defn"><h3>Floor (sàn)</h3><p>
+      Điểm mà một chiến lược <em>không đọc câu hỏi</em> vẫn đạt được. Trên TeleQnA sàn là
+      <strong>39,72%</strong>, không phải 22% ngẫu nhiên. Mọi mức tăng phải được đo từ sàn này.</p></div>
+    <div class="defn"><h3>Teacher vs Scaffold</h3><p>
+      <em>Scaffold</em>: gắn retrieval vào lúc phục vụ, điểm cao nhưng artefact không tự tái lập.
+      <em>Teacher</em>: dùng tài liệu/model mạnh để <em>sinh dữ liệu</em>, chưng cất kiến thức vào
+      trọng số, lúc chạy chỉ một lượt forward. Track này đi đường teacher.</p></div>
+  </div>
+</section>
+
+<!-- ══════════ 1. THANG ĐO ══════════ -->
+<section>
+  <p class="eyebrow">Bước 1 · hiệu chuẩn thước đo trước khi đo bất cứ thứ gì</p>
+  <h2>39,72% mới là sàn, và điều đó đổi hết ý nghĩa của mọi con số</h2>
+  <p class="note" style="margin-top:10px">
+    Trước khi chạy model, ta viết một chính sách <em>không đọc câu hỏi</em>: thấy
+    &ldquo;All of the above&rdquo; thì chọn, không thì chọn &ldquo;Both … and …&rdquo;, không nữa
+    thì bỏ &ldquo;None of the above&rdquo; và lấy phương án dài nhất. Chính sách đó đạt
+    <strong>39,72%</strong>. Hoán vị thứ tự phương án gần như không đổi (39,42%) — nghĩa là nó
+    khai thác <em>hình dạng nội dung</em> của distractor, không phải vị trí.
+  </p>
+
+  <div class="card" style="margin-top:18px">
+    <figure>
+      <div class="chartbox">
+        <svg viewBox="0 0 960 230" role="img" aria-label="Thang điểm hiệu chuẩn từ 20% đến 95%">
+          <rect id="floorband" y="26" height="120" fill="var(--rule-soft)"></rect>
+          <g class="ax" text-anchor="middle">
+            <line x1="52" y1="146" x2="936" y2="146" class="axis-line"></line>
+            <g id="scaleticks"></g>
+          </g>
+          <text id="floorlbl" y="196" class="floor-lbl" text-anchor="middle"></text>
+          <g id="scalemarks"></g>
+        </svg>
+      </div>
+      <figcaption>
+        Mọi mốc đều được chấm trên <em>đủ 10.000 dòng</em>. Vùng xám là phần một model
+        &ldquo;đạt được&rdquo; mà không cần biết gì về viễn thông. Các model frontier trên bảng
+        xếp hạng (gemini-3.1-pro 85,20 / gpt-5 83,80) cố ý không vẽ ở đây: chúng được chấm trên
+        tập con 1.000 dòng <code>ot-lite</code>, đặt chung trục sẽ lặp lại đúng lỗi trộn thang đo
+        mà bảng xếp hạng đang mắc.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">Sàn</div><div class="v">39,72%</div>
+      <div class="s">chính sách hình-dạng-distractor, 0 kiến thức</div></div>
+    <div class="tile hl"><div class="k">Baseline của ta</div><div class="v">73,97%</div>
+      <div class="s">+34,25 trên sàn — tức 53% của dải hữu dụng</div></div>
+    <div class="tile"><div class="k">Chuyên gia viễn thông</div><div class="v">64,86%</div>
+      <div class="s">đo trong bài báo gốc 2023; ta đã vượt từ lâu</div></div>
+    <div class="tile"><div class="k">SOTA</div><div class="v">91,20%</div>
+      <div class="s">AT&amp;T OTel-LLM-8.3B-QnA, n≈10.237, trọng số không phát hành</div></div>
+  </div>
+
+  <div class="callout">
+    Đây là lý do câu &ldquo;model được 72%&rdquo; gây hiểu nhầm. Trên thang đã hiệu chuẩn,
+    72% chỉ nằm khoảng giữa dải hữu dụng, và <strong>2.805 dòng vẫn sai</strong>.
+  </div>
+
+  <details>
+    <summary>Ba mồi bẫy hình dạng, đo trên đủ 10.000 dòng</summary>
+    <div class="tw">
+      <table>
+        <thead><tr><th class="l">Mẫu chuỗi trong phương án</th><th>Số dòng chứa</th>
+          <th>Số dòng nó là đáp án</th><th>Tỉ lệ đúng</th></tr></thead>
+        <tbody>
+          <tr><td class="l"><code>All of the above…</code></td><td>824</td><td>740</td><td class="pos">89,81%</td></tr>
+          <tr><td class="l"><code>Both … and …</code></td><td>145</td><td>99</td><td class="pos">68,28%</td></tr>
+          <tr><td class="l"><code>None of the above…</code></td><td>647</td><td>2</td><td class="neg">0,31%</td></tr>
+          <tr><td class="l"><code>not mentioned / not specified</code></td><td>17</td><td>0</td><td class="neg">0,00%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tiny" style="margin-top:10px">
+      Cộng thêm mồi độ dài: đáp án đúng trung bình 43,8 ký tự so với 39,9 của distractor, và là
+      phương án dài nhất ở 3.722 dòng so với ngắn nhất ở 2.550 dòng. Bốn mẫu này là
+      <em>dấu vân tay của bộ sinh GPT-3.5</em> đã tạo ra TeleQnA, không phải một tính chất của
+      ngành viễn thông — chi tiết ở phần chẩn đoán bộ test.
+    </p>
+  </details>
+</section>
+
+<!-- ══════════ 2. CHẨN ĐOÁN BỘ TEST ══════════ -->
+<section>
+  <p class="eyebrow">Bước 2 · chẩn đoán chính bộ test, trước khi chạm vào model</p>
+  <h2>10.000 dòng này được làm ra như thế nào, và nó để lộ điều gì</h2>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Năm môn học, độ khó không đều</h3>
+      <p class="tiny" style="margin-bottom:12px">
+        Thứ tự độ khó này ổn định qua mọi model từ 2023 tới nay: Lexicon dễ nhất, Standards
+        specifications khó nhất, cách nhau ~22 điểm.
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="l">Môn</th><th>Dòng</th><th>Kiểm tra cái gì</th></tr></thead>
+          <tbody>
+            <tr><td class="l">Research publications</td><td>4.500</td><td class="l">luận điểm trong bài báo hội nghị / transactions</td></tr>
+            <tr><td class="l">Research overview</td><td>2.000</td><td class="l">chủ đề nghiên cứu diện rộng</td></tr>
+            <tr><td class="l">Standards specifications</td><td>2.000</td><td class="l">chi tiết mức điều khoản của 3GPP / IEEE</td></tr>
+            <tr><td class="l">Standards overview</td><td>1.000</td><td class="l">tóm lược tiêu chuẩn</td></tr>
+            <tr><td class="l">Lexicon</td><td>500</td><td class="l">thuật ngữ và định nghĩa</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Nguồn gốc câu hỏi: chỉ 18% chỉ được về 3GPP</h3>
+      <p class="tiny" style="margin-bottom:12px">
+        Cái đuôi <code>[3GPP Release NN]</code> là dấu vết xuất xứ duy nhất mà benchmark mang theo,
+        và nó phân bố cực lệch.
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="l">Môn</th><th>Dòng</th><th>Có tag</th><th>Tag 3GPP</th></tr></thead>
+          <tbody>
+            <tr><td class="l">Standards specifications</td><td>2.000</td><td>2.000</td><td>1.509</td></tr>
+            <tr><td class="l">Standards overview</td><td>1.000</td><td>618</td><td>301</td></tr>
+            <tr><td class="l">Research publications</td><td>4.500</td><td>3</td><td>0</td></tr>
+            <tr><td class="l">Research overview</td><td>2.000</td><td>0</td><td>0</td></tr>
+            <tr><td class="l">Lexicon</td><td>500</td><td>0</td><td>0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:11px">
+        <strong>Một corpus 3GPP thuần chỉ chạm tới tối đa 1.810 dòng = 18% benchmark.</strong>
+        Cả dòng nghiên cứu Telco-RAG đọc theo hướng ngược lại chỉ vì 3GPP là phần <em>tải về được</em>.
+      </p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:26px">Không có mồi vị trí — khác hẳn benchmark anh em</h3>
+  <p class="note">
+    Phân bố vị trí đáp án đúng gần như đều: A 22,10% / B 21,79% / C 21,69% / D 21,53% / E 12,89%
+    (E thấp chỉ vì chỉ 6.441 dòng có phương án E; trong nhóm 5 phương án thì E đúng 20,0%).
+    <code>always A</code> được 22,10% so với ngẫu nhiên 21,89%. Bộ sinh của TeleQnA có xáo phương án,
+    và nó hoạt động. Đây là điều <em>ngược lại</em> với srsranbench, nơi <code>always A</code> được
+    75,83% — nên toàn bộ &ldquo;bài học&rdquo; từ track kia không chuyển sang được.
+  </p>
+
+  <div class="verdict watch" style="margin-top:8px">
+    <span class="badge">Hệ quả</span>
+    <p>
+      Bốn trong năm môn có cùng dấu vân tay bộ sinh (trung bình 4,61–4,66 phương án, 5,7–10,6%
+      chứa &ldquo;All of the above&rdquo;); riêng Lexicon thì không (4,73 phương án, 0,6%) — nó được
+      dựng từ từ điển theo một đường khác. Vì vậy: <strong>bộ dữ liệu huấn luyện nào không tái tạo
+      phân bố hình dạng này sẽ dạy model một heuristic lệch khỏi bài test.</strong>
+    </p>
+  </div>
+
+  <details>
+    <summary>Vệ sinh dữ liệu và trần điểm</summary>
+    <ul style="margin-top:10px">
+      <li>9.944 chuỗi câu hỏi duy nhất; 56 dòng lặp lại câu hỏi đã xuất hiện trước đó.</li>
+      <li>3 dòng trùng hoàn toàn (câu hỏi + phương án) với một dòng khác.</li>
+      <li><strong>0</strong> khoá mang đáp án mâu thuẫn — sạch hơn srsranbench (12 khoá mâu thuẫn).</li>
+      <li>Nên trần điểm thực tế là 100%; số dòng bị hỏng không đủ để giải thích bất kỳ khoảng cách nào.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ══════════ 3. BASELINE ══════════ -->
+<section>
+  <p class="eyebrow">Bước 3 · đo baseline, bốn nhánh, 40.000 phản hồi</p>
+  <h2>71,95% → 73,97%: thinking đáng +2,02 điểm, và nó dừng đúng chỗ khó nhất</h2>
+  <p class="note" style="margin-top:10px">
+    Cả bốn nhánh chạy đủ 10.000 dòng, greedy, template Inspect nguyên văn. Nhánh
+    <em>rotated</em> xoay thứ tự phương án theo một quy tắc tất định — trên benchmark này đó không
+    phải kiểm soát mồi vị trí (không có mồi vị trí) mà là kiểm soát <em>độ bền theo thứ tự</em>.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr><th class="l">Nhánh</th><th>Tổng</th><th>Lexicon</th><th>Res. ovw</th>
+        <th>Res. pub</th><th>Std. ovw</th><th>Std. spec</th><th>tok/câu</th></tr></thead>
+      <tbody>
+        <tr><td class="l">no-think</td><td>71,95%</td><td>83,40</td><td>74,25</td><td>74,84</td><td>69,70</td><td>61,40</td><td>5,0</td></tr>
+        <tr><td class="l">no-think, rotated</td><td>70,36%</td><td>83,60</td><td>73,50</td><td>73,07</td><td>69,80</td><td>58,10</td><td>5,0</td></tr>
+        <tr class="us"><td class="l">thinking</td><td>73,97%</td><td>87,20</td><td>75,55</td><td>77,62</td><td>72,20</td><td>61,75</td><td>967,8</td></tr>
+        <tr><td class="l">thinking, rotated</td><td>73,58%</td><td>87,60</td><td>75,70</td><td>76,38</td><td>73,50</td><td>61,70</td><td>1000,2</td></tr>
+        <tr class="dead"><td class="l">GPT-4 (bài báo 2023)</td><td>74,91%</td><td>86,80</td><td>76,25</td><td>77,62</td><td>74,40</td><td>64,78</td><td>—</td></tr>
+        <tr class="dead"><td class="l">Chuyên gia viễn thông</td><td>64,86%</td><td>80,33</td><td>63,66</td><td>68,33</td><td>61,66</td><td>56,33</td><td>—</td></tr>
+        <tr class="dead"><td class="l">Heuristic hình dạng</td><td>39,72%</td><td>32,80</td><td>39,90</td><td>41,80</td><td>42,00</td><td>35,50</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2" style="margin-top:22px">
+    <div class="card">
+      <h3>McNemar bắt cặp</h3>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">So sánh</th><th>Δ pp</th><th>bất đồng</th><th>p</th></tr></thead>
+          <tbody>
+            <tr><td class="l">thinking vs no-think</td><td class="pos">+2,02</td><td>554 / 756</td><td>&lt;0,001</td></tr>
+            <tr><td class="l">no-think: rotated vs thường</td><td class="neg">−1,59</td><td>647 / 488</td><td>&lt;0,001</td></tr>
+            <tr><td class="l">thinking: rotated vs thường</td><td class="flat">−0,39</td><td>538 / 499</td><td>0,238</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:12px">
+        Dòng thứ ba quan trọng ngang dòng đầu: bật thinking không chỉ nâng điểm, nó
+        <em>xoá</em> luôn độ nhạy với thứ tự phương án.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Thinking trả công ở mọi môn, trừ môn khó nhất</h3>
+      <figure>
+        <div class="chartbox"><svg viewBox="0 0 460 210" role="img"
+          aria-label="Điểm tăng khi bật thinking theo từng môn"><g id="deltachart"></g></svg></div>
+        <figcaption style="font-size:12px">
+          Số điểm tăng khi bật native thinking, theo môn, trên đủ benchmark. Số bên phải là số dòng của môn đó.
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="callout alarm">
+    <strong>Đây là chẩn đoán quyết định hướng đi.</strong> Standards specifications tăng
+    <strong>+0,35 điểm</strong> khi được suy nghĩ thêm 968 token mỗi câu. Suy luận không dựng lại
+    được một điều khoản 3GPP mà model chưa từng đọc. 2.000 dòng đó là <em>lỗ hổng kiến thức</em>,
+    không phải lỗ hổng suy luận — và không có prompt nào lấp được lỗ hổng kiến thức.
+  </div>
+</section>
+
+<!-- ══════════ 4. CHẨN ĐOÁN: HỌC THUỘC? ══════════ -->
+<section>
+  <p class="eyebrow">Bước 4 · chẩn đoán A — 71,95% này có phải là học thuộc không?</p>
+  <h2>Bốn phép đo độc lập, cùng một kết luận: không</h2>
+  <p class="note" style="margin-top:10px">
+    TeleQnA nằm công khai trên GitHub từ 2023. Nếu Qwen3-8B đã nuốt nó thì mọi phân tích phía sau
+    đều vô nghĩa. Cổng này phải đi qua trước, không phải kiểm tra cho có. Mẫu 600 dòng phân tầng
+    theo môn, các nhánh bắt cặp từng dòng.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr><th class="l">Nhánh probe</th><th class="l">Biến đổi gì</th><th>Độ chính xác</th>
+        <th>Δ so với gốc</th><th>bất đồng</th><th>p</th></tr></thead>
+      <tbody>
+        <tr><td class="l"><code>orig</code></td><td class="l">không đổi</td><td>72,67%</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="l"><code>paraphrase</code></td><td class="l">viết lại câu hỏi bằng từ khác, giữ nguyên thuật ngữ &amp; tag</td>
+          <td>72,57%</td><td class="flat">−0,87</td><td>25 / 20</td><td><strong>0,551</strong></td></tr>
+        <tr><td class="l"><code>perm</code></td><td class="l">xoay thứ tự phương án</td><td>69,00%</td>
+          <td class="neg">−3,67</td><td>55 / 33</td><td>0,025</td></tr>
+        <tr class="us"><td class="l"><code>distract</code></td>
+          <td class="l">giữ nguyên câu hỏi + đáp án đúng, thay 3 distractor bằng distractor của câu khác</td>
+          <td>88,50%</td><td class="pos">+15,83</td><td>50 / 145</td><td>&lt;0,001</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3><code>paraphrase</code> là dòng chịu lực</h3>
+      <p style="font-size:14.2px">
+        Viết lại <em>toàn bộ</em> câu hỏi bằng từ ngữ khác mà điểm không đổi (p = 0,55). Một model
+        đang nhớ chuỗi câu hỏi sẽ sụp ngay tại đây. Nó không sụp.
+      </p>
+      <p style="font-size:14.2px; margin-bottom:0">
+        <code>perm</code> −1,59 điểm trên đủ 10.000 dòng là hiệu ứng vị trí, không phải hiệu ứng
+        nhớ từng câu. Điều đáng chú ý hơn con số ròng: <strong>1.135/10.000 dòng đổi kết quả</strong>
+        khi xoay phương án (647 mất, 488 được). ~11% benchmark đang nằm trên lưỡi dao.
+      </p>
+    </div>
+    <div class="card">
+      <h3>TS-Guessing: che một phương án, bắt model dựng lại</h3>
+      <p class="tiny" style="margin-bottom:10px">
+        Che một phương án <em>sai</em> rồi hỏi model nó là gì. Khớp đúng 29/599 = 4,84%. Nhưng
+        phân rã theo độ dài mới là bằng chứng:
+      </p>
+      <div class="tw">
+        <table>
+          <thead><tr><th class="l">Độ dài phương án bị che</th><th>n</th><th>khớp thật</th><th>đối chứng tự sinh</th></tr></thead>
+          <tbody>
+            <tr><td class="l">1 từ</td><td>63</td><td>15,87%</td><td>8,51%</td></tr>
+            <tr><td class="l">2–3 từ</td><td>155</td><td>7,74%</td><td>5,15%</td></tr>
+            <tr><td class="l">4–6 từ</td><td>145</td><td>2,07%</td><td>2,07%</td></tr>
+            <tr><td class="l">7–12 từ</td><td>194</td><td>1,55%</td><td>0,55%</td></tr>
+            <tr class="us"><td class="l">≥5 từ (gộp)</td><td>326</td><td>1,23%</td><td>1,67%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:11px">
+        Suy giảm đơn điệu theo độ dài là chữ ký của <em>đoán</em>. Nếu là nhớ thì tỉ lệ phải phẳng
+        hoặc tăng, vì chuỗi dài thì đặc trưng hơn. Ở các phương án đủ dài để không đoán được, model
+        dựng lại distractor thật <em>kém hơn</em> distractor do chính nó vừa bịa ra.
+      </p>
+    </div>
+  </div>
+
+  <div class="verdict pass" style="margin-top:18px">
+    <span class="badge">Qua cổng</span>
+    <p>
+      <strong>Không có bằng chứng dùng được rằng Qwen3-8B đã học thuộc TeleQnA.</strong> Đây không
+      phải chứng minh model chưa từng thấy file đó — mà là phát biểu mạnh hơn và hữu dụng hơn:
+      <em>71,95% không giải thích được bằng trí nhớ</em>. Probe này phải chạy lại trên mọi checkpoint
+      sau fine-tune, vì huấn luyện chính là chỗ contamination có thể mới xâm nhập.
+    </p>
+  </div>
+
+  <details>
+    <summary>Một đối chứng đã phải vứt đi — và vì sao nó được ghi lại thay vì xoá</summary>
+    <p style="margin-top:10px; font-size:14px">
+      Đối chứng đầu tiên: che một distractor <em>lấy từ câu hỏi khác</em>. Kết quả 0/599, token-F1
+      0,032 so với 0,299 của probe thật. Nhìn thì đẹp, nhưng nó <strong>không hợp lệ</strong>: một
+      distractor ghép từ câu khác không phải câu trả lời hợp lý cho câu hỏi này, nên nó đã loại bỏ
+      luôn khả năng <em>đoán</em> cùng với khả năng <em>nhớ</em>. Nó đo &ldquo;model có dựng lại được
+      văn bản vô quan hay không&rdquo; — hiển nhiên là không.
+    </p>
+    <p style="font-size:14px; margin-bottom:0">
+      Đối chứng hợp lệ phải là văn bản <em>hợp lý cho chính câu hỏi này</em> và <em>không thể đã bị
+      nhớ</em>: distractor do chính model đang phục vụ bịa ra tại thời điểm chạy, khớp độ dài. Đó là
+      cột &ldquo;đối chứng tự sinh&rdquo; ở bảng trên.
+    </p>
+  </details>
+</section>
+
+<!-- ══════════ 5. CHẨN ĐOÁN: HÌNH DẠNG LỖI ══════════ -->
+<section>
+  <p class="eyebrow">Bước 5 · chẩn đoán B — lỗi có hình dạng gì</p>
+  <h2>+15,83 điểm: lỗi nằm ở phân biệt phương án, không phải ở thiếu kiến thức</h2>
+  <p class="note" style="margin-top:10px">
+    Nhánh <code>distract</code> giữ nguyên câu hỏi và giữ nguyên đáp án đúng, chỉ thay ba distractor
+    bằng distractor lấy từ câu hỏi khác. Điểm nhảy từ 72,67% lên <strong>88,50%</strong>. Nói cách khác:
+    <em>model đã biết đáp án đúng ở phần lớn các câu nó đang trả lời sai</em> — nó chỉ bị các phương án
+    gần nghĩa kéo đi.
+  </p>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="q">
+      <div class="qh"><span class="chip">TeleQnA #08347</span><span class="chip">Standards specifications</span>
+        <span class="chip">Rel-18</span><span class="chip tagd">nguyên bản</span></div>
+      <p class="qt">What are the characteristics of the interfering signals for standalone NB-IoT? [3GPP Release 18]</p>
+      <ol class="ch">
+        <li><span class="k">A</span><span>A PDSCH containing data and reference symbols</span></li>
+        <li><span class="k">B</span><span>A PUSCH containing data and reference symbols</span></li>
+        <li class="gold"><span class="k">C</span><span>A NPUSCH containing data and reference symbols</span></li>
+        <li><span class="k">D</span><span>A PRACH containing data and reference symbols</span></li>
+      </ol>
+      <p class="cm"><b>Bốn phương án khác nhau đúng một tiền tố kênh.</b> Phần còn lại của câu giống
+        hệt nhau. Muốn trả lời đúng phải biết chính xác NB-IoT dùng kênh uplink nào — không có chỗ nào
+        để suy luận vòng qua.</p>
+    </div>
+    <div class="q">
+      <div class="qh"><span class="chip">cùng câu hỏi</span><span class="chip">cùng đáp án đúng</span>
+        <span class="chip tagg">nhánh <code>distract</code></span></div>
+      <p class="qt">What are the characteristics of the interfering signals for standalone NB-IoT? [3GPP Release 18]</p>
+      <ol class="ch">
+        <li><span class="k">A</span><span>Through the ATSSS feature</span></li>
+        <li class="gold"><span class="k">B</span><span>A NPUSCH containing data and reference symbols</span></li>
+        <li><span class="k">C</span><span>To notify the home environment of ME changes</span></li>
+        <li><span class="k">D</span><span>Antenna element pattern in the GCS is equal to that in the LCS</span></li>
+      </ol>
+      <p class="cm"><b>Cùng kiến thức, nhưng giờ chỉ cần nhận ra chủ đề.</b> Đây là cách nhánh
+        <code>distract</code> được dựng (distractor lấy từ các câu khác trong chính bộ test). Trên
+        600 dòng, kiểu biến đổi này nâng điểm 72,67% → 88,50%.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    Khoảng <strong>16 điểm độ khó của benchmark này nằm trong distractor, không nằm trong câu hỏi.</strong>
+    Hệ quả trực tiếp cho mọi bộ dữ liệu sinh ra: một teacher viết distractor lười, lạc chủ đề sẽ dạy
+    <em>đáp án</em> mà không dạy <em>khả năng phân biệt</em> — đúng thứ mà benchmark chấm. Vì vậy
+    &ldquo;sinh distractor&rdquo; là một bước hạng nhất trong pipeline, không phải chi tiết phụ.
+  </div>
+
+  <div class="grid g4" style="margin-top:16px">
+    <div class="tile"><div class="k">Dòng sai (no-think)</div><div class="v">2.805</div>
+      <div class="s">trên 10.000</div></div>
+    <div class="tile bad"><div class="k">Hard-core</div><div class="v">2.049</div>
+      <div class="s">sai ở <em>cả</em> no-think và thinking</div></div>
+    <div class="tile"><div class="k">Std. spec hard-core</div><div class="v">29,8%</div>
+      <div class="s">của 2.000 dòng môn khó nhất</div></div>
+    <div class="tile"><div class="k">Dòng tag 3GPP hard-core</div><div class="v">30,3%</div>
+      <div class="s">→ đúng chỗ có corpus tải về được</div></div>
+  </div>
+</section>
+
+<!-- ══════════ 6. TẦNG EVAL-TIME ══════════ -->
+<section>
+  <p class="eyebrow">Bước 6 · chẩn đoán C — còn gì vắt được ở tầng eval-time không?</p>
+  <h2>Prompt, vote, hoán vị: đã vắt cạn, và một trong số đó còn âm</h2>
+
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card">
+      <h3>Tối ưu system prompt (DSPy / GEPA)</h3>
+      <p class="tiny">400 train / 600 val / 9.000 held-out, phân tầng theo môn, rời nhau. Cùng scorer,
+        cùng template, cùng decoding với baseline.</p>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">So sánh</th><th>Δ pp</th><th>p</th></tr></thead>
+          <tbody>
+            <tr><td class="l">không prompt → seed</td><td class="flat">−0,34</td><td>0,287</td></tr>
+            <tr><td class="l">không prompt → GEPA</td><td class="neg">−1,12</td><td>0,0011</td></tr>
+            <tr><td class="l">seed → GEPA</td><td class="neg">−0,78</td><td>0,0035</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:10px">
+        GEPA được +1,00 pp trên val và <strong>−0,78 pp</strong> trên held-out. Đảo dấu hoàn toàn.
+        Prompt nó tiến hoá ra là một tờ phao chứa đáp án dev-set nguyên văn
+        (<code>"ARPU = Average Revenue Per User"</code>), không phải một chiến lược.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Trần của prompt: cho lộ hết đáp án</h3>
+      <p class="tiny">Không phải kết quả nộp được. Nó tồn tại để định giá mọi con số prompt-tuning
+        tương lai: fit trên cả 10.000 rồi chấm trên chính 10.000 đó.</p>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l"></th><th>Δ vs không prompt</th></tr></thead>
+          <tbody>
+            <tr><td class="l">trung thực (9.000 rời)</td><td class="neg">−1,12</td></tr>
+            <tr><td class="l">trần (lộ hết)</td><td class="neg">−0,45</td></tr>
+            <tr class="us"><td class="l">ngân sách rò rỉ</td><td>+0,67</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:10px">
+        <strong>Kể cả khi được lộ toàn bộ đáp án, prompt vẫn tệ hơn không prompt.</strong> Không có
+        headroom để tìm. Mọi kết quả prompt trên track này từ nay không đáng hơn 0,67 pp.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Self-consistency vote</h3>
+      <div class="grid" style="gap:10px; margin-top:8px">
+        <div class="tile"><div class="k">Vote 4 nhánh hoán vị</div><div class="v" style="font-size:26px">74,71%</div>
+          <div class="s">+0,7 pp so với thinking</div></div>
+        <div class="tile"><div class="k">Oracle &ldquo;đúng ở bất kỳ nhánh nào&rdquo;</div>
+          <div class="v" style="font-size:26px">83,85%</div>
+          <div class="s">trần lý thuyết của mọi cách tổ hợp</div></div>
+      </div>
+      <p class="tiny" style="margin-top:10px">
+        Khoảng cách 9,1 điểm giữa vote và oracle nói rằng thông tin <em>có</em> ở đó nhưng biểu quyết
+        không lấy ra được: ~11% dòng nằm trên lưỡi dao và bỏ phiếu xấp xỉ 50/50. Đúng như kết quả
+        hoán vị đã dự báo.
+      </p>
+    </div>
+  </div>
+
+  <div class="verdict stop" style="margin-top:18px">
+    <span class="badge">Đóng</span>
+    <p>
+      Ba tầng rẻ tiền đều đã chạm trần: prompt <em>âm</em>, vote +0,7, thinking +2,02 nhưng
+      +0,35 ở đúng môn khó nhất. <strong>Điểm chỉ còn có thể đến từ trọng số hoặc từ ngữ cảnh.</strong>
+      Ngữ cảnh (RAG lúc chạy) bị loại bởi ràng buộc dự án. Còn lại: trọng số.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 7. SÀNG LỌC GIẢI PHÁP ══════════ -->
+<section>
+  <p class="eyebrow">Bước 7 · sàng lọc — bảy hướng, sáu bị loại bằng số đo</p>
+  <h2>Vì sao còn đúng một hướng</h2>
+  <p class="note" style="margin-top:10px">
+    Mỗi dòng dưới đây bị loại bởi một phép đo cụ thể, không phải bởi cảm tính. Cột cuối là bằng
+    chứng đã dẫn ở trên.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr><th class="l">Hướng</th><th class="l">Kỳ vọng</th><th class="l">Kết quả đo</th><th>Phán quyết</th></tr></thead>
+      <tbody>
+        <tr class="dead"><td class="l">Đổi base model to hơn</td><td class="l">nhiều tham số hơn = giỏi hơn</td>
+          <td class="l">qwen3-8b 74,5% → qwen3-235b-a22b 79,7%: <strong>+5,2 pp cho 30× tham số</strong>,
+            trong khi post-training chuyên ngành mua +16,7 pp ở cùng cỡ 8B</td><td class="neg">loại</td></tr>
+        <tr class="dead"><td class="l">RAG làm scaffold lúc chạy</td><td class="l">+10–20 điểm ở nửa standards</td>
+          <td class="l">hiệu quả nhất về điểm, nhưng artefact công bố không tự tái lập được, và
+            ràng buộc dự án là <em>không dùng RAG</em></td><td class="neg">loại</td></tr>
+        <tr class="dead"><td class="l">Chưng cất từ trọng số OTel đã công bố</td>
+          <td class="l">OTel-LLM-8.3B-QnA đạt 91,2% — mượn nó làm thầy</td>
+          <td class="l">bản QnA <em>không</em> được phát hành. Bản -IT phát hành đo được
+            <strong>60,87%</strong> closed-book, thấp hơn Qwen3-8B 11 điểm (Std. spec 49,6%)</td>
+          <td class="neg">loại</td></tr>
+        <tr class="dead"><td class="l">SFT thẳng trên bộ OTel 606k</td><td class="l">606.237 bản ghi, apache-2.0, sạch</td>
+          <td class="l">bộ này dạy <em>RAG-robustness</em> (mỗi bản ghi có 4–9 chunk sai cố ý, 16,5% phải
+            từ chối trả lời), chỉ 154 bản ghi có dạng trắc nghiệm. Model -IT <em>chính là</em> công thức
+            đó và mất 11 điểm</td><td class="neg">loại làm cần gạt chính</td></tr>
+        <tr class="dead"><td class="l">Dùng corpus AdaptKey-Nemotron-30b</td><td class="l">1,3 triệu bản ghi telecom công khai</td>
+          <td class="l">chứa <strong>~9.986/10.000</strong> câu test TeleQnA nguyên văn kèm đáp án —
+            và 864/864 bộ test TeleLogs. Xoá phần nhiễm cũng không cứu được vì phần nhiễm
+            <em>chính là</em> toàn bộ phần kiến thức</td><td class="neg">chặn</td></tr>
+        <tr class="dead"><td class="l">Tối ưu prompt / vote / thinking</td><td class="l">rẻ, không cần huấn luyện</td>
+          <td class="l">prompt −1,12 pp (âm cả khi lộ đáp án), vote +0,7 pp, thinking +0,35 pp ở môn khó nhất</td>
+          <td class="neg">cạn</td></tr>
+        <tr class="us"><td class="l">Sinh MCQ hard-negative từ spec 3GPP → SFT</td>
+          <td class="l">nhắm thẳng vào hình dạng lỗi đã đo</td>
+          <td class="l">probe <code>distract</code> +15,83 pp nói lỗi là <em>phân biệt phương án</em>;
+            1.964/2.049 lỗi hard-core truy được về một file spec cụ thể; corpus công khai, hợp pháp,
+            và đã quét sạch contamination</td><td class="pos">chọn</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout ok">
+    <strong>Logic của hướng được chọn, gói trong ba câu.</strong> (1) Model đã biết đáp án ở phần lớn
+    câu nó sai — nó thua ở việc phân biệt các phương án gần nghĩa. (2) Đúng thứ đó có thể dạy được:
+    huấn luyện trên các câu mà distractor chỉ lệch đáp án một release, một giá trị, một tên bản tin
+    anh em. (3) Nguyên liệu để tạo ra chúng là các bản spec 3GPP công khai — và 96% lỗi hard-core
+    truy ngược được về một file spec cụ thể.
+  </div>
+</section>
+
+<!-- ══════════ 8. DATASET ══════════ -->
+<section>
+  <p class="eyebrow">Bước 8 · các dataset đã kéo về, và bước đầu tiên làm với từng cái</p>
+  <h2>Quét contamination trước, dùng sau — không có ngoại lệ</h2>
+  <p class="note" style="margin-top:10px">
+    Quy tắc: mọi corpus bên thứ ba phải được quét shingle 8-gram đối chiếu với cả ba bộ test của repo
+    <em>trước khi</em> dùng. Quét rẻ (một lượt streaming), nên không có lý do bỏ qua.
+  </p>
+
+  <div class="tw" style="margin-top:18px">
+    <table>
+      <thead><tr><th class="l">Repo</th><th>Dung lượng</th><th class="l">Nội dung</th>
+        <th class="l">Quét → dùng vào việc gì</th></tr></thead>
+      <tbody>
+        <tr class="us"><td class="l"><code>GSMA/3GPP</code></td><td>3,14 GB</td>
+          <td class="l">15.052 file markdown spec, Rel-8 → Rel-20 (84.220 file tổng)</td>
+          <td class="l"><strong>Nguồn sinh dữ liệu chính.</strong> Đây là bản spec gốc, không phải QA —
+            không có gì để nhiễm</td></tr>
+        <tr><td class="l"><code>GSMA/Telco-Common-Corpus</code></td><td>8,9 GB</td>
+          <td class="l">1,78 triệu tài liệu, ~10 tỉ token: 64k bài IEEE open-access, 10k RFC + 40k draft,
+            120k bằng sáng chế, OpenAlex, Wikidata</td>
+          <td class="l">Giai đoạn sau — phủ 6.500 dòng Research (65% benchmark)</td></tr>
+        <tr><td class="l"><code>farbodtavakkoli/OTel-LLM</code></td><td>1,4 GB</td>
+          <td class="l">606.237 bản ghi SFT dạng RAG, apache-2.0</td>
+          <td class="l">8-gram báo 530/10.000 → xác minh còn <strong>15 (0,15%)</strong>. Sạch, nhưng
+            dùng cho RAG-robustness chứ không phải cần gạt chính</td></tr>
+        <tr class="dead"><td class="l"><code>AdaptKey/AdaptKey-Nemotron-30b</code></td><td>5,08 GB</td>
+          <td class="l">1.303.277 bản ghi</td>
+          <td class="l"><strong>~9.986/10.000 câu test nguyên văn.</strong> Chặn hoàn toàn</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card">
+      <h3>Hai giai đoạn quét, và vì sao cần cả hai</h3>
+      <p style="font-size:14.2px">
+        <code>scan_contamination.py</code> đánh chỉ mục shingle 8-gram. Trên bộ OTel nó báo 530/10.000.
+        Nhưng mọi ví dụ kiểm tra tay đều là <em>khung câu trắc nghiệm dùng chung</em>, không phải câu
+        hỏi dùng chung:
+      </p>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Shingle khớp</th><th class="l">Câu test</th><th class="l">Bản ghi corpus</th></tr></thead>
+          <tbody>
+            <tr><td class="l"><code>which of the following is not a benefit</code></td>
+              <td class="l">…of applying deep learning to wireless networking</td>
+              <td class="l">…of using declarative configurations in Kubernetes</td></tr>
+            <tr><td class="l"><code>what is the effect of increasing the number</code></td>
+              <td class="l">…of antennas at the macro BS</td>
+              <td class="l">…of guard subcarriers between 4-PRB subbands</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:14.2px; margin-top:12px; margin-bottom:0">
+        <code>verify_contamination.py</code> đánh chỉ mục <em>8 từ cuối</em> (phần đuôi mang chi tiết
+        riêng, không mang công thức), rồi bắt buộc cả câu hỏi phải xuất hiện nguyên văn: còn
+        <strong>15/10.000</strong>. Bài học hai chiều: <em>8-gram là chặn trên của rò rỉ khi các câu
+        dùng chung cách diễn đạt, và là chặn dưới của độ phủ khi câu quá ngắn.</em> Dừng ở một giai
+        đoạn theo chiều nào cũng sai.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Độ phủ: 93,5% dòng test có tài liệu nguồn tải về được</h3>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Lát cắt</th><th>Dòng</th><th class="l">Nguồn</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="l">Research publications + overview</td><td>6.500</td><td class="l">64k bài IEEE open-access + OpenAlex</td><td class="pos">✓</td></tr>
+            <tr><td class="l">3GPP Rel-14→19</td><td>1.810</td><td class="l"><code>GSMA/3GPP</code>, phủ dư</td><td class="pos">✓</td></tr>
+            <tr><td class="l">Lexicon</td><td>500</td><td class="l">lát Wikipedia/Wikidata</td><td class="warn">~</td></tr>
+            <tr><td class="l">TCP/IP</td><td>118</td><td class="l">10k RFC + 40k draft</td><td class="pos">✓</td></tr>
+            <tr><td class="l">IEEE 802.11 / 802.3 / 802.15.4</td><td>517</td><td class="l">không có trong repo GSMA nào</td><td class="neg">✗</td></tr>
+            <tr><td class="l">IEEE C95.1</td><td>130</td><td class="l">tiêu chuẩn IEEE trả phí</td><td class="neg">✗</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:11px">
+        Lỗ hổng còn lại là 652 dòng IEEE/Bluetooth. Riêng <strong>IEEE C95.1 là 130 dòng test chỉ từ
+        một tài liệu duy nhất</strong> — mật độ điểm trên mỗi trang cao nhất toàn benchmark.
+      </p>
+      <p class="tiny" style="margin-top:8px; margin-bottom:0">
+        Một phép đo độc lập theo hướng khác: 94,5% dòng test có ≥50% thuật ngữ hiếm của nó cùng xuất
+        hiện trong <em>một</em> bản ghi OTel-606k, và các lỗi hard-core cũng được phủ ngang ngửa (94,1%).
+        Nghĩa là lỗi <strong>không</strong> phải do corpus thiếu — nó là lỗi nội tại.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 9. PIPELINE ══════════ -->
+<section>
+  <p class="eyebrow">Bước 9 · pipeline sinh dữ liệu, năm bước</p>
+  <h2>Từ 2.049 lỗi đến ~66.000 câu hỏi, tất định ở mọi chỗ có thể tất định</h2>
+
+  <div class="card" style="margin-top:18px">
+    <div class="step"><div class="n">1</div><div class="b">
+      <h3>Xếp hạng tài liệu theo lỗi &nbsp;<span class="tiny mono">map_errors_to_specs.py</span></h3>
+      <p>Lấy 2.049 lỗi hard-core, rút <em>thuật ngữ hiếm</em> (xuất hiện ở ≤100 dòng test) từ câu hỏi +
+        đáp án đúng. Một lỗi &ldquo;khớp&rdquo; một file spec khi ≥60% thuật ngữ hiếm của nó có mặt trong
+        file. Kết quả: <strong>1.964/2.049 = 95,9%</strong> lỗi hard-core truy được về ít nhất một file.
+        Không dòng test nào lọt vào output — output chỉ là danh sách đường dẫn file kèm số đếm.</p>
+    </div></div>
+    <div class="step"><div class="n">2</div><div class="b">
+      <h3>Cắt chunk tất định &nbsp;<span class="tiny mono">make_spec_chunks.py</span></h3>
+      <p>Corpus 3GPP không có chunk sẵn — mỗi file là <em>nguyên một bản spec</em>. Và
+        <strong>không dùng embedding model</strong>: cắt bằng luật thuần. Bỏ bìa/logo/địa chỉ bằng cách
+        bắt đầu từ heading &ldquo;Scope&rdquo; đầu tiên → cắt theo heading markdown
+        <code>^#{1,4}</code>, giữ đường dẫn heading cha-con → bỏ dòng ảnh → gộp tham lam tới 700–1.800 từ
+        → rút danh tính spec từ đường dẫn bằng regex <code>Rel-(\d+)/(\d+)_series/(\d+)</code>.
+        Lý do cố ý giữ tất định: chunk phải <em>nguyên vẹn văn bản gốc</em> thì cổng verbatim ở bước 5
+        mới có giá trị.</p>
+    </div></div>
+    <div class="step"><div class="n">3</div><div class="b">
+      <h3>Ngân sách sinh: 60 file dày lỗi + 25 file diện rộng</h3>
+      <p>10.701 chunk từ 60 file đứng đầu bảng xếp hạng lỗi, cộng <strong>595 chunk</strong> từ 25 file
+        lấy mẫu ngẫu nhiên có seed, cố ý <em>không</em> liên quan tới lỗi. 595 chunk đó là bảo hiểm:
+        model đang đúng 72% bài test và phải giữ được phần đang đúng.</p>
+    </div></div>
+    <div class="step"><div class="n">4</div><div class="b">
+      <h3>Sinh đề bằng model tự host &nbsp;<span class="tiny mono">gen_synth_mcq.py</span></h3>
+      <p>Qwen3.5-35B-A3B-FP8 chạy vLLM v0.26 trên 1×H200. Mỗi chunk sinh 6 câu, <em>một nửa ở chế độ
+        <code>hard_negative</code></em>. Mỗi câu bắt buộc kèm trích dẫn nguyên văn 5–30 từ. Prompt chỉ
+        chứa văn bản spec công khai và chỉ dẫn của ta — <strong>không dòng test nào từng đi qua một API
+        bên thứ ba</strong>.</p>
+    </div></div>
+    <div class="step"><div class="n">5</div><div class="b">
+      <h3>Sáu cổng lọc tất định &nbsp;<span class="tiny mono">gate_synth.py</span></h3>
+      <p>Xếp theo thứ tự rẻ-trước, và <em>đếm riêng từng cổng</em> để khi tỉ lệ giữ lại sụt thì biết ngay
+        cổng nào đang chặn, thay vì chỉ thấy output nhỏ đi.</p>
+    </div></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:22px">
+    <div class="card">
+      <h3>Vì sao model sinh đề là bản tự host, không phải API ngoài</h3>
+      <ul style="font-size:14px; margin-top:10px; margin-bottom:0">
+        <li><strong>Ràng buộc dữ liệu.</strong> Dữ liệu benchmark chỉ được gửi tới model tự host. Ở đây
+          prompt chỉ chứa spec công khai nên về nguyên tắc là an toàn, nhưng giữ mọi thứ trong cụm thì
+          không phải tranh luận ranh giới ở từng bước.</li>
+        <li><strong>Thực tế.</strong> Khoá DeepSeek hết credit (HTTP 402) giữa chừng.</li>
+        <li><strong>Kiến trúc.</strong> <code>Qwen3_5MoeForConditionalGeneration</code> cần vLLM ≥ v0.26;
+          venv bench4 đang ghim 0.11 cho các nhánh cũ, nên đây là pod riêng dùng thẳng image upstream,
+          không đụng venv nào.</li>
+        <li><strong>Hai lỗi đã sửa khi dựng.</strong> Phần &ldquo;thinking&rdquo; làm hỏng JSON → bật
+          <code>enable_thinking: false</code>; cắt ở 4.000 token là 38% số lỗi của pilot → nâng lên 8.000.</li>
+        <li><strong>Nút thắt là client, không phải GPU.</strong> Nâng <code>--workers</code> 16 → 48 đưa
+          tốc độ từ 29 lên <strong>163 chunk/phút</strong>, cùng một GPU.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Sáu cổng, và cổng nào thật sự đang chặn</h3>
+      <p class="tiny" style="margin-bottom:10px">Chạy trên toàn bộ 62.390 câu thô. Giữ lại
+        <strong>39.827 = 63,84%</strong>.</p>
+      <figure>
+        <div class="chartbox"><svg viewBox="0 0 480 250" role="img" aria-label="Phễu sáu cổng lọc">
+          <g id="gatechart"></g></svg></div>
+      </figure>
+      <p class="tiny" style="margin-top:6px; margin-bottom:0">
+        <strong>Cổng <code>grounded</code> chặn 28,5% — và đó là dấu hiệu tốt.</strong> Nó bắt đúng loại
+        lỗi nguy hiểm nhất: model diễn giải lại thay vì trích nguyên văn, tức là câu hỏi đang trôi khỏi
+        văn bản gốc. Thà mất gần một phần ba sản lượng còn hơn huấn luyện trên nội dung bịa. Cổng
+        <code>contamination</code> loại 108 câu (0,17%) — thấp, nhưng con số đó được <em>báo cáo</em>
+        chứ không phải được kỳ vọng bằng 0: ta sinh từ chính các spec đã dựng nên benchmark.
+      </p>
+    </div>
+  </div>
+
+  <details>
+    <summary>Chi tiết sáu cổng, theo đúng thứ tự chạy</summary>
+    <div class="tw" style="margin-top:10px">
+      <table>
+        <thead><tr><th class="l">Cổng</th><th class="l">Kiểm tra</th><th class="l">Loại bỏ cái gì</th></tr></thead>
+        <tbody>
+          <tr><td class="l"><code>schema</code></td><td class="l">4–5 phương án phân biệt, chỉ số đáp án hợp lệ, trường không rỗng</td>
+            <td class="l">câu 6–10 phương án, đáp án trỏ ra ngoài mảng, phương án trùng nhau</td></tr>
+          <tr><td class="l"><code>style</code></td><td class="l">không rò rỉ &ldquo;theo tài liệu này/đoạn này&rdquo;; có tag Release; đủ 5 từ</td>
+            <td class="l">câu chỉ trả lời được khi đang nhìn vào đoạn trích</td></tr>
+          <tr><td class="l"><code>grounded</code></td><td class="l">trường <code>evidence</code> là substring nguyên văn (đã chuẩn hoá khoảng trắng) của chunk</td>
+            <td class="l">trích dẫn bị diễn giải lại → câu có nguy cơ bịa</td></tr>
+          <tr><td class="l"><code>distinct</code></td><td class="l">không distractor nào là đáp án đúng viết lại</td>
+            <td class="l">câu có hai đáp án đúng</td></tr>
+          <tr><td class="l"><code>dedup</code></td><td class="l">mỗi 6-từ-cuối chuẩn hoá chỉ xuất hiện một lần trong cả run</td>
+            <td class="l">câu lặp giữa các chunk chồng lấn</td></tr>
+          <tr><td class="l"><code>contamination</code></td><td class="l">khớp 6-từ-cuối với dòng test, HOẶC Jaccard ≥ 0,6 trên từ nội dung với cả 10.000 dòng</td>
+            <td class="l">câu sinh ra trùng câu test — ta sinh từ chính các spec đã dựng nên benchmark nên va chạm là chuyện phải xảy ra; nó được <em>đếm và báo cáo</em>, không giấu</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ 10. TIẾN ĐỘ ══════════ -->
+<section>
+  <p class="eyebrow">Bước 10 · vòng sinh đã hoàn tất</p>
+  <h2>11.282 chunk → 62.390 câu thô → 39.827 câu qua đủ sáu cổng</h2>
+  <p class="note" style="margin-top:10px">
+    Lượt chính sinh 11.242 chunk; một lượt chạy lại vớt thêm 40 chunk lỗi parse. Còn
+    <strong>14 chunk</strong> (0,12%) mà model không trả về JSON hợp lệ sau nhiều lần thử — bỏ, vì
+    0,12% không đổi được kết luận nào.
+  </p>
+
+  <div class="grid g4" style="margin-top:16px">
+    <div class="tile"><div class="k">Chunk đã sinh</div><div class="v">99,88%</div>
+      <div class="s">11.282 / 11.296 · ~163 chunk/phút</div></div>
+    <div class="tile"><div class="k">Câu thô</div><div class="v">62.390</div>
+      <div class="s">5,53 câu/chunk · 54 spec khác nhau</div></div>
+    <div class="tile hl"><div class="k">Qua đủ 6 cổng</div><div class="v">39.827</div>
+      <div class="s">63,84% giữ lại · 20.517 hard_negative / 19.310 standard</div></div>
+    <div class="tile"><div class="k">Phân bố Release</div><div class="v">35,3%</div>
+      <div class="s">Rel-17 + Rel-18, khớp trọng tâm của bộ test (71% dòng Std. spec)</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <figure>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--s1)"></i>câu thô sinh ra</span>
+        <span><i class="swatch" style="background:var(--s2)"></i>còn lại sau 6 cổng</span>
+        <span style="color:var(--ink-3)">cột phải: tỉ lệ giữ lại của spec đó</span>
+      </div>
+      <div class="chartbox"><svg viewBox="0 0 960 300" role="img"
+        aria-label="Câu thô và câu giữ lại theo từng spec"><g id="specchart"></g></svg></div>
+      <figcaption>
+        Mười spec đóng góp nhiều nhất, trên tổng 54 spec. Điều đáng chú ý là <strong>cột phải</strong>:
+        ba spec có tỉ lệ giữ lại thấp nhất — TS 38.331 (43%), TS 25.331 (44%), TS 36.331 (44%) — đều là
+        các spec RRC nặng ASN.1 và bảng trường tin. Ở đó model rất khó trích được một câu văn xuôi
+        nguyên vẹn 5–30 từ, nên cổng <code>grounded</code> cắt gần một nửa. Ngược lại TS 23.501 (76%)
+        và TS 23.401 (73%) viết bằng văn xuôi mô tả kiến trúc nên qua cổng dễ. Đây là thông tin để
+        điều chỉnh ngân sách sinh vòng sau, không phải lỗi của cổng.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══════════ 11. VÍ DỤ ══════════ -->
+<section>
+  <p class="eyebrow">Bước 11 · dữ liệu thật, không phải mẫu minh hoạ</p>
+  <h2>Sáu câu lấy từ mẫu ngẫu nhiên (seed 7) của file đang sinh</h2>
+  <p class="note" style="margin-top:10px">
+    Ba câu đầu là <code>hard_negative</code> đúng ý đồ; ba câu sau là các dạng khiếm khuyết tìm thấy
+    trong cùng mẫu đó. Không câu nào được sửa chữ — đây là output nguyên trạng. Trích dẫn dưới mỗi
+    câu là trường <code>evidence</code> mà model bắt buộc phải kèm và cổng <code>grounded</code> sẽ
+    đối chiếu ngược vào chunk gốc.
+  </p>
+  <div class="grid" style="gap:14px; margin-top:18px" id="examples"></div>
+</section>
+
+<!-- ══════════ 12. KIỂM TOÁN ══════════ -->
+<section>
+  <p class="eyebrow">Bước 12 · kiểm toán chất lượng — bốn khiếm khuyết, và cách xử lý từng cái</p>
+  <h2>Sinh dữ liệu xong không phải là có dữ liệu tốt</h2>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>① Đáp án đúng dồn về vị trí A: 58,2%</h3>
+      <figure>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--s2)"></i>dữ liệu sinh ra</span>
+          <span><i class="swatch" style="background:var(--s1)"></i>bộ test TeleQnA</span>
+        </div>
+        <div class="chartbox"><svg viewBox="0 0 460 190" role="img"
+          aria-label="Phân bố vị trí đáp án đúng"><g id="goldchart"></g></svg></div>
+      </figure>
+      <p class="tiny" style="margin-top:8px">
+        Trên 39.827 câu đã qua cổng, đáp án đúng nằm ở vị trí đầu tiên <strong>23.180 lần</strong>, và
+        gần như không bao giờ ở vị trí D (385) hay E (25). Bộ test thì gần như đều
+        (A 22,1% / B 21,8% / C 21,7% / D 21,5%). Huấn luyện thẳng trên phân bố này sẽ dạy model
+        &ldquo;cứ chọn A&rdquo; — đúng loại heuristic mà bộ test đã cố tình xoá bằng cách xáo phương án.
+      </p>
+      <p class="tiny" style="margin-bottom:0"><strong>Xử lý:</strong> xáo vị trí phương án bằng hash
+        tất định của <code>sample_id</code> ở bước dựng tập train. Sửa được hoàn toàn <em>sau khi</em>
+        sinh, không cần sinh lại.</p>
+    </div>
+    <div class="card">
+      <h3>② Một spec chiếm 18% tập giữ lại</h3>
+      <p style="font-size:14.2px; margin-top:8px">
+        TS 45.912 đóng góp <strong>7.151 / 39.827</strong> câu (17,96%). Nó lọt vào top vì là file
+        <em>lớn nhất</em> trong nhóm dày lỗi (1.957 chunk), nhưng nội dung là một báo cáo khả thi GERAN:
+        phần lớn là tham số mô phỏng (&ldquo;TCP RTO đặt 1 s trong mô hình mô phỏng&rdquo;), không phải
+        kiến thức chuẩn hoá mà benchmark hỏi. Nó còn qua cổng dễ (67%) vì văn phong tường thuật —
+        tức là cổng lọc <em>khuếch đại</em> chứ không sửa được lệch này.
+      </p>
+      <p style="font-size:14.2px; margin-bottom:0">
+        <strong>Xử lý:</strong> đặt trần tỉ lệ mỗi spec (~5%) và hạ trọng số các tài liệu dạng TR/mô
+        phỏng, ưu tiên TS 23.501 / 38.300 / 36.300 / 38.331 ở bước trộn. Cũng là quyết định
+        <em>sau khi sinh</em> — sinh dư rồi bỏ bớt thì rẻ, sinh thiếu mới phải chạy lại.
+      </p>
+    </div>
+    <div class="card">
+      <h3>③ Hard negative thoái hoá: distractor bịa tên</h3>
+      <p style="font-size:14.2px; margin-top:8px">
+        Một số câu có distractor là tên <em>không tồn tại</em> (N2 đúng, ba phương án còn lại là
+        N2′/N2s/N2c). Câu như vậy chỉ dạy &ldquo;chọn cái tên có thật&rdquo; — dễ hơn hẳn benchmark,
+        và không dạy đúng thứ probe <code>distract</code> chỉ ra.
+      </p>
+      <p style="font-size:14.2px; margin-bottom:0">
+        <strong>Xử lý — đã chạy, xem bước 13.</strong> Student trả lời đúng 64,42% nhóm
+        <code>standard</code> nhưng chỉ 54,33% nhóm <code>hard_negative</code>. Chênh 10,09 điểm nghĩa
+        là phần lớn hard negative <em>không</em> thoái hoá; số thoái hoá tồn tại nhưng bị pha loãng, và
+        chính bản ghi đúng/sai từng câu là thứ dùng để hạ trọng số chúng.
+      </p>
+    </div>
+    <div class="card">
+      <h3>⑤ Mồi &ldquo;All/None of the above&rdquo; gần như vắng mặt</h3>
+      <p style="font-size:14.2px; margin-top:8px">
+        Đo lại trên 39.827 câu: <code>All of the above</code> xuất hiện ở <strong>0,01%</strong> câu
+        (thật: 8,24%), <code>None of the above</code> ở <strong>0,04%</strong> (thật: 6,47%).
+        <code>gen_synth_mcq.py</code> chưa từng được dặn viết dạng này, nên model không tự sinh ra.
+        Trên bài test thật, hai mẫu này giải thích phần lớn sàn 39,72% — huấn luyện mà thiếu chúng
+        sẽ dạy ngầm định &ldquo;đừng bao giờ chọn All of the above&rdquo;, trong khi nó đúng 89,81%
+        số lần nó xuất hiện.
+      </p>
+      <p style="font-size:14.2px; margin-bottom:0">
+        <strong>Đã sửa bằng một lô sinh có mục tiêu — xem bước 14.</strong> Không sửa được bằng cách
+        dặn model &ldquo;đúng 90% số lần&rdquo;: thử lần đầu cho ra tỉ lệ chỉ 48,37%, vì một model
+        không có cách nào tuân theo một <em>tần suất</em> qua nhiều lần gọi độc lập — mỗi lần nó chỉ
+        phán đúng/sai theo nội dung nó tự viết. Cách sửa đúng là <em>lọc lại theo nhãn đã có</em> sau
+        khi sinh, không phải kiểm soát xác suất lúc sinh.
+      </p>
+    </div>
+    <div class="card">
+      <h3>④ Hai khe hở của cổng lọc, ghi lại để không quên</h3>
+      <ul style="font-size:14px; margin-top:8px; margin-bottom:0">
+        <li><strong>Verbatim ≠ chứng minh.</strong> Cổng <code>grounded</code> kiểm tra trích dẫn có
+          <em>tồn tại</em> trong chunk, không kiểm tra nó có <em>chứng minh</em> đáp án hay không. Đã
+          thấy câu có evidence nguyên văn hợp lệ nhưng không liên quan tới phương án được chọn (ví dụ
+          ⑤ bên dưới).</li>
+        <li><strong>Regex style còn lọt.</strong> <code>STYLE_BAD</code> bắt
+          &ldquo;this&nbsp;document/excerpt&rdquo; nhưng không bắt &ldquo;described in <em>the</em>
+          excerpt&rdquo;. Câu hỏi về số hiệu bảng/hình cũng bị cấm trong prompt nhưng không có cổng nào
+          chặn (ví dụ ⑥).</li>
+        <li><strong>Trùng lặp tăng theo quy mô.</strong> Cổng <code>dedup</code> loại 2.138 câu (3,4%)
+          ở lần chạy đầy đủ so với 8 câu (0,5%) ở pilot. Đó là hệ quả trực tiếp của việc cùng một bản
+          spec xuất hiện ở nhiều Release: TS 45.912 có mặt ở Rel-8 đến Rel-17 với nội dung gần như
+          không đổi. Cổng đang làm đúng việc, nhưng nó cũng nói rằng ngân sách sinh nên phân bổ theo
+          <em>file duy nhất</em> chứ không theo <em>file × release</em> ở vòng sau.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="verdict pass" style="margin-top:18px">
+    <span class="badge">Trạng thái</span>
+    <p>
+      Năm khiếm khuyết, một đã sửa xong (⑤, bước 14), ba sửa ở bước trộn dữ liệu train (①②③), một cần
+      siết regex + thêm cổng entailment (④). Không cái nào là lý do dừng vòng sinh — nhưng ⑤ đủ nghiêm
+      trọng để phải sửa <em>trước khi</em> trộn, không phải sau, vì nó dạy một ngầm định sai chứ không
+      chỉ làm mất một ít dữ liệu.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 13. CỔNG ĐỘ KHÓ ══════════ -->
+<section>
+  <p class="eyebrow">Bước 13 · cổng độ khó — bắt student trả lời cả 39.827 câu</p>
+  <h2>Nhãn <code>hard_negative</code> có thật: chênh 10,09 điểm</h2>
+  <p class="note" style="margin-top:10px">
+    Sáu cổng ở trên kiểm tra <em>hình thức</em>. Không cổng nào hỏi &ldquo;câu này có đáng để huấn
+    luyện không&rdquo;. Nên bước tiếp theo là cho chính student — Qwen3-8B, prompt và decoding giống
+    hệt nhánh baseline — trả lời từng câu, rồi ghi lại đúng/sai theo từng câu.
+  </p>
+
+  <div class="grid g4" style="margin-top:16px">
+    <div class="tile hl"><div class="k">Student trên tập sinh</div><div class="v">59,22%</div>
+      <div class="s">23.587 / 39.827 · thấp hơn 12,73 điểm so với chính nó trên bài test thật</div></div>
+    <div class="tile"><div class="k">hard_negative</div><div class="v">54,33%</div>
+      <div class="s">n = 20.517</div></div>
+    <div class="tile"><div class="k">standard</div><div class="v">64,42%</div>
+      <div class="s">n = 19.310</div></div>
+    <div class="tile"><div class="k">Câu student sai</div><div class="v">16.240</div>
+      <div class="s">tập mang gradient hướng vào đúng chỗ đang hỏng</div></div>
+  </div>
+
+  <div class="verdict pass" style="margin-top:18px">
+    <span class="badge">Xác nhận</span>
+    <p>
+      Chênh lệch <strong>10,09 điểm</strong> giữa hai chế độ là bằng chứng trực tiếp rằng chỉ dẫn
+      &ldquo;distractor là biến dạng tối thiểu của sự thật&rdquo; thực sự tạo ra câu khó hơn, chứ không
+      chỉ là một nhãn trong JSON. Đây là giả định trung tâm của cả hướng đi, và nó vừa được đo chứ
+      không còn phải tin.
+    </p>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Một kết quả âm: xếp hạng theo lỗi <em>không</em> tạo ra câu khó hơn</h3>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Tier</th><th>n</th><th>student đúng</th></tr></thead>
+          <tbody>
+            <tr><td class="l"><code>error_dense</code> (60 file đầu bảng)</td><td>37.524</td><td>59,15%</td></tr>
+            <tr><td class="l"><code>broad</code> (25 file ngẫu nhiên)</td><td>2.303</td><td>60,36%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:11px; margin-bottom:0">
+        Chênh 1,21 điểm — coi như không có. Bảng xếp hạng lỗi chọn ra các tài liệu mà <em>từ vựng</em>
+        của chúng giải thích được lỗi baseline, chứ không chọn ra tài liệu <em>bản thân nó khó</em>.
+        Hai thứ đó khác nhau, và trước phép đo này chúng dễ bị lẫn. Xếp hạng vẫn có ích cho việc
+        <em>nhắm chủ đề</em>, nhưng đừng kỳ vọng nó nhắm được độ khó.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Cái bẫy: khó không đồng nghĩa với có ích</h3>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Spec</th><th>n</th><th>student đúng</th><th class="l">là gì</th></tr></thead>
+          <tbody>
+            <tr><td class="l">TS 45.050</td><td>2.849</td><td class="neg">45,84%</td><td class="l">GSM/GERAN burst &amp; timing</td></tr>
+            <tr><td class="l">TS 45.912</td><td>7.151</td><td class="neg">53,89%</td><td class="l">báo cáo khả thi GERAN</td></tr>
+            <tr><td class="l">TS 25.331</td><td>1.281</td><td>55,89%</td><td class="l">RRC UMTS</td></tr>
+            <tr><td class="l">TS 23.501</td><td>3.972</td><td class="pos">63,04%</td><td class="l">kiến trúc 5GS</td></tr>
+            <tr><td class="l">TS 23.502</td><td>1.632</td><td class="pos">65,87%</td><td class="l">thủ tục 5GS</td></tr>
+            <tr><td class="l">TS 23.282</td><td>536</td><td class="pos">70,15%</td><td class="l">MCData</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:11px; margin-bottom:0">
+        Các spec <em>khó nhất</em> đều là GERAN/UMTS đời cũ — khó vì hẻo lánh, không vì giá trị. Còn
+        các spec dễ nhất lại chính là 5G core, tức đúng phần benchmark hỏi nhiều nhất.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout alarm">
+    <strong>Hai quy tắc trộn dữ liệu vừa xung đột với nhau, và phép đo này giải quyết được.</strong>
+    &ldquo;Ưu tiên câu khó&rdquo; sẽ <em>kéo lên</em> đúng đống tham số mô phỏng GERAN mà quy tắc
+    &ldquo;đặt trần mỗi spec&rdquo; muốn kéo xuống. Nếu chỉ áp một trong hai thì tập train sẽ nghiêng
+    về TS 45.050/45.912 — khó thật, nhưng benchmark gần như không hỏi tới. Cách giải:
+    <strong>đặt trần theo spec trước, rồi mới cân theo độ khó <em>bên trong</em> từng spec.</strong>
+    Nếu không chạy cổng này thì sai lầm đó sẽ đi thẳng vào tập train mà không ai thấy.
+  </div>
+
+  <p class="tiny" style="margin-top:14px">
+    Chi tiết khác: câu 4 phương án 60,19% so với 5 phương án 57,55% (thêm một phương án là thêm khó,
+    đúng như kỳ vọng). Phân bố chữ cái student đoán vẫn lệch về A (16.189/39.827) — nhưng đó là phản
+    chiếu của khiếm khuyết ① chứ không phải một phát hiện mới. 66 câu (0,17%) lỗi request nên không có
+    phán quyết; chúng được xử lý như &ldquo;chưa đo&rdquo;, không phải &ldquo;sai&rdquo;.
+  </p>
+</section>
+
+<!-- ══════════ 14. VÁ MỒI HÌNH DẠNG ══════════ -->
+<section>
+  <p class="eyebrow">Bước 14 · vá khiếm khuyết ⑤ — một lô sinh có mục tiêu</p>
+  <h2>Dặn model đạt &ldquo;90% số lần&rdquo; không hoạt động; lọc lại theo nhãn thì có</h2>
+  <p class="note" style="margin-top:10px">
+    Sửa cách 1 — thêm chỉ dẫn vào prompt gốc: <code>gen_synth_mcq.py</code> được thêm chế độ
+    <code>shape_prior</code>, dặn model viết một phương án là đúng nguyên văn
+    <code>&ldquo;All of the above.&rdquo;</code> hoặc <code>&ldquo;None of the above.&rdquo;</code>,
+    và &ldquo;All of the above.&rdquo; phải đúng khoảng 90% số lần nó xuất hiện. Lần thử đầu tiên còn
+    lộ thêm một lỗi lắp ghép prompt: viết &ldquo;100 câu đầu dùng hard_negative, 0 câu tiếp dùng
+    standard&rdquo; khiến model bỏ qua toàn bộ chỉ dẫn shape — sửa bằng cách chỉ nêu đúng khối có số
+    khác 0 trong prompt.
+  </p>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Sinh 3.000 chunk có mục tiêu</h3>
+      <p style="font-size:14px; margin-top:8px">
+        Loại trừ TS 45.912/45.050 khỏi tập chunk nguồn — vừa để không khuếch đại hai spec đã chiếm ưu
+        thế, vừa vì chúng ít giá trị (bước 13 đã đo: đây là hai spec student <em>khó nhất</em> nhưng
+        cũng ít liên quan tới benchmark nhất). Kết quả: 2.994/3.000 chunk, <strong>9.707</strong> câu
+        thô, qua 6 cổng còn <strong>5.423 (55,87%)</strong>.
+      </p>
+      <p style="font-size:14px; margin-bottom:0">
+        Nhưng đo lại tỉ lệ đúng thì lệch xa mục tiêu: <code>All of the above</code> đúng
+        <strong>48,37%</strong> (mục tiêu 90%), <code>None of the above</code> đúng
+        <strong>5,98%</strong> (mục tiêu ~0%). Model không có cách nào tuân theo một <em>tần suất</em>
+        qua nhiều lần gọi độc lập — mỗi lần nó chỉ phán đúng/sai theo nội dung nó tự viết ra, không
+        theo một bộ đếm ẩn nào.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Sửa cách 2 — lọc lại theo nhãn, không kiểm soát xác suất lúc sinh</h3>
+      <p style="font-size:14px; margin-top:8px">
+        Với &ldquo;All of the above&rdquo;: giữ toàn bộ 1.437 câu đúng, lấy mẫu ngẫu nhiên (seed cố
+        định) đúng 163/1.534 câu sai để tỉ lệ khớp 89,81%. Với &ldquo;None of the above&rdquo;: giữ
+        toàn bộ 2.801 câu sai, lấy mẫu 9/178 câu đúng để tỉ lệ khớp 0,32%.
+      </p>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Mẫu</th><th>Trước lọc</th><th>Sau lọc</th><th>Test thật</th></tr></thead>
+          <tbody>
+            <tr><td class="l">All of the above — gold rate</td><td class="neg">48,37%</td>
+              <td class="pos">89,81%</td><td>89,81%</td></tr>
+            <tr><td class="l">None of the above — gold rate</td><td class="neg">5,98%</td>
+              <td class="pos">0,32%</td><td>0,31%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:10px; margin-bottom:0">
+        Đổi lại là mất sản lượng: 5.423 → <strong>4.410</strong> câu (bỏ 1.013 câu để đúng tỉ lệ thay
+        vì giữ hết cho nhiều số). Đúng tinh thần &ldquo;chất lượng trước tốc độ&rdquo; — thà ít hơn mà
+        đúng phân bố còn hơn nhiều mà dạy sai ngầm định.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Trộn vào tập chính: <code>training_pool_v1.jsonl</code></h3>
+    <div class="grid g4" style="margin-top:10px">
+      <div class="tile"><div class="k">Tổng</div><div class="v">44.237</div>
+        <div class="s">39.827 (chính) + 4.410 (shape-prior)</div></div>
+      <div class="tile"><div class="k">All of the above</div><div class="v">5,16%</div>
+        <div class="s">gold 78,65% · thật 8,24% / 89,81%</div></div>
+      <div class="tile"><div class="k">None of the above</div><div class="v">7,25%</div>
+        <div class="s">gold 0,37% · thật 6,47% / 0,31%</div></div>
+      <div class="tile bad"><div class="k">Còn thiếu</div><div class="v">~3pp</div>
+        <div class="s">tỉ lệ dòng All-of-above vẫn thấp hơn thật</div></div>
+    </div>
+    <p class="tiny" style="margin-top:12px; margin-bottom:0">
+      <code>None of the above</code> giờ khớp gần như tuyệt đối cả về tỉ lệ dòng (7,25% vs 6,47%) lẫn
+      gold rate (0,37% vs 0,31%). <code>All of the above</code> đã đổi <em>chiều</em> đúng — không còn
+      dạy &ldquo;luôn luôn sai&rdquo; — nhưng tỉ lệ dòng (5,16%) vẫn thấp hơn thật (8,24%) vì lô sinh
+      thêm chỉ có 3.000 chunk. Còn dư địa để sinh thêm một lô nữa nếu muốn khớp sát hơn; không phải
+      chặn cứng để bắt đầu train.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ 15. CHẨN ĐOÁN LỖI ══════════ -->
+<section>
+  <p class="eyebrow">Bước 15 · đọc từng câu student trả lời sai — chẩn đoán, không chỉ đếm</p>
+  <h2>16.240 câu sai: phần lớn là nhầm lẫn thật, một phần là hỏi vẹt tri thức cổ</h2>
+  <p class="note" style="margin-top:10px">
+    Bước 13 đã cho số tổng (59,22%, hard_negative kém standard 10,09 điểm). Nhưng số tổng không nói
+    được <em>sai kiểu gì</em>. Đọc trực tiếp 16.240 câu student trả lời sai — ghép bản ghi
+    <code>results.jsonl</code> (thư/gold từng câu) với nội dung câu trong <code>full_kept.jsonl</code>
+    — để phân biệt hai loại sai rất khác nhau: nhầm lẫn thật (đúng ý đồ hard negative) và hỏi vẹt một
+    hằng số hiếm gặp (không giúp gì cho benchmark).
+  </p>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Phân bố chữ cái, chỉ tính trong các câu sai</h3>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l">Chữ</th><th>Model đoán</th><th>Đáp án đúng</th></tr></thead>
+          <tbody>
+            <tr><td class="l">A</td><td>2.601</td><td>9.592</td></tr>
+            <tr><td class="l">B</td><td>4.525</td><td>4.771</td></tr>
+            <tr><td class="l">C</td><td>5.141</td><td>1.642</td></tr>
+            <tr><td class="l">D</td><td>3.374</td><td>222</td></tr>
+            <tr><td class="l">E</td><td>533</td><td>13</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:10px; margin-bottom:0">
+        Trong các câu sai, đáp án đúng dồn về A (9.592) vì chính tập dữ liệu dồn gold về A (khiếm
+        khuyết ①) — student <em>đã đoán đúng phần lớn câu gold=A</em>, nên trong phần còn sai, gold=A
+        chỉ còn là thiểu số bị bỏ sót. Đây là hệ quả của lệch vị trí trong dữ liệu, không phải một phát
+        hiện mới về hành vi student.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Model có đoán &ldquo;muộn&rdquo; hơn ngẫu nhiên không? Không.</h3>
+      <p style="font-size:14px; margin-top:8px">Tách riêng phần do chính lệch vị trí gold gây ra bằng
+        một baseline: giữ nguyên cặp (số phương án, vị trí gold) của từng câu sai, nhưng để máy
+        <em>đoán ngẫu nhiên</em> giữa các phương án còn lại thay vì dùng đoán thật của student.</p>
+      <div class="tw" style="margin-top:10px">
+        <table>
+          <thead><tr><th class="l"></th><th>đoán sau gold</th><th>đoán trước gold</th></tr></thead>
+          <tbody>
+            <tr><td class="l">Student thật</td><td>79,0%</td><td>21,0%</td></tr>
+            <tr><td class="l">Ngẫu nhiên (cùng phân bố gold)</td><td>83,9%</td><td>16,1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny" style="margin-top:10px; margin-bottom:0">
+        Số quan sát được (79,0%) còn <em>thấp hơn</em> baseline ngẫu nhiên (83,9%). Không có bằng chứng
+        cho một thiên kiến &ldquo;đoán muộn khi bí&rdquo; riêng của model — toàn bộ khuynh hướng
+        &ldquo;đoán sau gold&rdquo; đã được giải thích (và hơi bị lệch tiếp) bởi chính việc gold dồn về
+        A trong dữ liệu, không phải bởi cách model suy luận.
+      </p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:26px">Bốn câu sai thật, đọc trực tiếp</h3>
+  <p class="note">Hai câu đầu là <code>hard_negative</code>; hai câu sau là <code>standard</code>.</p>
+  <div class="grid" style="gap:14px; margin-top:14px" id="wrong-examples"></div>
+
+  <div class="callout" style="margin-top:22px">
+    <strong>Hai câu <code>hard_negative</code> là đúng ý đồ thiết kế.</strong> IMEI vs IMEISV, APN Rate
+    Control vs APN AMBR — đây là những cặp khái niệm anh em thật sự dễ lẫn với người biết lơ mơ, đúng
+    thứ probe <code>distract</code> (+15,83 điểm) đã chỉ ra là lỗ hổng của baseline. Model sinh đề đã
+    làm đúng việc được giao ở hai câu này.
+  </div>
+  <div class="callout alarm">
+    <strong>Hai câu <code>standard</code> lại là hỏi vẹt một hằng số RF cổ</strong> (−89 dBm/100 kHz
+    của TS 45.050, thứ tự MCS-set của TS 45.912) — đúng hai spec đã bị bước 13 chỉ mặt là khó nhất
+    <em>và</em> ít giá trị nhất. Loại câu này không sai vì thiếu khả năng phân biệt, nó sai vì đòi hỏi
+    nhớ một con số hiếm không ai tra cứu. Đây là bằng chứng trực tiếp, đọc được bằng mắt, cho quyết
+    định đặt trần + hạ trọng số hai spec này ở bước trộn dữ liệu.
+  </div>
+</section>
+
+<!-- ══════════ 16. MỞ RỘNG SANG LITERATURE ══════════ -->
+<section>
+  <p class="eyebrow">Bước 16 · phủ nốt 65% benchmark — corpus nghiên cứu, và một cái bẫy trong đó</p>
+  <h2>Telco-Common-Corpus: &ldquo;IEEE-Access&rdquo; không có nghĩa là viễn thông</h2>
+  <p>
+    Toàn bộ dữ liệu sinh đến bước 15 chỉ bám vào spec 3GPP — mà bảng xuất xứ ở bước 2 đã nói rõ:
+    3GPP chạm tối đa <strong>1.810/10.000</strong> câu test (18%). Hai môn lớn nhất — Research
+    publications (4.500) + Research overview (2.000) — lấy nguồn từ bài báo khoa học. GSMA có publish
+    đúng corpus đó: <code>GSMA/Telco-Common-Corpus</code>, trong đó lát IEEE-Access (64k bài open
+    access) và OpenAlex là nguồn của 6.500 câu Research.
+  </p>
+  <p>
+    Kéo cả 100 shard parquet về (83.422 tài liệu IEEE-Access + OpenAlex), sinh thử một lô pilot —
+    và đọc trực tiếp kết quả lộ ra một cái bẫy: <strong>câu hỏi sinh ra nói về thủy lực, sinh thái
+    lòng sông, mạng nơ-ron tổng quát — không một chữ viễn thông.</strong> Đọc lại README của corpus
+    mới thấy: chỉ có <em>patent</em> được ghi &ldquo;filtered to the telecom domain&rdquo;; IEEE-Access
+    là tạp chí đa ngành toàn bộ EE/CS và được đưa vào <em>nguyên khối</em>. Nếu cứ thế sinh 56.000
+    câu, phần lớn ngân sách GPU sẽ dạy model về... tuabin gió.
+  </p>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Bộ lọc chủ đề, và một false-positive tinh vi</h3>
+      <p style="font-size:14px">
+        Lọc bằng từ khóa miền (5G/LTE/MIMO/RAN/OFDM/SDN/NFV/handover/beamforming/…) trên tiêu đề +
+        phần đầu bài. Lần chạy đầu vẫn lọt một bài về bệnh Parkinson — vì dòng affiliation tác giả
+        có chữ &ldquo;Department of <em>Telecommunications</em>&rdquo;. Sửa: chỉ quét từ
+        &ldquo;Abstract&rdquo; trở đi, bỏ qua front-matter. Kết quả: 83.422 → <strong>17.634 tài
+        liệu thật sự viễn thông (21%)</strong>. Pilot thứ hai sau lọc ra toàn câu NC-JT/LDPC/RF thật.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Cùng pipeline, hai khác biệt có chủ đích</h3>
+      <p style="font-size:14px">
+        Prompt literature <em>không</em> gắn tag <code>[3GPP Release N]</code> — vì 99,9% câu Research
+        thật không có tag; và cấm nói &ldquo;the authors / this paper&rdquo; thay vì cấm
+        &ldquo;this document&rdquo;. Cổng lọc giữ nguyên cả sáu, chỉ bỏ yêu cầu chuỗi
+        &ldquo;Release&rdquo; cho nguồn literature. Mọi thứ còn lại — evidence nguyên văn, dedup,
+        chống contamination — chạy y hệt.
+      </p>
+    </div>
+  </div>
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">chunk sinh</div><div class="v">11.611</div>
+      <div class="s">từ 1.400 tài liệu đã lọc — cùng cỡ lô spec</div></div>
+    <div class="tile"><div class="k">câu thô</div><div class="v">56.105</div>
+      <div class="s">10.887/11.611 chunk ok (724 lỗi parse — LaTeX)</div></div>
+    <div class="tile"><div class="k">qua 6 cổng</div><div class="v">41.564</div>
+      <div class="s">74,08% — contamination chỉ cắt 20 câu</div></div>
+    <div class="tile"><div class="k">student đúng</div><div class="v">69,63%</div>
+      <div class="s">dễ hơn lô spec (59,22%) — đúng dự đoán: Research là môn model vốn khá</div></div>
+  </div>
+  <p class="note" style="margin-top:10px">
+    Cổng độ khó student chạy trên cả 41.564 câu literature, cùng cấu hình chấm với lô spec. 69,63%
+    nghĩa là slice này <em>dễ hơn</em> đáng kể — hợp lý, vì baseline vốn mạnh ở Research pubs
+    (75,4%). Chính vì thế nguyên tắc &ldquo;tập trung dạy câu sai&rdquo; càng quan trọng ở đây:
+    12.623 câu student trả lời sai được giữ nguyên trọng số, phần trả lời đúng bị hạ mạnh.
+  </p>
+</section>
+
+<!-- ══════════ 17. DỰNG TẬP TRAIN ══════════ -->
+<section>
+  <p class="eyebrow">Bước 17 · builder — nơi mọi chẩn đoán trở thành quyết định giữ/bỏ</p>
+  <h2>train_v3.jsonl: 40.730 câu, cả bốn khiếm khuyết đều đã vá</h2>
+  <p>
+    <code>build_train_set.py</code> nhận cả ba nguồn (spec + shape + literature) và áp một policy
+    thống nhất, đúng nguyên tắc đã chốt: <strong>độ khó với student quyết định trọng số, không phải
+    nguồn hay chế độ sinh.</strong> Câu student trả lời <em>sai</em> giữ nguyên (trọng số 1,0);
+    hard_negative trả lời đúng giữ một nửa; standard trả lời đúng chỉ giữ 15% — đây chính là chỗ
+    loại &ldquo;hỏi vẹt&rdquo; đã đọc thấy ở bước 15.
+  </p>
+  <table>
+    <thead><tr><th class="l">khiếm khuyết (từ kiểm toán)</th><th class="l">cách vá trong builder</th><th class="l">đo lại trên file cuối</th></tr></thead>
+    <tbody>
+      <tr><td class="l">① gold dồn 58,2% về A</td><td class="l">hash-shuffle vị trí từng câu (salt riêng, khác salt của eval-permute)</td><td class="l"><span class="pos">A/B/C/D ≈ 23% mỗi vị trí, E 7,6%</span></td></tr>
+      <tr><td class="l">② TS 45.912/45.050 chiếm 17,96%</td><td class="l">trần cứng 1%/spec cho riêng hai spec này (spec khác: 5%)</td><td class="l"><span class="pos">còn 2,28%</span></td></tr>
+      <tr><td class="l">③ không dùng tín hiệu độ khó</td><td class="l">policy trọng số theo (mode × student-đúng/sai) như trên</td><td class="l"><span class="pos">33.223 câu bị hạ, đa số là câu-dễ</span></td></tr>
+      <tr><td class="l">④ format lệch harness</td><td class="l">prompt dựng byte-giống <code>run_baseline.py</code>, nhãn <code>ANSWER: X</code></td><td class="l"><span class="pos">0/40.730 vi phạm contract</span></td></tr>
+    </tbody>
+  </table>
+  <p>
+    Bốn vòng chạy builder — mỗi vòng <em>đo lại trên file đầu ra</em> chứ không tin thiết kế — bắt được
+    ba lỗi cấu trúc và một lớp rác lọt lưới, mà nếu bỏ qua sẽ theo model đến tận lúc chấm điểm:
+  </p>
+  <div class="grid g3" style="margin-top:12px">
+    <div class="card">
+      <h3>Trần tính trên input, share đo trên output</h3>
+      <p style="font-size:13.5px">Vòng 1 đặt trần theo cỡ pool vào (85.801) nhưng đầu ra chỉ ~43.000
+        — hai spec hạ trọng số phình lại thành 5,6% thay vì ≤2%. Sửa: chạy hai lượt, lọc độ khó
+        trước, tính trần trên cỡ <em>sau lọc</em>.</p>
+    </div>
+    <div class="card">
+      <h3>Literature chỉ có 2 khóa trần</h3>
+      <p style="font-size:13.5px">Trần &ldquo;theo spec&rdquo; áp lên literature nghĩa là cả 64k bài
+        IEEE-Access chung <em>một</em> khóa — slice phủ 65% benchmark bị nghẹt còn 8.580 câu. Sửa:
+        literature đặt trần <em>theo từng bài báo</em> (chống một bài survey khổng lồ thống trị),
+        không theo collection. Kết quả: 19.437 câu literature ≈ 48% tập train.</p>
+    </div>
+    <div class="card">
+      <h3>Lọc độ khó phá hiệu chỉnh shape</h3>
+      <p style="font-size:13.5px">Slice shape_prior đã được cân để &ldquo;All of the above&rdquo; đúng
+        89,81% — nhưng lọc độ khó cắt <em>không đều</em> hai phía, kéo xuống 79,7%. Đo tiếp còn lộ ra
+        file cân bằng cũ thực chất chỉ đạt 78,7% theo phép đo chuỗi-lựa-chọn. Sửa cả hai: miễn lọc
+        độ khó cho shape_prior + cân bằng lại theo đúng phép đo cuối.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>Vòng kiểm toán thứ hai trên chính file train — thêm ba lớp bị loại</h3>
+    <p style="font-size:13.5px">
+      Đọc mẫu file đầu ra lần nữa (thay vì tin các cổng) tìm thấy: <strong>4.633 câu tự-tham-chiếu</strong>
+      kiểu &ldquo;the proposed algorithm / this paper&rdquo; — vô nghĩa khi không có bài báo bên cạnh,
+      cổng style cũ chỉ chặn &ldquo;this document&rdquo;; <strong>60 câu hỏi số bảng/mục</strong> (khe hở
+      ④ cũ, giờ chặn hẳn); và <strong>582 câu trùng lặp chéo lô</strong> — dedup của cổng chạy riêng từng
+      lô sinh nên không thấy nhau. Một hướng bị <em>thử rồi bỏ</em>: lọc chủ đề mức từng-câu bằng regex
+      miền cho 74% false-negative (câu Nakagami-fading, OpenFlow đều là telecom thật nhưng thiếu từ khóa)
+      — lọc chủ đề đúng chỗ là mức tài liệu, đã làm ở bước 16.
+    </p>
+  </div>
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile"><div class="k">train_v3.jsonl</div><div class="v">40.730</div>
+      <div class="s">spec 21.293 · literature 19.437</div></div>
+    <div class="tile"><div class="k">All of the above</div><div class="v">88,31%</div>
+      <div class="s">tỉ lệ đúng-khi-xuất-hiện · thật: 89,81%</div></div>
+    <div class="tile"><div class="k">None of the above</div><div class="v">0,42%</div>
+      <div class="s">tỉ lệ đúng-khi-xuất-hiện · thật: 0,31%</div></div>
+    <div class="tile"><div class="k">gold theo vị trí</div><div class="v">≈ đều</div>
+      <div class="s">A 23,4% · B 23,0% · C 22,9% · D 23,2% · E 7,5%</div></div>
+  </div>
+</section>
+
+<!-- ══════════ 18. SFT VÒNG ĐẦU ══════════ -->
+<section>
+  <p class="eyebrow">Bước 18 · thí nghiệm SFT — thất bại được đo đúng cách, và nó chỉ đường</p>
+  <h2>SFT tụt điểm ở mọi liều lượng; chẩn đoán nói: đổi mục tiêu, không phải đổi liều</h2>
+  <p>
+    Rủi ro đã ghi thẳng ở phần &ldquo;Số học của mục tiêu&rdquo; — <em>chưa có gì bảo đảm SFT trên
+    MCQ tổng hợp chuyển thành điểm thật</em> — đã xảy ra. Nhưng vì mọi vòng đều đo trên dev-1000
+    (không đụng held-out 9.000), thất bại này mua được chẩn đoán chính xác.
+  </p>
+  <table>
+    <thead><tr><th class="l">run</th><th class="l">cấu hình</th><th>dev-1000</th><th>mất / được</th></tr></thead>
+    <tbody>
+      <tr><td class="l">baseline</td><td class="l">Qwen3-8B gốc, no-think</td><td><strong>73,80%</strong></td><td class="l">—</td></tr>
+      <tr><td class="l">SFT vòng 1</td><td class="l">LoRA r=16, 2 epoch, LR 1e-4</td><td class="neg">68,40%</td><td class="l">−154 / +100</td></tr>
+      <tr><td class="l">SFT vòng 2, step 300 (0,24 epoch)</td><td class="l">LR 2e-5 — liều nhẹ nhất đo được</td><td class="neg">70,20%</td><td class="l">−114 / +78</td></tr>
+      <tr><td class="l">SFT vòng 2, hết 1 epoch</td><td class="l">cùng cấu hình, liều đủ</td><td class="neg">66,90%</td><td class="l">−155 / +86</td></tr>
+    </tbody>
+  </table>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Đường liều-đáp-ứng nói gì</h3>
+      <p style="font-size:14px">
+        <strong>Thiệt hại xuất hiện ngay ở liều nhỏ nhất</strong> (−3,6 điểm ở 0,24 epoch) rồi tăng
+        dần; <strong>phần học được thì bão hòa tức khắc</strong> (+78 ở 0,24 epoch → chỉ +86 sau gấp
+        4 lần train). Nghĩa là: dữ liệu có dạy được (~80-90 câu), nhưng mục tiêu maximum-likelihood
+        trên nhãn chữ cái xê dịch cả các mạch dùng chung, xóa kiến thức nền nhanh hơn tốc độ dạy.
+        Đổi liều không cứu được cấu trúc này — phải đổi mục tiêu.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Đọc 154 câu bị phá: chết kiểu gì</h3>
+      <p style="font-size:14px">
+        Không có artifact: mất rải đều mọi subject, mọi cặp vị trí, 0 lỗi parse — và phần dữ liệu
+        được hiệu chỉnh kỹ nhất còn <em>được</em> điểm (câu &ldquo;All of the above&rdquo;: 72/79 →
+        75/79). Cái mất là hồi ức chi tiết: max PDU Sessions 256 → chọn 32, ACARS → chọn SELCAL.
+        Một phần trong đó nhiều khả năng là &ldquo;tiền thuê trí nhớ vẹt&rdquo; của benchmark công
+        khai — xê dịch trọng số là nó bay hơi trước tiên, không dữ liệu sạch nào bù đúng chỗ đó được.
+      </p>
+    </div>
+  </div>
+  <p style="margin-top:14px">
+    <strong>Đòn sửa đang chạy: đổi SFT → DPO một-token.</strong> Cặp ưu tiên lấy từ chính cổng
+    student: chosen = đáp án đúng, rejected = <em>chữ cái model đã chọn sai thật</em> (24.063 cặp).
+    Vì hai vế chỉ khác đúng một token, loss DPO rút gọn thành hiệu hai logit tại một vị trí — và
+    reference (adapter tắt) giữ neo KL về model gốc, đánh trúng đúng chỗ SFT thất bại: chỉ dịch
+    <em>ưu tiên tương đối</em> giữa hai chữ cái đã nhầm, phạt mọi sự trôi dạt khác.
+  </p>
+</section>
+
+<!-- ══════════ 19. DPO + CHẨN ĐOÁN KÊNH ══════════ -->
+<section>
+  <p class="eyebrow">Bước 19 · DPO bốn vòng — kênh chữ cái chạm trần, và chẩn đoán chỉ sang CPT</p>
+  <h2>DPO giữ được điểm, thắng baseline +1,4 khi thinking — nhưng đo kỹ thì kênh này không cấy nổi kiến thức</h2>
+  <p>
+    Trước khi so, phải chuẩn thước: mọi baseline cũ đo bằng vLLM (thinking chạy temp 0,6), mọi
+    adapter đo bằng transformers greedy. Chạy A/A — <em>model gốc, không adapter, qua đúng stack
+    chấm adapter</em> — cho thấy hai thước lệch nhau thật: no-think 74,00 vs 73,80; thinking
+    <strong>75,10 vs 75,90</strong>. Từ đây chỉ so số cùng stack.
+  </p>
+  <table>
+    <thead><tr><th class="l">run</th><th class="l">cấu hình</th><th>dev-1000 no-think</th><th>dev-1000 thinking</th></tr></thead>
+    <tbody>
+      <tr><td class="l">baseline A/A</td><td class="l">Qwen3-8B gốc, cùng stack chấm</td><td><strong>74,00%</strong></td><td><strong>75,10%</strong></td></tr>
+      <tr><td class="l">DPO1 β=0,2</td><td class="l">chỉ cặp lỗi thật của student</td><td class="neg">72,00%</td><td class="l">—</td></tr>
+      <tr><td class="l">DPO2 β=0,5 + anchors</td><td class="l">thêm cặp neo trên câu đang đúng</td><td class="pos">74,40%</td><td>75,80%</td></tr>
+      <tr><td class="l">DPO3 β bất đối xứng</td><td class="l">fix 0,1 / anchor 0,7, LR 2e-5</td><td class="pos">74,40%</td><td class="pos"><strong>76,50%</strong></td></tr>
+      <tr><td class="l">DPO4 multi-negative</td><td class="l">gold vs mọi distractor, 109.501 cặp</td><td class="neg">73,90%</td><td class="l">—</td></tr>
+    </tbody>
+  </table>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Cái DPO mua được — và trần của nó</h3>
+      <p style="font-size:14px">
+        Anchors là chìa khóa chống vỡ: SFT phá 114–155 câu, DPO chỉ phá 8–43. Điểm tốt nhất:
+        <strong>DPO3@200 thinking 76,50% = +1,4 so với baseline cùng thước</strong> (52 câu sửa được /
+        38 câu hỏng, McNemar p=0,17 — cùng chiều qua mọi arm nhưng chưa đủ chắc thống kê). Trần lộ ra
+        khi nhìn net: cả bốn công thức đều dừng ở <strong>+4..+6 câu no-think</strong> — đổi β, đổi
+        liều, đổi số negative đều không đổi được con số này.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Chẩn đoán quyết định: sửa được ≠ được dạy</h3>
+      <p style="font-size:14px">
+        Đo độ gần (IDF-cosine) của từng câu dev với 49.780 prompt train rồi so theo kết cục:
+        câu được sửa median 0,209 — câu sai dai dẳng 0,208 — câu luôn đúng 0,205. <strong>Fix-rate
+        phẳng tuyệt đối theo độ phủ</strong> (23,7 / 22,7 / 24,3 / 21,4% theo bin). Có câu test sai
+        mà pool chứa cặp gần như trùng (sim 0,78), đã train đúng cặp đó, vẫn sai ở cả 4 arm. Kết luận:
+        1 bit/câu (&ldquo;đáp án là C&rdquo;) chỉ dịch được ưu tiên chữ cái, không cấy được fact.
+        164 câu sai ở mọi arm: 66 Research publications + 50 Standards specs, 111/164 là câu 5 lựa chọn.
+      </p>
+    </div>
+  </div>
+  <p style="margin-top:14px">
+    <strong>Đòn kế tiếp đang chạy: CPT (continued pretraining) — kênh truyền hàng nghìn bit/tài liệu.</strong>
+    Chiến dịch 1: ~136M token chọn theo đúng chính sách bám lỗi — 310 câu dev sai kéo về 7.421 paper
+    viễn thông gần nhất (+1.484 paper mẫu rộng chống overfit) từ Telco-Common-Corpus, cộng toàn bộ
+    11.296 chunk spec 3GPP đã xếp hạng mật độ lỗi. LoRA r=64, LR 1e-4, sequence 4096, cứ 30 tài liệu
+    chèn 1 câu MCQ làm mỏ neo định dạng. Đây là đòn bẩy AT&amp;T dùng để đạt 91,2% (họ: 400 tỷ token
+    — gấp ~3.000 lần liều thăm dò này). Held-out 9.000 tiếp tục đóng băng, để dành đúng một phát chấm
+    cho model chốt cuối cùng.
+  </p>
+</section>
+
+<!-- ══════════ 20. TIẾP THEO ══════════ -->
+<section>
+  <p class="eyebrow">Còn lại phía trước</p>
+  <h2>Từ 62.000 câu thô đến một checkpoint đo được</h2>
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card">
+      <h3>Đường thi công</h3>
+      <ol style="font-size:14px; margin-top:10px; margin-bottom:0">
+        <li style="color:var(--ink-3)"><s>Sinh 11.296 chunk + một lượt vớt chunk lỗi parse.</s>
+          &nbsp;<span class="pos">xong — 11.282/11.296</span></li>
+        <li style="color:var(--ink-3)"><s>Chạy 6 cổng trên toàn bộ file thô.</s>
+          &nbsp;<span class="pos">xong — 39.827/62.390 = 63,84%</span></li>
+        <li style="color:var(--ink-3)"><s>Cổng độ khó bằng student trên toàn bộ 39.827 câu.</s>
+          &nbsp;<span class="pos">xong — 59,22%, hard_negative −10,09 điểm</span></li>
+        <li style="color:var(--ink-3)"><s>Vá mồi &ldquo;All/None of the above&rdquo; gần như vắng mặt
+          bằng lô sinh có mục tiêu + lọc lại theo nhãn.</s>
+          &nbsp;<span class="pos">xong — <code>training_pool_v1.jsonl</code> 44.237 câu</span></li>
+        <li style="color:var(--ink-3)"><s>Mở rộng sang corpus nghiên cứu (Telco-Common-Corpus) — phủ
+          65% benchmark còn lại.</s>
+          &nbsp;<span class="pos">xong — 41.564 câu literature qua cổng, chi tiết bước 16</span></li>
+        <li style="color:var(--ink-3)"><s>Dựng tập train: xáo vị trí, trần/spec + hạ 45.912/45.050,
+          cân theo độ khó student, định dạng <code>ANSWER: X</code>.</s>
+          &nbsp;<span class="pos">xong — <code>train_v3.jsonl</code> 40.730 câu, chi tiết bước 17</span></li>
+        <li>Sinh thêm một lô &ldquo;All of the above&rdquo; nữa nếu muốn khớp sát 8,24% thật (hiện
+          3,42% số dòng; tỉ lệ đúng-khi-xuất-hiện đã khớp 88,31%) — không bắt buộc để bắt đầu train.</li>
+        <li>Tăng cường hoán vị (permutation augmentation) nếu vòng SFT đầu cho thấy mất độ bền
+          hoán vị.</li>
+        <li style="color:var(--ink-3)"><s>SFT LoRA trên Qwen3-8B, chọn trên dev-1000.</s>
+          &nbsp;<span class="neg">tụt điểm ở mọi liều — chẩn đoán đầy đủ ở bước 18</span></li>
+        <li style="color:var(--ink-3)"><s>DPO một-token trên cặp lỗi-thật-của-student, 4 công thức.</s>
+          &nbsp;<span class="pos">xong — tốt nhất DPO3@200 thinking 76,50% (+1,4 cùng thước); trần kênh
+          +4..6 câu, chẩn đoán đầy đủ ở bước 19</span></li>
+        <li>CPT chiến dịch 1 — ~136M token bám lỗi (đang chạy, ~6-8h) → chấm dev-1000 từng checkpoint;
+          nếu có tín hiệu thì tăng liều bằng <code>tcc_research.jsonl</code> (~1,5 tỷ token) và cân
+          nhắc chồng DPO nhẹ lên trên.</li>
+        <li>Chạy lại <em>toàn bộ</em> probe học thuộc trên checkpoint đã fine-tune — huấn luyện chính là
+          chỗ contamination có thể mới xâm nhập.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Số học của mục tiêu</h3>
+      <p style="font-size:14.2px; margin-top:8px">
+        Ở 71,95% còn 2.805 dòng sai. Đạt 0,912 của AT&amp;T cần sửa đúng <strong>1.925</strong> trong
+        số đó — 69% toàn bộ lỗi còn lại. Mục tiêu vòng đầu thực tế là <strong>83–85%</strong>, tức sửa
+        40–47% số lỗi; mức đó đã cao hơn mọi model frontier trên bảng xếp hạng ở thang lite.
+      </p>
+      <p style="font-size:14.2px">
+        Tín hiệu để tin là có headroom: oracle &ldquo;đúng ở bất kỳ nhánh nào&rdquo; đã là 83,85%
+        <em>mà chưa cần thêm kiến thức nào</em> — thông tin nằm sẵn trong model, chỉ chưa được chọn ra.
+        Và probe <code>distract</code> nói phần lớn lỗi là chọn nhầm giữa các phương án gần nghĩa,
+        đúng thứ mà dữ liệu đang sinh nhắm vào.
+      </p>
+      <p style="font-size:14.2px; margin-bottom:0">
+        Rủi ro lớn nhất, nói thẳng: <strong>chưa có gì bảo đảm SFT trên MCQ tổng hợp sẽ chuyển thành
+        điểm trên bài test thật.</strong> Đó là thí nghiệm sắp chạy, không phải kết luận. Nếu nó thất
+        bại, cách nó thất bại (mất điểm ở môn nào, có mất độ bền hoán vị không) sẽ chỉ ra bước kế tiếp
+        — đúng như cách <code>distract</code> +15,83 đã chỉ ra bước này.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr>
+<p class="tiny">
+  Mọi con số trên trang này đến từ các lần chạy đã lưu trong repo: <code>infra/teleqna/README.md</code>
+  (baseline, probe, GEPA, quét corpus), <code>infra/teleqna/results/errors_to_specs.json</code> (ánh xạ
+  lỗi → spec), và trên H200: <code>synth/data/full_kept.report.json</code> (vòng sinh + 6 cổng),
+  <code>synth/data/shape_kept_balanced2.jsonl</code> (lô vá mồi hình dạng, cân lại lần 2),
+  <code>synth/data/tcc_kept.jsonl</code> + <code>results/s2_tcc_student_gate/</code> (lô literature
+  bước 16), <code>synth/data/train_v3.jsonl</code> + <code>train_v3.report.json</code> (tập train
+  bước 17, 40.730 câu) và <code>synth/results/s1_student_gate/results.jsonl</code> (chẩn đoán lỗi
+  bước 15) — tất cả hoàn tất 2026-08-06. Cả bốn khiếm khuyết kiểm toán (①②③④) đã được vá trong
+  builder và đo lại trên file cuối (bảng ở bước 17). Bước 18–19 (SFT, DPO, A/A, chẩn đoán kênh):
+  <code>runs/teleqna-sft/results/dev1000_*.json</code>, <code>dev1000think_*.json</code>,
+  <code>dev1000_base_aa_*.json</code>, <code>diag_coverage.json</code>; corpus CPT:
+  <code>runs/teleqna-sft/data/cpt_corpus.jsonl</code> (~136M token) — 2026-08-07.
+</p>
+
+</main>
+
+<script>
+(function(){
+  const S = (n,a) => {const e=document.createElementNS("http://www.w3.org/2000/svg",n);
+    for(const k in a) e.setAttribute(k,a[k]); return e;};
+  const T = (x,y,t,c,anchor) => {const e=S("text",{x:x,y:y,class:c||"lbl"});
+    if(anchor) e.setAttribute("text-anchor",anchor); e.textContent=t; return e;};
+
+  /* ---------- 1. calibrated scale ---------- */
+  (function(){
+    const LO=20, HI=95, X0=52, X1=936;
+    const px = v => X0 + (v-LO)/(HI-LO)*(X1-X0);
+    const ticks=document.getElementById("scaleticks");
+    for(let v=20; v<=95; v+=5){
+      ticks.appendChild(S("line",{x1:px(v),y1:146,x2:px(v),y2:151,class:"axis-line"}));
+      ticks.appendChild(T(px(v),166,v+"%","ax","middle"));
+    }
+    const band=document.getElementById("floorband");
+    band.setAttribute("x",px(20)); band.setAttribute("width",px(39.72)-px(20));
+    const fl=document.getElementById("floorlbl");
+    fl.setAttribute("x",(px(20)+px(39.72))/2);
+    fl.textContent="vùng không cần kiến thức";
+    const marks=document.getElementById("scalemarks");
+    const M=[
+      {v:21.89,l:"ngẫu nhiên",y:126,c:"var(--floor)"},
+      {v:39.72,l:"sàn hình dạng 39,72",y:96,c:"var(--floor)"},
+      {v:60.87,l:"OTel-8.3B-IT 60,87",y:126,c:"var(--crit)"},
+      {v:64.86,l:"chuyên gia 64,86",y:66,c:"var(--ink-3)"},
+      {v:71.95,l:"Qwen3-8B no-think 71,95",y:96,c:"var(--s1)"},
+      {v:73.97,l:"Qwen3-8B thinking 73,97",y:40,c:"var(--s1)"},
+      {v:74.91,l:"GPT-4 (2023) 74,91",y:126,c:"var(--ink-3)"},
+      {v:81.91,l:"LTM SoftBank 81,91",y:66,c:"var(--ink-3)"},
+      {v:91.20,l:"AT&T OTel-QnA 91,20",y:96,c:"var(--s2)"},
+      {v:91.70,l:"OTel-2.0-31B 91,70",y:14,c:"var(--s2)"}
+    ];
+    M.forEach(m=>{
+      marks.appendChild(S("line",{x1:px(m.v),y1:m.y+6,x2:px(m.v),y2:146,
+        stroke:m.c,"stroke-width":m.v>71&&m.v<75?2:1.4,opacity:.75}));
+      marks.appendChild(S("circle",{cx:px(m.v),cy:m.y+6,r:3.5,fill:m.c}));
+      const anchor = px(m.v)>820?"end":(px(m.v)<130?"start":"middle");
+      const t=T(px(m.v),m.y,m.l,"lbl"+(m.v===73.97?" em":""),anchor);
+      t.setAttribute("style","fill:"+(m.v===73.97?"var(--ink)":"var(--ink-2)"));
+      marks.appendChild(t);
+    });
+  })();
+
+  /* ---------- 2. per-subject thinking delta ---------- */
+  (function(){
+    const g=document.getElementById("deltachart");
+    const D=[["Lexicon",3.80,500],["Research publications",2.78,4500],
+             ["Standards overview",2.50,1000],["Research overview",1.30,2000],
+             ["Standards specifications",0.35,2000]];
+    const X0=170, W=210, MAX=4;
+    D.forEach((d,i)=>{
+      const y=18+i*38;
+      g.appendChild(T(X0-10,y+14,d[0],"lbl"+(i===4?" em":""),"end"));
+      g.appendChild(S("rect",{x:X0,y:y,width:Math.max(2,d[1]/MAX*W),height:20,rx:4,
+        fill:i===4?"var(--crit)":"var(--s1)",opacity:i===4?.85:.8}));
+      g.appendChild(T(X0+Math.max(2,d[1]/MAX*W)+8,y+14,"+"+d[1].toFixed(2),"val"));
+      g.appendChild(T(455,y+14,d[2].toLocaleString("vi-VN"),"ax","end"));
+    });
+    g.appendChild(S("line",{x1:X0,y1:12,x2:X0,y2:200,class:"axis-line"}));
+  })();
+
+  /* ---------- 3. gate funnel ---------- */
+  (function(){
+    const g=document.getElementById("gatechart");
+    const total=62390;
+    const steps=[["đầu vào",62390,null],["schema",61370,1020],["style",59834,1536],
+                 ["grounded",42073,17761],["distinct",42073,0],["dedup",39935,2138],
+                 ["contamination",39827,108]];
+    const X0=126, W=225;
+    steps.forEach((s,i)=>{
+      const y=12+i*33;
+      g.appendChild(T(X0-10,y+14,s[0],"lbl"+(s[0]==="grounded"?" em":""),"end"));
+      g.appendChild(S("rect",{x:X0,y:y,width:s[1]/total*W,height:20,rx:4,
+        fill:i===0?"var(--ink-3)":(s[0]==="grounded"?"var(--s2)":"var(--s1)"),opacity:.82}));
+      g.appendChild(T(X0+s[1]/total*W+8,y+14,s[1].toLocaleString("vi-VN"),"val"));
+      if(s[2]) g.appendChild(T(476,y+14,"−"+s[2].toLocaleString("vi-VN"),"ax","end"));
+    });
+    g.appendChild(T(X0,244,"giữ lại 39.827 / 62.390 = 63,84%","val"));
+  })();
+
+  /* ---------- 4. spec distribution ---------- */
+  (function(){
+    const g=document.getElementById("specchart");
+    const D=[["45.912",10650,7151],["38.331",5520,2366],["23.501",5204,3972],
+             ["36.331",4771,2095],["45.050",4520,2849],["36.300",3404,2468],
+             ["25.331",2931,1281],["23.502",2857,1632],["26.114",2646,1797],
+             ["23.401",2533,1859]];
+    const X0=90, Y0=20, W=700, BH=11, GAP=27, MAX=11000;
+    D.forEach((d,i)=>{
+      const y=Y0+i*GAP, kr=d[2]/d[1];
+      g.appendChild(T(X0-10,y+13,"TS "+d[0],"lbl","end"));
+      g.appendChild(S("rect",{x:X0,y:y,width:Math.max(1,d[1]/MAX*W),height:BH,rx:2.5,
+        fill:"var(--s1)",opacity:.85}));
+      g.appendChild(S("rect",{x:X0,y:y+BH+2,width:Math.max(1,d[2]/MAX*W),height:BH,rx:2.5,
+        fill:i===0?"var(--crit)":"var(--s2)",opacity:.85}));
+      g.appendChild(T(X0+d[1]/MAX*W+8,y+16,
+        d[1].toLocaleString("vi-VN")+" → "+d[2].toLocaleString("vi-VN"),"val"));
+      const t=T(950,y+16,(kr*100).toFixed(0)+"%","val","end");
+      t.setAttribute("style","fill:"+(kr<.5?"var(--crit)":"var(--ink-2)"));
+      g.appendChild(t);
+    });
+    g.appendChild(S("line",{x1:X0,y1:Y0-6,x2:X0,y2:Y0+D.length*GAP-6,class:"axis-line"}));
+  })();
+
+  /* ---------- 5. gold position ---------- */
+  (function(){
+    const g=document.getElementById("goldchart");
+    const gen=[58.2,29.7,11.1,1.0,0.1], test=[22.10,21.79,21.69,21.53,12.89];
+    const X0=46, Y0=140, BW=28, GAP=80;
+    for(let i=0;i<5;i++){
+      const x=X0+i*GAP;
+      g.appendChild(S("rect",{x:x,y:Y0-gen[i]*2.1,width:BW,height:Math.max(1,gen[i]*2.1),
+        rx:3,fill:"var(--s2)",opacity:.88}));
+      g.appendChild(S("rect",{x:x+BW+5,y:Y0-test[i]*2.1,width:BW,height:Math.max(1,test[i]*2.1),
+        rx:3,fill:"var(--s1)",opacity:.88}));
+      g.appendChild(T(x+BW+2,Y0+17,String.fromCharCode(65+i),"lbl em","middle"));
+      g.appendChild(T(x+BW/2,Y0-gen[i]*2.1-6,gen[i].toFixed(1),"val","middle"));
+    }
+    g.appendChild(S("line",{x1:X0-10,y1:Y0,x2:440,y2:Y0,class:"axis-line"}));
+    g.appendChild(T(X0-14,Y0-58,"58,2% dồn về A","lbl em","start"));
+  })();
+
+  /* ---------- 6. example question cards ---------- */
+  (function(){
+    const EX=[
+      {tag:"hard_negative", ok:true, spec:"TS 36.300", rel:18,
+       q:"Which message carries early indications for multi-tone and multi-carrier support specifically for NB-IoT UEs? [3GPP Release 18]",
+       c:["RRCConnectionRequest-NB","RRCConnectionRequest","RRCConnectionSetupComplete","UECapabilityEnquiry"],
+       a:0,
+       ev:"For NB-IoT, early indications for multi-tone support (IOT bit) and multi-carrier support (IOT bit) are sent in RRCConnectionRequest-NB message.",
+       cm:"<b>Đây là hard negative đúng nghĩa.</b> Cả bốn phương án đều là tên bản tin RRC <em>có thật</em>; đáp án chỉ khác phương án thứ hai một hậu tố <code>-NB</code>. Đúng dạng đã làm baseline sai ở câu NPUSCH/PUSCH phía trên."},
+      {tag:"hard_negative", ok:true, spec:"TS 36.331", rel:19,
+       q:"When makeBeforeBreakSCG is configured during an SCG reconfiguration, which timer is started with the value from mobilityControlInfoSCG? [3GPP Release 19]",
+       c:["Timer T307 is started.","Timer T313 is started.","Timer T304 is started.","Timer T310 is started."],
+       a:0,
+       ev:"start timer T307 with the timer value set to t307, as included in the mobilityControlInfoSCG;",
+       cm:"<b>Bốn timer có thật của cùng một lớp giao thức.</b> Không suy luận được — hoặc biết chính xác T307, hoặc đoán 1/4. Đây chính là loại kiến thức mà 968 token thinking không dựng lại được."},
+      {tag:"hard_negative", ok:true, spec:"TS 23.501", rel:18,
+       q:"When an AMF receives subscription information containing NSSRG data, what is the fundamental constraint on the S-NSSAIs that can be included in the Allowed NSSAI? [3GPP Release 18]",
+       c:["All S-NSSAIs must share at least one common NSSRG.","All S-NSSAIs must share all NSSRGs defined for the Default S-NSSAI.","All S-NSSAIs must belong to the same HPLMN.","All S-NSSAIs must be listed in the Configured NSSAI.","All S-NSSAIs must have a different NSSRG to ensure diversity."],
+       a:0,
+       ev:"At any time, if the AMF has received subscription information for a UE that includes NSSRG information, the Allowed NSSAI for the UE can only include S-NSSAIs which share a common NSSRG.",
+       cm:"<b>Năm phương án, mỗi cái sai theo một kiểu lượng từ khác nhau</b> (&ldquo;at least one&rdquo; vs &ldquo;all&rdquo; vs &ldquo;different&rdquo;). Evidence chứng minh trực tiếp đáp án. Câu này đi qua cả sáu cổng."},
+      {tag:"lỗi ⑤ — evidence không chứng minh", ok:false, spec:"TS 21.917", rel:17,
+       q:"For advanced interactive services like cloud gaming and XR, which standardized 5QI characteristics are defined in TS 23.501 Table 5.7.4-1 to support high data rate and low latency requirements? [3GPP Release 17]",
+       c:["5QIs 84-87 with latencies of 1 ms to 5 ms and packet sizes up to 100 bytes","5QIs 87-90 with latencies of 5 ms to 20 ms and packet sizes ranging from 500 bytes to 63000 bytes","5QIs 91-94 with latencies of 10 ms to 30 ms and packet sizes up to 1000 bytes","5QIs 87-90 with latencies of 1 ms to 2 ms and packet sizes up to 500 bytes"],
+       a:1,
+       ev:"Standardized 5QI characteristics for such services are provided in Table 5.7.4-1. There have been LS exchanges",
+       cm:"<b>Trích dẫn nguyên văn hợp lệ, nhưng không chứng minh gì cả.</b> Nó chỉ nói &ldquo;bảng nằm ở 5.7.4-1&rdquo;, không nói giá trị 5QI nào. Cổng <code>grounded</code> cho qua vì nó kiểm tra <em>tồn tại</em> chứ không kiểm tra <em>kéo theo</em>. Đây là khe hở ④ đã ghi ở phần kiểm toán."},
+      {tag:"lỗi ⑥ — hỏi số hiệu bảng", ok:false, spec:"TS 21.917", rel:17,
+       q:"Which table in TS 23.501 lists the standardized 5QI characteristics for interactive services requiring high data rate and low latency? [3GPP Release 17]",
+       c:["Table 5.7.4-1","Table 5.7.4-2","Table 5.7.4-3","Table 5.7.4-4"],
+       a:0,
+       ev:"Standardized 5QI characteristics for such services are provided in Table 5.7.4-1. There have been LS exchanges",
+       cm:"<b>Prompt cấm rõ ràng: &ldquo;không hỏi về đánh số mục, số hiệu hình/bảng, hay vấn đề biên tập&rdquo;.</b> Model vẫn làm, và không cổng nào chặn. Câu này dạy trí nhớ số hiệu bảng — vô dụng với benchmark. Cần thêm một regex chặn <code>Table \\d</code> / <code>Figure \\d</code> trong cổng <code>style</code>."},
+      {tag:"bị cổng style loại", ok:false, spec:"TS 36.331", rel:19,
+       q:"What happens to the SCG MAC entity if scg-Configuration is set to release and mobilityControlInfo is not received?",
+       c:["Reset the SCG MAC if configured.","Release the SCG MAC entirely.","Deactivate the SCG MAC without resetting.","Suspend the SCG MAC until reconfiguration."],
+       a:0,
+       ev:"reset SCG MAC, if configured;",
+       cm:"<b>Thiếu tag <code>[3GPP Release 19]</code> ở cuối câu.</b> Cổng <code>style</code> bắt buộc chuỗi &ldquo;Release&rdquo; phải có mặt, nên câu này bị loại — dù nội dung của nó hoàn toàn ổn. Đây là ví dụ cổng lọc hoạt động đúng: nhất quán định dạng với bộ test quan trọng hơn giữ thêm một câu."}
+    ];
+    const box=document.getElementById("examples");
+    EX.forEach(e=>{
+      const d=document.createElement("div");
+      d.className="q"+(e.ok?"":" bad");
+      let h='<div class="qh"><span class="chip">'+e.spec+'</span><span class="chip">Rel-'+e.rel+
+        '</span><span class="chip '+(e.ok?"tagg":"tagr")+'">'+e.tag+'</span></div>';
+      h+='<p class="qt">'+e.q+'</p><ol class="ch">';
+      e.c.forEach((c,i)=>{h+='<li class="'+(i===e.a?"gold":"")+'"><span class="k">'+
+        String.fromCharCode(65+i)+'</span><span>'+c+(i===e.a?' &nbsp;✓':'')+'</span></li>';});
+      h+='</ol><p class="ev">evidence: &ldquo;'+e.ev+'&rdquo;</p><p class="cm">'+e.cm+'</p>';
+      d.innerHTML=h; box.appendChild(d);
+    });
+  })();
+
+  /* ---------- 7. real wrong-answer cards (student gate) ---------- */
+  (function(){
+    const WX=[
+      {tag:"hard_negative — nhầm lẫn thật", ok:true, spec:"TS 23.401", rel:18,
+       q:"For UEs that are attached for emergency services or RLOS but are not authenticated, which specific identity is stored in the Serving GW context instead of the IMSI? [3GPP Release 18]",
+       c:["IMEI","IMSI","TMSI","GUTI","IMEISV"], gold:0, picked:4,
+       ev:"For emergency attached or RLOS attached UEs which are not authenticated, IMEI is stored in context.",
+       cm:"<b>IMEI vs IMEISV — hai định danh anh em, đúng ý đồ.</b> Student chọn IMEISV (danh sách phần mềm mở rộng của IMEI), không phải một phương án ngẫu nhiên. Đây chính là kiểu phân biệt-tinh-vi mà probe <code>distract</code> đo được là lỗ hổng của baseline."},
+      {tag:"hard_negative — nhầm lẫn thật", ok:true, spec:"TS 23.401", rel:18,
+       q:"What parameter limits the maximum number of uplink/downlink packets and additional exception report packets per a specific time unit for a given APN? [3GPP Release 18]",
+       c:["APN Rate Control","APN AMBR","APN MBR","APN QoS"], gold:0, picked:1,
+       ev:"The APN-Rate-Control limits the maximum number of uplink/downlink packets and the maximum number of additional exception report packets",
+       cm:"<b>APN Rate Control vs APN AMBR — cùng nhóm tham số kiểm soát APN.</b> AMBR (Aggregate Maximum Bit Rate) là băng thông, Rate Control là số gói/đơn vị thời gian — dễ lẫn với người chỉ nhớ mang máng &ldquo;APN + giới hạn&rdquo;. Đúng loại câu cần cho việc huấn luyện."},
+      {tag:"standard — hỏi vẹt hằng số cổ", ok:false, spec:"TS 45.050", rel:13,
+       q:"What specific requirement regarding Tx spurious emissions in the BTS receive band was maintained for ER-GSM BTS compared to R-GSM BTS? [3GPP Release 13]",
+       c:["-89 dBm/100 kHz","-83 dBm/100 kHz","-89 dBm/1 MHz","-93 dBm/100 kHz"], gold:0, picked:3,
+       ev:"Currently [4] defines a requirement on the level of Tx spurious emissions in BTS receive band as -89 dBm/100 kHz for a R-GSM BTS (c.f. Table",
+       cm:"<b>Bốn con số dBm gần nhau — không có cách nào phân biệt bằng suy luận.</b> Đây là tra bảng thuần tuý trong một tài liệu RF GSM đời cũ. Đúng spec mà bước 13 đo được là khó nhất (45,84%) và bước 9 đã cảnh báo là ít giá trị nhất — hai phép đo độc lập chỉ cùng một chỗ."},
+      {tag:"standard — hỏi vẹt hằng số cổ", ok:false, spec:"TS 45.912", rel:8,
+       q:"In the context of the link adaptation sets defined in Table 53, which set includes MCS-11 with 16QAM and Incremental Redundancy (IR)? [3GPP Release 8]",
+       c:["Set 1","Set 2","Set 3","Set 4","Set 5"], gold:4, picked:2,
+       ev:"Set 5 | MCS-7, MCS-9 and MCS-10: 16QAM, TC and IR<br>MCS-11: 16QAM and IR",
+       cm:"<b>Số hiệu tập hợp trong một bảng — trí nhớ tra bảng, không phải kiến thức viễn thông.</b> Đúng TS 45.912, spec chiếm 16% tập train nhưng là báo cáo khả thi GERAN đã bị bước 12② gắn cờ dominance. Ba dấu hiệu độc lập (dominance, độ khó, đọc câu thật) đều chỉ về một quyết định: hạ trọng số spec này."}
+    ];
+    const box=document.getElementById("wrong-examples");
+    if(box) WX.forEach(e=>{
+      const d=document.createElement("div");
+      d.className="q"+(e.ok?"":" bad");
+      let h='<div class="qh"><span class="chip">'+e.spec+'</span><span class="chip">Rel-'+e.rel+
+        '</span><span class="chip '+(e.ok?"tagg":"tagr")+'">'+e.tag+'</span></div>';
+      h+='<p class="qt">'+e.q+'</p><ol class="ch">';
+      e.c.forEach((c,i)=>{
+        const cls = i===e.gold ? "gold" : (i===e.picked ? "picked" : "");
+        const suffix = i===e.gold ? " &nbsp;✓ đúng" : (i===e.picked ? " &nbsp;✗ student chọn" : "");
+        h+='<li class="'+cls+'"><span class="k">'+String.fromCharCode(65+i)+'</span><span>'+c+suffix+'</span></li>';
+      });
+      h+='</ol><p class="ev">evidence: &ldquo;'+e.ev+'&rdquo;</p><p class="cm">'+e.cm+'</p>';
+      d.innerHTML=h; box.appendChild(d);
+    });
+  })();
+})();
+</script>
