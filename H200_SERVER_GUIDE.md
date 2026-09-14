@@ -96,7 +96,7 @@ Torch/vLLM đọc `nproc` rồi mở 192 thread OMP và tự bóp cổ mình →
 `--dataloader_num_workers` vừa phải. Nạp nhiều model lớn song song thì OOM-killer giết theo cgroup 512 GiB,
 **không có traceback**.
 
-**Ổ đĩa gần đầy.** `/home/tensara` 3,5 TB, **94% dùng, còn ~202 GB** — dùng chung cho mọi project.
+**Ổ đĩa gần đầy.** `/home/tensara` 3,5 TB, **93% dùng, còn ~248 GB** — dùng chung cho mọi project.
 
 ```bash
 df -h /home/tensara                          # kiểm TRƯỚC mỗi lô mới
