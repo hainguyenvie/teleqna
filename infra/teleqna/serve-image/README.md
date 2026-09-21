@@ -31,6 +31,19 @@ Phục vụ thư mục model bằng vLLM trần là ra đúng điểm đã đo, 
 Dockerfile kiểm cả hai lúc **build**, hỏng thì hỏng ở đó chứ không phải ở request
 đầu tiên.
 
+## Image đã đẩy (21/09/2026)
+
+```
+hainh67/teleqna-serve:wise-o3          <- bản chốt, 34 layer, 20,46 GiB nén
+hainh67/teleqna-serve:base-vllm-0.26.0 <- base copy chéo repo, để build lại không phải kéo CDN
+hainh67/teleqna-serve:stage1           <- trung gian (base + eval + dataset), giữ để build lại nhanh
+```
+
+Repo **private**. Entrypoint `/opt/entrypoint.sh`, cmd `serve`, cổng 8000, env đầy đủ
+(kiểm bằng `crane config`). Nội dung đã kiểm từ registry: `/opt/entrypoint.sh`,
+`/opt/eval/{inspect_cli.py,verify_summary.py,evals/teleqna/teleqna.py,evals/_registry.py}`,
+parquet `GSMA/ot-full` và 19.028 file thư viện chấm điểm (ABI cpython-312, khớp base Ubuntu 24.04).
+
 ## Chạy
 
 ```bash

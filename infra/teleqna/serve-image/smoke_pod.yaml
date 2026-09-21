@@ -1,0 +1,28 @@
+# Kiểm image đã push mà không cần GPU và không chiếm card: chạy đúng image đó,
+# thay command để kiểm tra layer, thư viện, và hợp đồng artefact bên trong.
+apiVersion: v1
+kind: Pod
+metadata: {name: teleqna-smoke, namespace: tensara}
+spec:
+  restartPolicy: Never
+  nodeName: hgx046
+  imagePullSecrets: [{name: teleqna-regcred}]
+  dnsConfig:
+    nameservers: ["8.8.8.8", "1.1.1.1"]
+    options: [{name: timeout, value: "1"}, {name: attempts, value: "1"}]
+  containers:
+    - name: smoke
+      image: hainh67/teleqna-serve:wise-o3
+      command: ["/bin/bash","-lc"]
+      args:
+        - |
+          set -e
+          echo "--- model:"; ls -la /opt/model | awk '{print $5, $9}'
+          echo "--- generation_config:"; cat /opt/model/generation_config.json | tr -d '\n '; echo
+          echo "--- chat template default:"; head -1 /opt/model/chat_template.jinja
+          echo "--- eval assets:"; ls /opt/eval /opt/eval/evals | tr '\n' ' '; echo
+          echo "--- dataset:"; ls /opt/hf/hub/datasets--GSMA--ot-full/snapshots/*/teleqna/
+          echo "--- libs:"; PYTHONPATH=/opt/eval/pylibs:/opt/eval python3 -c "import inspect_ai, datasets, pyarrow, openai; from evals.teleqna.teleqna import teleqna; print('inspect_ai', inspect_ai.__version__, '| task import ok')"
+          echo "--- entrypoint present:"; head -3 /opt/entrypoint.sh
+          echo SMOKE_OK
+      resources: {requests: {cpu: "1", memory: 4Gi}, limits: {cpu: "4", memory: 16Gi}}
