@@ -1,0 +1,56 @@
+# TeleQnA closed-book, sẵn sàng cho orchestrator gọi.
+#
+#   docker compose up -d                                          bật
+#   docker compose logs -f                                        chờ "=== READY ==="
+#   docker compose run --rm --entrypoint /opt/entrypoint.sh teleqna verify
+#                                                                 chấm lại 10.000 câu bằng harness chính thức
+#
+# Orchestrator ở cùng network gọi http://teleqna:8000/v1; ở trên host gọi http://127.0.0.1:8000/v1.
+services:
+  teleqna:
+    image: hainh67/teleqna-serve:wise-o3
+    container_name: teleqna
+    restart: unless-stopped
+
+    # Chỉ nghe loopback. "8000:8000" trần sẽ mở ra mọi interface của máy.
+    # Bỏ hẳn block này nếu orchestrator là container cùng network `telco` bên dưới.
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    environment:
+      # Tên model orchestrator gửi lên. File request mẫu dùng "Qwen3-8B-Telco",
+      # nên nó đứng đầu; hai tên sau là alias cho satellite và cho người gõ tay.
+      SERVED_NAMES: "Qwen3-8B-Telco teleqna-8b-closedbook wise-o3"
+      PORT: "8000"
+      HOST: "0.0.0.0"
+      VLLM_TP: "1"
+      # Prompt của harness dài nhất ~1k token; 4096 là con số điểm 82,2 được đo.
+      VLLM_MAX_MODEL_LEN: "4096"
+      # H200 141 GB: 0.85 để lại ~120 GB, trong đó 16,4 GB là trọng số.
+      # Hạ xuống nếu card dùng chung; KV cache thừa thãi cho một câu trả lời 5 token.
+      VLLM_GPU_MEM_UTIL: "0.85"
+      VLLM_MAX_NUM_SEQS: "64"
+      VERIFY_CONNECTIONS: "64"
+
+    # Ghim card, không dùng `count: 1`: trên node này card 0–3 là dự án khác.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["6"]
+              capabilities: [gpu]
+
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/v1/models',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 300s
+      retries: 3
+
+    shm_size: "8gb"
+    networks: [telco]
+
+networks:
+  telco:
+    name: telco

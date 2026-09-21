@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata: {name: teleqna-pathprobe, namespace: tensara}
+spec:
+  restartPolicy: Never
+  nodeName: hgx046
+  containers:
+    - name: probe
+      image: gcr.io/kaniko-project/executor:v1.23.2-debug
+      command: ["/busybox/sh","-c"]
+      args:
+        - |
+          echo "--- model dir:"; ls -la /workspace/model | head -12
+          echo "--- build dir:"; ls /workspace/build 2>/dev/null; ls /workspace/build/src 2>/dev/null
+          echo "--- sizes:"; du -sh /workspace/model 2>/dev/null
+          echo PROBE_DONE
+      volumeMounts:
+        - {name: model, mountPath: /workspace/model, readOnly: true}
+        - {name: build, mountPath: /workspace/build}
+  volumes:
+    - name: model
+      hostPath: {path: /mnt/registry/tensara-home/projects/teleqna/runs/teleqna-8b/models/kit/wise_o3, type: Directory}
+    - name: build
+      hostPath: {path: /mnt/registry/tensara-home/projects/teleqna/runs/image-build, type: DirectoryOrCreate}

@@ -555,8 +555,11 @@ What it does give is the exact fact each row tests, for every row — which make
 one experiment possible that was not before: score the benchmark with the gold
 explanation injected as context. That is the ceiling of any retrieval system on
 this benchmark, and it should be measured before a corpus is built, not after.
-Note it must not be used to *select* corpus documents; that is test-set-informed
-selection and leaks. Coverage audit only, reported and not optimised against.
+Policy (set 14/09/2026, see `PLAN_CLOSED_BOOK_8B.md`): the **questions** may be used
+to select which public source documents to study — that is the Active Reading /
+Synthetic Mixed Training setting, and it is recorded in the submission note. The
+**answer key and `explanation`** are never used to select documents, generate
+training text, or filter it; they stay a measurement instrument.
 
 ## Measured: AdaptKey-Nemotron-30b is trained on this test set
 

@@ -1,0 +1,697 @@
+<meta charset="utf-8">
+<title>Closed-Book TeleQnA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#f2f5f4; --card:#ffffff; --card-2:#eaefee;
+    --rule:#d2dbd9; --rule-soft:#e4eae9;
+    --ink:#101a1d; --ink-2:#4a5a5d; --ink-3:#7b8a8c;
+    --signal:#0e8c7a; --signal-wash:rgba(14,140,122,.10);
+    --warn:#c2610a; --warn-wash:rgba(194,97,10,.10);
+    --deep:#5a4fbf; --deep-wash:rgba(90,79,191,.10);
+    --shadow:0 1px 2px rgba(16,26,29,.05), 0 8px 24px rgba(16,26,29,.055);
+    --measure:70ch;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --paper:#0f1518; --card:#161f22; --card-2:#1c2629;
+      --rule:#2a3639; --rule-soft:#212b2e;
+      --ink:#e6edee; --ink-2:#a8b7b9; --ink-3:#7e8f91;
+      --signal:#2aa894; --signal-wash:rgba(42,168,148,.14);
+      --warn:#ce7b26; --warn-wash:rgba(206,123,38,.14);
+      --deep:#8b84e6; --deep-wash:rgba(139,132,230,.14);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --paper:#0f1518; --card:#161f22; --card-2:#1c2629;
+    --rule:#2a3639; --rule-soft:#212b2e;
+    --ink:#e6edee; --ink-2:#a8b7b9; --ink-3:#7e8f91;
+    --signal:#2aa894; --signal-wash:rgba(42,168,148,.14);
+    --warn:#ce7b26; --warn-wash:rgba(206,123,38,.14);
+    --deep:#8b84e6; --deep-wash:rgba(139,132,230,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding-inline:20px; padding-block:0 80px}
+
+  .mast{padding-block:44px 22px; border-bottom:1px solid var(--rule)}
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--signal); font-weight:500;
+  }
+  h1{
+    font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+    font-size:clamp(28px,4.6vw,40px); line-height:1.14; letter-spacing:-.015em;
+    margin:12px 0 0; text-wrap:balance; max-width:22ch;
+  }
+  .dek{margin:14px 0 20px; max-width:var(--measure); color:var(--ink-2); font-size:16.5px}
+  .byline{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--ink-3);
+    display:flex; gap:8px 18px; flex-wrap:wrap;
+  }
+
+  h2{
+    font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:24px;
+    line-height:1.2; margin:44px 0 4px; letter-spacing:-.01em; text-wrap:balance;
+  }
+  h2 .num{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; font-weight:500;
+    color:var(--signal); display:block; margin-bottom:5px; letter-spacing:.08em;
+  }
+  h3{font-size:16.5px; font-weight:600; margin:28px 0 2px; letter-spacing:-.005em}
+  p{margin:13px 0; max-width:var(--measure)}
+  ul{max-width:var(--measure); padding-left:20px; margin:13px 0}
+  li{margin:6px 0}
+  strong{font-weight:600}
+  code{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.86em;
+    background:var(--card-2); border-radius:3px; padding:1px 5px;
+  }
+  .n{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; font-size:.93em}
+
+  /* status tiles */
+  .board{
+    display:grid; gap:2px; grid-template-columns:repeat(4,1fr);
+    background:var(--rule); border:1px solid var(--rule); border-radius:6px;
+    overflow:hidden; margin-block:24px;
+  }
+  @media (max-width:680px){ .board{grid-template-columns:repeat(2,1fr)} }
+  .tile{background:var(--card); padding:15px 15px 13px}
+  .tile .k{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
+    letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3);
+  }
+  .tile .v{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;
+    font-size:28px; font-weight:500; line-height:1.15; margin-top:5px; letter-spacing:-.02em;
+  }
+  .tile .v.hi{color:var(--signal)}
+  .tile .s{font-size:12.5px; color:var(--ink-2); margin-top:3px; line-height:1.4}
+
+  .live{
+    display:flex; gap:12px; align-items:flex-start;
+    border:1px solid var(--rule); border-left:3px solid var(--warn);
+    background:var(--card); border-radius:4px; padding:12px 15px; margin-block:20px;
+    font-size:14.5px; color:var(--ink-2);
+  }
+  .live b{color:var(--ink)}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none;margin-top:7px}
+
+  /* pipeline */
+  .pipe{margin:26px 0}
+  .pstage{
+    border:1px solid var(--rule); border-radius:6px; background:var(--card);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .pstage > header{
+    display:flex; align-items:baseline; gap:10px; padding:10px 16px;
+    border-bottom:1px solid var(--rule-soft); background:var(--card-2);
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  .pstage > header .sn{
+    font-size:11px; color:var(--signal); font-weight:600; letter-spacing:.08em;
+  }
+  .pstage > header .st{
+    font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--ink); font-weight:500;
+  }
+  .pstage > header .sm{
+    margin-left:auto; font-size:11.5px; color:var(--ink-3);
+    font-variant-numeric:tabular-nums; text-align:right;
+  }
+  .pbody{padding:14px 16px; font-size:14.5px; color:var(--ink-2)}
+  .pbody .chain{
+    display:flex; flex-direction:column; gap:5px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; color:var(--ink);
+  }
+  .pbody .chain .step{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap}
+  .pbody .chain .step .m{color:var(--ink-3); font-size:11.5px; margin-left:auto}
+  .pbody .chain .ar{color:var(--signal); font-weight:600}
+  .pbody .note{margin-top:11px; font-size:13.5px; color:var(--ink-3); max-width:none}
+  .pbody .note b{color:var(--ink-2)}
+  .parrow{
+    text-align:center; color:var(--signal); font-size:15px; line-height:1;
+    padding-block:7px; font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  .pfan{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;
+  }
+  @media (max-width:640px){ .pfan{grid-template-columns:1fr} }
+  .pfan .leaf{
+    border:1px solid var(--rule); border-radius:5px; padding:11px 13px; background:var(--paper);
+  }
+  .pfan .leaf .h{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+    letter-spacing:.06em; text-transform:uppercase; font-weight:600; margin-bottom:2px;
+  }
+  .pfan .leaf.miss .h{color:var(--ink-3)}
+  .pfan .leaf.never .h{color:var(--warn)}
+  .pfan .leaf.flick .h{color:var(--deep)}
+  .pfan .leaf .q{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:16px; font-weight:500;
+    font-variant-numeric:tabular-nums; margin:3px 0 4px;
+  }
+  .pfan .leaf .d{font-size:13px; color:var(--ink-2); line-height:1.45}
+  .pfan .leaf .fix{
+    margin-top:8px; padding-top:7px; border-top:1px solid var(--rule-soft);
+    font-size:12.5px; color:var(--ink-2);
+  }
+  .pfan .leaf .fix b{color:var(--ink); font-weight:600}
+  .pgrid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+  @media (max-width:640px){ .pgrid3{grid-template-columns:1fr} }
+  .pgrid3 .c{border:1px solid var(--rule); border-radius:5px; padding:11px 13px; background:var(--paper)}
+  .pgrid3 .c .h{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:600;
+    color:var(--signal); margin-bottom:3px;
+  }
+  .pgrid3 .c .d{font-size:13px; color:var(--ink-2); line-height:1.45}
+  .pgrid3 .c .d em{color:var(--ink-3); font-style:normal; font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px}
+  .pfinal{
+    text-align:center; padding:18px 16px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  .pfinal .big{
+    font-size:36px; font-weight:500; color:var(--signal);
+    font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+  }
+  .pfinal .sub{font-size:12.5px; color:var(--ink-2); margin-top:4px}
+
+  /* figures */
+  figure{
+    margin:26px 0; padding:16px 16px 12px; background:var(--card);
+    border:1px solid var(--rule); border-radius:6px; box-shadow:var(--shadow);
+  }
+  figcaption{
+    font-size:13px; color:var(--ink-2); margin-top:11px; padding-top:10px;
+    border-top:1px solid var(--rule-soft);
+  }
+  figcaption b{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:500; margin-right:8px;
+  }
+  .svg-scroll{overflow-x:auto}
+  svg{display:block; max-width:100%; height:auto}
+  svg text{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+  .g-grid{stroke:var(--rule-soft); stroke-width:1}
+  .g-axis{stroke:var(--rule); stroke-width:1}
+  .t-lab{fill:var(--ink-3); font-size:11px}
+  .t-val{fill:var(--ink); font-size:11.5px; font-weight:500}
+  .t-val-s{fill:var(--ink-2); font-size:10.5px}
+  .t-name{fill:var(--ink); font-size:11.5px}
+  .legend{
+    display:flex; gap:16px; flex-wrap:wrap; align-items:center;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+    color:var(--ink-2); margin-bottom:10px;
+  }
+  .legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+
+  /* tables */
+  .tbl-scroll{overflow-x:auto; margin:20px 0}
+  table{
+    border-collapse:collapse; width:100%; font-size:13.5px;
+    font-variant-numeric:tabular-nums; min-width:520px;
+  }
+  th,td{padding:7px 11px; text-align:left; border-bottom:1px solid var(--rule-soft)}
+  thead th{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:500;
+    border-bottom:1px solid var(--rule); white-space:nowrap;
+  }
+  td.n, th.n{text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace}
+  tbody tr:hover{background:var(--card-2)}
+  tr.best td{background:var(--signal-wash)}
+  .tbl-note{font-size:12.5px; color:var(--ink-3); margin-top:8px}
+  .no{color:var(--warn); font-weight:500}
+  .ok{color:var(--signal); font-weight:500}
+
+  .ex{border:1px solid var(--rule); border-radius:6px; background:var(--card); margin:22px 0; overflow:hidden}
+  .ex > header{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--ink-3); padding:9px 14px;
+    border-bottom:1px solid var(--rule-soft); background:var(--card-2);
+  }
+  .ex pre{
+    margin:0; padding:13px 14px; overflow-x:auto;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; line-height:1.6;
+    color:var(--ink-2); white-space:pre-wrap; word-break:break-word;
+  }
+  mark{background:var(--signal-wash); color:inherit; padding:0 2px; border-radius:2px}
+
+  .key{
+    border-left:3px solid var(--signal); background:var(--signal-wash);
+    padding:13px 16px; margin:22px 0; border-radius:0 4px 4px 0; max-width:var(--measure);
+  }
+  .key p{margin:0; font-size:15px}
+
+  hr.sep{border:0; border-top:1px solid var(--rule); margin:44px 0 0}
+  .foot{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px;
+    color:var(--ink-3); padding-top:20px; max-width:var(--measure);
+  }
+  :focus-visible{outline:2px solid var(--signal); outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">Status report · GSMA Open Telco · teleqna</div>
+  <h1>Closed-book TeleQnA on a single 8B model</h1>
+  <p class="dek">
+    No retrieval at inference, no second model, no training on benchmark rows. All knowledge
+    comes from public source documents the model rewrote for itself.
+  </p>
+  <div class="byline">
+    <span>18/09/2026 · 02:10 UTC</span>
+    <span>Qwen3-8B · 8 × H200</span>
+    <span>10,000 questions · greedy · no-think</span>
+  </div>
+</header>
+
+<div class="board">
+  <div class="tile">
+    <div class="k">Current</div>
+    <div class="v hi">79.69</div>
+    <div class="s"><code>vd6/ep1</code> · rot1 78.05 · unparsed 0</div>
+  </div>
+  <div class="tile">
+    <div class="k">Over base</div>
+    <div class="v">+7.84</div>
+    <div class="s">71.85 → 1,220 recovered, 435 broken</div>
+  </div>
+  <div class="tile">
+    <div class="k">Source ceiling</div>
+    <div class="v">89.4</div>
+    <div class="s">retrievable documents placed in context</div>
+  </div>
+  <div class="tile">
+    <div class="k">Target</div>
+    <div class="v">85.0</div>
+    <div class="s">531 questions away · SOTA 91.2 (AT&amp;T)</div>
+  </div>
+</div>
+
+<div class="live">
+  <span class="dot" aria-hidden="true"></span>
+  <div>
+    <b>Running:</b> big run 3 — full kit re-tokenised at block 2048, 2.57B tokens, new FSDP2 + Liger
+    stack (78.6k tok/s in smoke test, twice the previous DDP stack), 0.5M tokens per step.
+    Estimated 10–11 h, then one consistency pass.
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">01</span>Task and constraint</h2>
+  <p>
+    TeleQnA is the largest column of the GSMA Open Telco leaderboard: 10,000 of the 19,588 questions
+    the <code>average</code> is computed over. The submitted artefact must be one Qwen3-8B answering
+    closed-book.
+  </p>
+  <p>
+    Test questions may be used to select public source documents through retrieval. The answer key and
+    the <code>explanation</code> field are measurement instruments only — they never enter a generation
+    prompt, a data filter, or a training set. The benchmark's 10,000 rows are never trained on.
+  </p>
+  <p>
+    Baseline is <span class="n">71.85</span>. With eight retrieved windows in context the same model
+    scores <span class="n">83.75</span>. The entire track is the question of how much of that
+    <strong>+11.9</strong> can be moved into the weights.
+  </p>
+</section>
+
+<section>
+  <h2><span class="num">02</span>Pipeline</h2>
+
+  <div class="pipe">
+    <div class="pstage">
+      <header><span class="sn">1</span><span class="st">External knowledge</span><span class="sm">114,125 windows</span></header>
+      <div class="pbody">
+        <div class="chain">
+          <div class="step"><span>TeleQnA questions</span><span class="m">questions only, never the key</span></div>
+          <div class="step"><span class="ar">▼</span><span>BM25 + reranking</span></div>
+          <div class="step"><span class="ar">▼</span><span>3GPP · IEEE · Telco-Common-Corpus · Wikipedia</span><span class="m">5.1M chunks</span></div>
+          <div class="step"><span class="ar">▼</span><span>Relevant source windows, ~1.2k tokens</span><span class="m">8 per question</span></div>
+        </div>
+        <p class="note">
+          Functional coverage — put the window in context, see whether the model answers —
+          <b>89.4%</b>. About <b>520 questions</b> have no retrievable source in 5.1M chunks plus four
+          IEEE standards PDFs.
+        </p>
+      </div>
+    </div>
+
+    <div class="parrow">▼</div>
+
+    <div class="pstage">
+      <header><span class="sn">2</span><span class="st">Knowledge amplification</span><span class="sm">1.41B tokens</span></header>
+      <div class="pbody">
+        <div class="chain">
+          <div class="step"><span>Each source window</span><span class="m">generator = Qwen3-8B itself</span></div>
+        </div>
+        <div class="pgrid3" style="margin-top:12px">
+          <div class="c"><div class="h">Verbatim</div><div class="d">the window unchanged <em>1×</em></div></div>
+          <div class="c"><div class="h">Fact views</div><div class="d">K paraphrases per fact, answer span kept verbatim in every line <em>K = 10–30</em></div></div>
+          <div class="c"><div class="h">QA / MCQ</div><div class="d">12 questions and 4 exam items per window <em>evidence-gated</em></div></div>
+        </div>
+        <div class="chain" style="margin-top:12px">
+          <div class="step"><span class="ar">▼</span><span>STUDY-KIT&nbsp;&nbsp;+ replay + anchors + masked reconstruction + chat bridge</span></div>
+        </div>
+        <p class="note">
+          Every gate is a <b>string match</b>, never an LLM judge: answer span contained in the source,
+          atom coverage ≥ 0.7, evidence verbatim. Cheap, deterministic, and impossible for the generator
+          to talk its way past.
+        </p>
+      </div>
+    </div>
+
+    <div class="parrow">▼</div>
+
+    <div class="pstage">
+      <header><span class="sn">3</span><span class="st">Knowledge internalization</span><span class="sm">2.20B tokens · 18.3 h</span></header>
+      <div class="pbody">
+        <div class="chain">
+          <div class="step"><span>Full-weight CPT · 8 × H200 · lr 3e-5 · 1 epoch</span></div>
+          <div class="step" style="margin-top:6px">
+            <span>Base Qwen3-8B <b style="color:var(--ink)">71.85</b></span>
+            <span class="ar">──────▶</span>
+            <span>Big CPT model <b style="color:var(--signal)">77.81</b></span>
+          </div>
+        </div>
+        <p class="note">
+          Knowledge enters the weights, but the gain saturates. Against the 870M-token stage,
+          2.5× more data bought <b>fewer broke</b> (588 → 448), not more recover (1,004 → 1,044).
+          Adding data stopped being the lever here.
+        </p>
+      </div>
+    </div>
+
+    <div class="parrow">▼</div>
+
+    <div class="pstage">
+      <header><span class="sn">4</span><span class="st">Failure diagnosis</span><span class="sm">oracle union 88.56</span></header>
+      <div class="pbody">
+        <p style="margin:0 0 4px; font-size:13.5px; color:var(--ink-3); max-width:none">
+          recover / broke · rot1 · letter probabilities · recall probe · oracle-union ·
+          calibration · source-in-context
+        </p>
+        <div class="pfan">
+          <div class="leaf miss">
+            <div class="h">Missing source</div>
+            <div class="q">~520</div>
+            <div class="d">no retrievable document anywhere in the corpus</div>
+            <div class="fix">→ <b>corpus / retrieval</b></div>
+          </div>
+          <div class="leaf never">
+            <div class="h">Never</div>
+            <div class="q">1,144</div>
+            <div class="d">no checkpoint ever correct; margin 0.90 — <strong>confidently wrong</strong></div>
+            <div class="fix">binding error → <b>sibling-contrast</b></div>
+          </div>
+          <div class="leaf flick">
+            <div class="h">Flicker</div>
+            <div class="q">2,396</div>
+            <div class="d">some checkpoint correct; margin 0.50, gold ranked second on 82%</div>
+            <div class="fix">consistency error → <b>vote distillation, soup</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="parrow">▼</div>
+
+    <div class="pstage">
+      <header><span class="sn">5</span><span class="st">Targeted behavior refinement</span><span class="sm">~20 min per stage</span></header>
+      <div class="pbody">
+        <div class="pgrid3">
+          <div class="c"><div class="h">Recall-QA</div><div class="d">retrieve the fact<br><em>entity → property</em></div></div>
+          <div class="c"><div class="h">Sibling-contrast</div><div class="d">bind the correct sibling<br><em>entity ↔ property</em></div></div>
+          <div class="c"><div class="h">Consistency</div><div class="d">stabilize the choice<br><em>same content across permutations</em></div></div>
+        </div>
+        <div class="chain" style="margin-top:12px">
+          <div class="step">
+            <span>vd3 <b style="color:var(--ink)">79.04</b></span><span class="ar">▶</span>
+            <span>sibling <b style="color:var(--ink)">79.66</b></span><span class="ar">▶</span>
+            <span>vd6 <b style="color:var(--signal)">79.69</b></span>
+          </div>
+        </div>
+        <p class="note">
+          No new facts are generated in this tier. It only changes how the model uses what it already
+          holds, and it contributed <b>+1.88</b> — more than the 2.5× data increase in stage 3.
+        </p>
+      </div>
+    </div>
+
+    <div class="parrow">▼</div>
+
+    <div class="pstage">
+      <header><span class="sn">6</span><span class="st">Serving</span><span class="sm">one forward pass</span></header>
+      <div class="pfinal">
+        <div class="big">79.69</div>
+        <div class="sub">Single Qwen3-8B · closed-book · greedy<br>no retrieval · no voting · no teacher · original harness parser</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:13.5px; color:var(--ink-3)">
+    Voting adds <span class="n">+0.64</span> on the stage-3 checkpoint and <span class="n">−0.21</span> on
+    the final one; raw-text prompting and stop sequences are likewise no longer needed. Every serving trick
+    has been absorbed into the weights.
+  </p>
+</section>
+
+<section>
+  <h2><span class="num">03</span>Result</h2>
+
+  <figure>
+    <div class="legend"><span><i style="background:var(--signal)"></i>closed-book, 10,000 questions, first-letter parse</span></div>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 300" role="img" aria-label="Score rising from 71.85 to 79.69 across ten training stages">
+        <g class="g-grid">
+          <line x1="60" y1="237.1" x2="860" y2="237.1"/>
+          <line x1="60" y1="185.3" x2="860" y2="185.3"/>
+          <line x1="60" y1="133.5" x2="860" y2="133.5"/>
+          <line x1="60" y1="81.8" x2="860" y2="81.8"/>
+          <line x1="60" y1="30" x2="860" y2="30"/>
+        </g>
+        <g class="t-lab" text-anchor="end">
+          <text x="52" y="241">72</text><text x="52" y="189">74</text><text x="52" y="137">76</text>
+          <text x="52" y="86">78</text><text x="52" y="34">80</text>
+        </g>
+        <path d="M70 240.9 L156 220.5 L242 181.7 L328 132.5 L414 86.7 L500 59.5 L586 54.9 L672 51.0 L758 38.8 L844 38.0 L844 262 L70 262 Z"
+              fill="var(--signal-wash)" stroke="none"/>
+        <polyline points="70,240.9 156,220.5 242,181.7 328,132.5 414,86.7 500,59.5 586,54.9 672,51.0 758,38.8 844,38.0"
+                  fill="none" stroke="var(--signal)" stroke-width="2" stroke-linejoin="round"/>
+        <g fill="var(--signal)">
+          <circle cx="70" cy="240.9" r="4"/><circle cx="156" cy="220.5" r="4"/><circle cx="242" cy="181.7" r="4"/>
+          <circle cx="328" cy="132.5" r="4"/><circle cx="414" cy="86.7" r="4"/><circle cx="500" cy="59.5" r="4"/>
+          <circle cx="586" cy="54.9" r="4"/><circle cx="672" cy="51.0" r="4"/><circle cx="758" cy="38.8" r="4"/>
+          <circle cx="844" cy="38.0" r="5.5"/>
+        </g>
+        <g class="t-val" text-anchor="middle">
+          <text x="70" y="230">71.85</text><text x="242" y="171">74.14</text><text x="328" y="122">76.04</text>
+          <text x="414" y="76">77.81</text><text x="500" y="49">78.86</text><text x="820" y="27">79.69</text>
+        </g>
+        <line x1="60" y1="262" x2="860" y2="262" class="g-axis"/>
+        <g class="t-lab" text-anchor="middle">
+          <text x="70" y="278">base</text><text x="156" y="278">tier 1</text><text x="242" y="278">anchor fix</text>
+          <text x="328" y="278">tier 2</text><text x="414" y="278">big run</text><text x="500" y="278">vd</text>
+          <text x="586" y="278">vd3</text><text x="672" y="278">soup</text><text x="758" y="278">sibling</text>
+          <text x="844" y="278">vd6</text>
+        </g>
+        <g class="t-val-s" text-anchor="middle" fill="var(--ink-3)">
+          <text x="156" y="293">200M tok</text><text x="328" y="293">870M</text><text x="414" y="293">2.2B</text>
+          <text x="500" y="293">45M</text><text x="758" y="293">45M</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Fig 1</b>The first three stages scale data. The last four add almost none and still
+      contribute +1.88 — the behavior tier is where the remaining headroom was.</figcaption>
+  </figure>
+
+  <div class="tbl-scroll">
+    <table style="min-width:560px">
+      <thead><tr><th>Subject</th><th class="n">n</th><th class="n">base</th><th class="n">vd6</th><th class="n">Δ</th></tr></thead>
+      <tbody>
+        <tr class="best"><td>All</td><td class="n">10,000</td><td class="n">71.85</td><td class="n">79.69</td><td class="n">+7.84</td></tr>
+        <tr><td>Standards specifications</td><td class="n">2,000</td><td class="n">61.15</td><td class="n">71.45</td><td class="n"><span class="ok">+10.30</span></td></tr>
+        <tr><td>Standards overview</td><td class="n">1,000</td><td class="n">69.80</td><td class="n">78.00</td><td class="n">+8.20</td></tr>
+        <tr><td>Research publications</td><td class="n">4,500</td><td class="n">74.73</td><td class="n">81.84</td><td class="n">+7.11</td></tr>
+        <tr><td>Research overview</td><td class="n">2,000</td><td class="n">74.15</td><td class="n">80.80</td><td class="n">+6.65</td></tr>
+        <tr><td>Lexicon</td><td class="n">500</td><td class="n">83.60</td><td class="n">92.20</td><td class="n">+8.60</td></tr>
+      </tbody>
+    </table>
+    <div class="tbl-note">
+      Harness-faithful check (Inspect contract, vLLM server): 79.07 on <code>vd3</code> against 79.04 measured
+      internally, 0 parse failures. Reference points: telecom professionals 64.86 · GPT-4 (2023) 74.91 ·
+      gpt-5 83.80 (n≈1,000) · AT&amp;T OTel-LLM-8.3B-QnA 91.20.
+    </div>
+  </div>
+
+  <p>
+    Standards specifications is the subject that did not move for prompt optimisation (−2.80) or for
+    thinking mode (+0.35). It is a knowledge gap rather than a reasoning gap, and it is where the
+    weights channel opened widest.
+  </p>
+</section>
+
+<section>
+  <h2><span class="num">04</span>What the diagnosis found</h2>
+
+  <figure>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 200" role="img" aria-label="10,000 questions split into always correct, flicker and never">
+        <rect x="40" y="52" width="517" height="44" rx="3" fill="var(--signal)" opacity=".85"/>
+        <rect x="559" y="52" width="192" height="44" rx="3" fill="var(--deep)" opacity=".8"/>
+        <rect x="753" y="52" width="92" height="44" rx="3" fill="var(--warn)" opacity=".8"/>
+        <g text-anchor="middle" fill="var(--card)" style="font-size:13px;font-weight:600">
+          <text x="298" y="80">6,460</text><text x="655" y="80">2,396</text><text x="799" y="80">1,144</text>
+        </g>
+        <g class="t-name" text-anchor="middle">
+          <text x="298" y="122">correct in <tspan font-weight="600">every</tspan> checkpoint</text>
+          <text x="655" y="122">flicker</text><text x="799" y="122">never</text>
+        </g>
+        <g class="t-lab" text-anchor="middle">
+          <text x="298" y="140">64.6% — stable floor</text>
+          <text x="655" y="140">some checkpoint correct</text>
+          <text x="799" y="140">none ever correct</text>
+        </g>
+        <line x1="677" y1="30" x2="677" y2="104" stroke="var(--ink)" stroke-width="2"/>
+        <circle cx="677" cy="30" r="4" fill="var(--ink)"/>
+        <text x="683" y="26" class="t-val" fill="var(--ink)">vd6 = 7,969 correct</text>
+        <line x1="40" y1="164" x2="845" y2="164" class="g-axis"/>
+        <line x1="40" y1="158" x2="40" y2="170" class="g-axis"/>
+        <line x1="845" y1="158" x2="845" y2="170" class="g-axis"/>
+        <text x="442" y="184" class="t-lab" text-anchor="middle">10,000 questions · oracle union over 18 checkpoints = 8,856 (88.56%)</text>
+      </svg>
+    </div>
+    <figcaption><b>Fig 2</b>The pipeline has already answered 88.56% correctly at some point, close to the
+      89.4% source ceiling. The distance from 79.7 to 88.6 is a problem of holding answers simultaneously,
+      not of learning them.</figcaption>
+  </figure>
+
+  <p>
+    <strong>Never</strong> is the harder population and it is not a knowledge gap: 413 of 428 inspected cases
+    had the gold string verbatim in a window and repeated at least five times in the kit. Reading samples
+    showed one pattern — the model picks a <strong>sibling entity from the same passage</strong>:
+    EDGE-1 → EDGE-3, state N8 → N9, first-order → second-order Markov, 10 cm → 1.5 m. This is an
+    attribute-to-entity binding failure.
+  </p>
+  <p>
+    Sibling-contrast was built from that reading: exam items whose distractors are other siblings
+    <em>from the same window</em>, with every option and the evidence required verbatim in that window.
+    It is the largest single-stage gain since vote distillation (+0.62, +0.79 on the rotated control).
+  </p>
+
+  <div class="ex">
+    <header>Sibling-contrast item · window w048526 (IEEE C95.1 effects table)</header>
+    <pre>Q: What is an effect of RF/MW radiation exposure on children?
+   <mark>A) Decreased memory, attention, and slower reaction time in school children</mark>  ← correct
+   B) Retarded learning in rats indicating a deficit in spatial "working memory"
+   C) Increased blood pressure in healthy men
+   D) Damage to eye cells when combined with commonly used glaucoma medications
+   E) Changes in sleep patterns and REM type sleep
+
+evidence: "20) - Decreased memory, attention, and slower reaction time in school children"</pre>
+  </div>
+
+  <p>
+    All four distractors are <em>true statements</em> taken verbatim from the same table. They are wrong
+    only because they answer a different question, so topic recognition cannot solve the item.
+  </p>
+
+  <div class="key">
+    <p>Extraction, not storage, is the bottleneck. On 1,214 questions the checkpoint had not fixed,
+    base plus the retrieved windows answers 83% correctly — the fact is recoverable from the source, so
+    the failure lies in retrieving it from the weights.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>What did not work</h2>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Attempt</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Filtering training windows by measured effect (answer-key upper bound)</td><td>72.20 against 72.64 label-free — worse</td></tr>
+        <tr><td>lr 5e-5</td><td>recover 1,030, broke 1,041 — net zero</td></tr>
+        <tr><td>Letter-DPO at lr 3e-6</td><td><span class="no">collapse to 14.11</span> — likelihood displacement on a one-token completion</td></tr>
+        <tr><td>Numeric drill, 84,689 Q/A pairs</td><td>target bucket unchanged, 63.7 → 63.7</td></tr>
+        <tr><td>Behaviour view (All-of-the-above / NOT)</td><td>skews the test prior — 1:1 data against 4.5:1 in reality</td></tr>
+        <tr><td>MLP-only updates</td><td>−35 broke and −30 recover, net zero</td></tr>
+        <tr><td>Tier-3 re-study, 808M tokens</td><td>stopped at 26% of the run by pre-registered rule</td></tr>
+        <tr><td>Weight soup across different lineages</td><td>lands between parents; same-lineage soup does gain +0.15</td></tr>
+        <tr><td>Prompt-only recite-then-answer</td><td>−6.5</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Three packing bugs were worth about 4 points combined: self-replay anchors that taught the base's own
+    wrong beliefs (+1.50 once fixed), a chat/raw-text mode mismatch (2.7 points recoverable), and a missing
+    <code>&lt;|im_end|&gt;</code> that let the model write past the answer letter — the same checkpoint scored
+    39.23 under the strict parser and 77.81 on the first letter.
+  </p>
+</section>
+
+<section>
+  <h2><span class="num">06</span>Measurement discipline</h2>
+  <ul>
+    <li>Every arm reports recover, broke, the rotated-choice control, and strict against first-letter parsing.
+      A/A noise floor is 0.50 points.</li>
+    <li>Coverage is measured functionally, not by string overlap — the string measure gave a meaningless 20.5%
+      because TeleQnA options are GPT-3.5 rephrasings rather than source quotes.</li>
+    <li>Every context claim carries a rotated-context control; the noise floor for "some passage is present"
+      is about 9%.</li>
+    <li><strong>Contamination:</strong> 2,937 test questions appear verbatim inside the kit, because the source
+      windows contain the same sentences GPT-3.5 used to write them. The gain is equal on both groups
+      (+7.4 with overlap, +7.1 without) and no copy of the dataset was found in the corpus.</li>
+    <li><strong>Label noise</strong> is estimated at 3–5% by a 31B judge reading source windows, putting the
+      ceiling with perfect knowledge at roughly 95–97. The broke population is about twice as rich in ambiguous
+      labels as a random sample, so roughly a third of broke is unavoidable when the model follows the source.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">07</span>Outlook</h2>
+  <p>Realistic expectation after big run 3 is <strong>80–81</strong>. Reaching 85 requires 531 more questions:</p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Group</th><th class="n">~n</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Source available, unfixed, gold already ranked second</td><td class="n">660</td><td>partially learned — needs better extraction, not more data</td></tr>
+        <tr><td>No retrievable source</td><td class="n">520</td><td>corpus ceiling; needs deeper IEEE and research coverage</td></tr>
+        <tr><td>Broke from mislearning</td><td class="n">330</td><td>wider sibling-contrast plus consistency</td></tr>
+        <tr><td>Broke from ambiguous labels</td><td class="n">115</td><td>not fixable without using the answer key</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Untried levers, each estimated at no more than +1: prompt distillation aimed directly at the extraction
+    bottleneck, window quality filtering before generation, a 122B teacher for the uncovered group, and
+    mixing think-mode rows into training.
+  </p>
+</section>
+
+<hr class="sep">
+<div class="foot">
+  Sources: <code>infra/teleqna/METHOD_STUDYKIT.md</code> · <code>PLAN_CLOSED_BOOK_8B.md</code> ·
+  <code>README.md</code> · per-row artefacts and logs on H200.<br>
+  Long-form version in Vietnamese: <a href="studykit.vi.html" style="color:var(--signal)">studykit.vi.html</a>
+</div>
+
+</div>

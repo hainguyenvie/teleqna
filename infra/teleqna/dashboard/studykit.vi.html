@@ -1,0 +1,1714 @@
+<meta charset="utf-8">
+<title>Study-kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#f2f5f4;
+    --card:#ffffff;
+    --card-2:#eaefee;
+    --rule:#d2dbd9;
+    --rule-soft:#e4eae9;
+    --ink:#101a1d;
+    --ink-2:#4a5a5d;
+    --ink-3:#7b8a8c;
+    --signal:#0e8c7a;
+    --signal-wash:rgba(14,140,122,.10);
+    --warn:#c2610a;
+    --warn-wash:rgba(194,97,10,.10);
+    --deep:#5a4fbf;
+    --deep-wash:rgba(90,79,191,.10);
+    --shadow:0 1px 2px rgba(16,26,29,.05), 0 8px 24px rgba(16,26,29,.055);
+    --measure:68ch;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --paper:#0f1518;
+      --card:#161f22;
+      --card-2:#1c2629;
+      --rule:#2a3639;
+      --rule-soft:#212b2e;
+      --ink:#e6edee;
+      --ink-2:#a8b7b9;
+      --ink-3:#7e8f91;
+      --signal:#2aa894;
+      --signal-wash:rgba(42,168,148,.14);
+      --warn:#ce7b26;
+      --warn-wash:rgba(206,123,38,.14);
+      --deep:#8b84e6;
+      --deep-wash:rgba(139,132,230,.14);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --paper:#0f1518;
+    --card:#161f22;
+    --card-2:#1c2629;
+    --rule:#2a3639;
+    --rule-soft:#212b2e;
+    --ink:#e6edee;
+    --ink-2:#a8b7b9;
+    --ink-3:#7e8f91;
+    --signal:#2aa894;
+    --signal-wash:rgba(42,168,148,.14);
+    --warn:#ce7b26;
+    --warn-wash:rgba(206,123,38,.14);
+    --deep:#8b84e6;
+    --deep-wash:rgba(139,132,230,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    font-size:16px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding-inline:20px; padding-block:0 96px}
+
+  /* ---- sticky nav ---- */
+  .topbar{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar-in{
+    max-width:1080px; margin:0 auto; padding-inline:20px;
+    display:flex; align-items:center; gap:18px; min-height:46px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px;
+  }
+  .topbar .brand{font-weight:600; letter-spacing:.04em; color:var(--ink); white-space:nowrap}
+  .topbar nav{display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; flex:1}
+  .topbar nav::-webkit-scrollbar{display:none}
+  .topbar a{color:var(--ink-3); text-decoration:none; white-space:nowrap; padding-block:4px}
+  .topbar a:hover{color:var(--signal)}
+  .tgl{
+    margin-left:auto; border:1px solid var(--rule); background:var(--card); color:var(--ink-2);
+    font:inherit; border-radius:4px; padding:3px 9px; cursor:pointer; white-space:nowrap;
+  }
+  .tgl:hover{border-color:var(--signal); color:var(--signal)}
+  :focus-visible{outline:2px solid var(--signal); outline-offset:2px}
+
+  /* ---- masthead ---- */
+  .mast{padding-block:44px 8px; border-bottom:1px solid var(--rule)}
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--signal); font-weight:500;
+  }
+  h1{
+    font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+    font-size:clamp(30px,5.2vw,46px); line-height:1.12; letter-spacing:-.015em;
+    margin:12px 0 0; text-wrap:balance; max-width:20ch;
+  }
+  .dek{
+    margin:14px 0 26px; max-width:var(--measure); color:var(--ink-2); font-size:17px;
+  }
+  .byline{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--ink-3);
+    display:flex; gap:8px 18px; flex-wrap:wrap; padding-bottom:26px;
+  }
+
+  /* ---- status board ---- */
+  .board{
+    display:grid; gap:2px; grid-template-columns:repeat(4,1fr);
+    background:var(--rule); border:1px solid var(--rule); border-radius:6px; overflow:hidden;
+    margin-block:26px;
+  }
+  @media (max-width:680px){ .board{grid-template-columns:repeat(2,1fr)} }
+  .tile{background:var(--card); padding:16px 16px 14px}
+  .tile .k{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+  .tile .v{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;
+    font-size:30px; font-weight:500; line-height:1.15; margin-top:6px; letter-spacing:-.02em;
+  }
+  .tile .v.hi{color:var(--signal)}
+  .tile .s{font-size:12.5px; color:var(--ink-2); margin-top:3px; line-height:1.45}
+
+  .live{
+    display:flex; gap:12px; align-items:flex-start;
+    border:1px solid var(--rule); border-left:3px solid var(--warn);
+    background:var(--card); border-radius:4px; padding:13px 16px; margin-block:22px;
+    font-size:14.5px; color:var(--ink-2);
+  }
+  .live b{color:var(--ink)}
+  .live .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--warn); flex:none; margin-top:7px;
+  }
+  .live code{font-size:12.5px}
+
+  /* ---- prose ---- */
+  section{padding-block:12px}
+  h2{
+    font-family:"IBM Plex Serif",Georgia,serif; font-weight:600; font-size:27px; line-height:1.2;
+    margin:48px 0 4px; letter-spacing:-.01em; text-wrap:balance; scroll-margin-top:64px;
+  }
+  h2 .num{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:13px; font-weight:500;
+    color:var(--signal); display:block; margin-bottom:5px; letter-spacing:.08em;
+  }
+  h3{
+    font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:17.5px;
+    margin:34px 0 2px; letter-spacing:-.005em; text-wrap:balance;
+  }
+  h4{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:500; font-size:12px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+    margin:26px 0 6px;
+  }
+  p{margin:14px 0; max-width:var(--measure)}
+  ul,ol{max-width:var(--measure); padding-left:20px; margin:14px 0}
+  li{margin:6px 0}
+  a{color:var(--signal)}
+  strong{font-weight:600}
+  .lede{font-size:17.5px; color:var(--ink-2); max-width:var(--measure)}
+
+  .num-inline, .n{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;
+    font-size:.93em;
+  }
+  code{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.86em;
+    background:var(--card-2); border-radius:3px; padding:1px 5px;
+  }
+
+  /* ---- figures ---- */
+  figure{
+    margin:30px 0; padding:18px 18px 14px; background:var(--card);
+    border:1px solid var(--rule); border-radius:6px; box-shadow:var(--shadow);
+  }
+  figure.wide{margin-inline:0}
+  figcaption{
+    font-size:13px; color:var(--ink-2); margin-top:12px; padding-top:11px;
+    border-top:1px solid var(--rule-soft); max-width:none;
+  }
+  figcaption b{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:500; margin-right:8px;
+  }
+  .svg-scroll{overflow-x:auto}
+  svg{display:block; max-width:100%; height:auto}
+  svg text{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+  .g-grid{stroke:var(--rule-soft); stroke-width:1}
+  .g-axis{stroke:var(--rule); stroke-width:1}
+  .t-lab{fill:var(--ink-3); font-size:11px}
+  .t-val{fill:var(--ink); font-size:11.5px; font-weight:500}
+  .t-val-s{fill:var(--ink-2); font-size:10.5px}
+  .t-name{fill:var(--ink); font-size:12px}
+
+  .legend{
+    display:flex; gap:16px; flex-wrap:wrap; align-items:center;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--ink-2);
+    margin-bottom:12px;
+  }
+  .legend i{width:11px; height:11px; border-radius:2px; display:inline-block; margin-right:6px; vertical-align:-1px}
+
+  /* ---- examples ---- */
+  .ex{
+    border:1px solid var(--rule); border-radius:6px; background:var(--card);
+    margin:26px 0; overflow:hidden;
+  }
+  .ex > header{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--ink-3); padding:9px 14px;
+    border-bottom:1px solid var(--rule-soft); background:var(--card-2);
+  }
+  .ex pre{
+    margin:0; padding:14px; overflow-x:auto;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; line-height:1.62;
+    color:var(--ink-2); white-space:pre-wrap; word-break:break-word;
+  }
+  .ex pre.nowrap{white-space:pre}
+  .ex .split{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule-soft)}
+  @media (max-width:720px){ .ex .split{grid-template-columns:1fr} }
+  .ex .split > div{background:var(--card); padding:0}
+  .ex .split h5{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; margin:0; padding:9px 14px 0; color:var(--ink-3); font-weight:500;
+  }
+  .ok{color:var(--signal); font-weight:500}
+  .no{color:var(--warn); font-weight:500}
+  .dim{color:var(--ink-3)}
+  mark{background:var(--signal-wash); color:inherit; padding:0 2px; border-radius:2px}
+  mark.w{background:var(--warn-wash)}
+
+  /* ---- tables ---- */
+  .tbl-scroll{overflow-x:auto; margin:24px 0}
+  table{
+    border-collapse:collapse; width:100%; font-size:13.5px;
+    font-variant-numeric:tabular-nums; min-width:520px;
+  }
+  th,td{padding:7px 11px; text-align:left; border-bottom:1px solid var(--rule-soft)}
+  thead th{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-3); font-weight:500;
+    border-bottom:1px solid var(--rule); white-space:nowrap;
+  }
+  td.n, th.n{text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace}
+  tbody tr:hover{background:var(--card-2)}
+  tr.best td{background:var(--signal-wash)}
+  tr.best td:first-child{font-weight:600}
+  tbody th{font-weight:500}
+  .tbl-note{font-size:12.5px; color:var(--ink-3); margin-top:8px}
+
+  /* ---- callouts ---- */
+  .lesson{
+    border-left:3px solid var(--signal); background:var(--signal-wash);
+    padding:14px 18px; margin:26px 0; border-radius:0 4px 4px 0; max-width:var(--measure);
+  }
+  .lesson .tag{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--signal); font-weight:600; display:block; margin-bottom:3px;
+  }
+  .lesson p{margin:0; font-size:15px}
+  .rule-box{
+    border:1px solid var(--rule); border-radius:6px; overflow:hidden; margin:26px 0;
+  }
+  .rule-box .row{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule-soft)}
+  @media (max-width:620px){ .rule-box .row{grid-template-columns:1fr} }
+  .rule-box .col{background:var(--card); padding:14px 16px}
+  .rule-box h5{
+    margin:0 0 8px; font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    letter-spacing:.08em; text-transform:uppercase; font-weight:500;
+  }
+  .rule-box .col:first-child h5{color:var(--signal)}
+  .rule-box .col:last-child h5{color:var(--warn)}
+  .rule-box ul{margin:0; padding-left:18px; font-size:14px; color:var(--ink-2)}
+
+  /* ---- stage flow ---- */
+  .flow{margin:28px 0; border:1px solid var(--rule); border-radius:6px; background:var(--card); overflow:hidden}
+  .stage{
+    display:grid; grid-template-columns:104px 1fr 96px; gap:16px; align-items:baseline;
+    padding:13px 16px; border-bottom:1px solid var(--rule-soft);
+  }
+  .stage:last-child{border-bottom:0}
+  .stage .id{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+  .stage .what{font-size:14.5px; color:var(--ink-2)}
+  .stage .what b{color:var(--ink); font-weight:600}
+  .stage .sc{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;
+    font-size:15px; text-align:right; color:var(--signal); font-weight:500;
+  }
+  @media (max-width:620px){
+    .stage{grid-template-columns:1fr auto; gap:4px 12px}
+    .stage .id{grid-column:1; font-size:10.5px}
+    .stage .sc{grid-column:2; grid-row:1}
+    .stage .what{grid-column:1/-1}
+  }
+
+  hr.sep{border:0; border-top:1px solid var(--rule); margin:52px 0 0}
+  .foot{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; color:var(--ink-3);
+    padding-top:22px; max-width:var(--measure);
+  }
+  .foot a{color:var(--ink-2)}
+
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="brand">STUDY-KIT</span>
+    <nav>
+      <a href="#baitoan">Bài toán</a>
+      <a href="#tran">Trần</a>
+      <a href="#nguon">Nguồn</a>
+      <a href="#generator">Generator</a>
+      <a href="#pack">Pack</a>
+      <a href="#train">Train</a>
+      <a href="#hanhvi">Hành vi</a>
+      <a href="#never">Lõi never</a>
+      <a href="#ketqua">Kết quả</a>
+      <a href="#baihoc">Bài học</a>
+    </nav>
+    <button class="tgl" id="tgl" type="button">Chế độ</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">TeleQnA · GSMA Open Telco · closed-book</div>
+  <h1>Dạy 10.000 câu viễn thông vào trọng số một model 8B</h1>
+  <p class="dek">
+    Không retrieval lúc trả lời, không model thứ hai, không dùng đáp án để chọn dữ liệu.
+    Chỉ có tài liệu công khai, một Qwen3-8B tự viết lại chúng cho chính mình đọc, và một chuỗi phép đo
+    đủ nghiêm để biết mỗi điểm số đến từ đâu.
+  </p>
+  <div class="byline">
+    <span>18/09/2026 · 02:10 UTC</span>
+    <span>Qwen3-8B · 8 × H200</span>
+    <span>10.000 câu · greedy · no-think</span>
+  </div>
+</header>
+
+<section>
+  <div class="board">
+    <div class="tile">
+      <div class="k">Điểm hiện tại</div>
+      <div class="v hi">79,69</div>
+      <div class="s"><code>vd6/ep1</code> · rot1 78,05 · unparsed 0</div>
+    </div>
+    <div class="tile">
+      <div class="k">So với base</div>
+      <div class="v">+7,84</div>
+      <div class="s">base Qwen3-8B 71,85 → 1.220 câu sửa, 435 câu hỏng</div>
+    </div>
+    <div class="tile">
+      <div class="k">Trần nguồn</div>
+      <div class="v">89,4</div>
+      <div class="s">tài liệu truy được, đưa vào context (RAG-8 ∪ TB-8)</div>
+    </div>
+    <div class="tile">
+      <div class="k">Mục tiêu</div>
+      <div class="v">85,0</div>
+      <div class="s">còn 531 câu · SOTA của AT&amp;T là 91,2</div>
+    </div>
+  </div>
+
+  <div class="live">
+    <span class="dot" aria-hidden="true"></span>
+    <div>
+      <b>Đang chạy:</b> big run 3 — đóng gói lại toàn bộ kit ở block 2048 (<code>pack_big2k.sh</code>, bắt đầu 01:58 UTC),
+      rồi train 2,57B token trên stack FSDP2 + Liger mới (smoke test: 78,6k tok/s, gấp đôi stack cũ) → ước 10–11 giờ
+      thay vì 19. Tám card đang rảnh chờ pack xong.
+    </div>
+  </div>
+
+  <figure class="wide">
+    <div class="legend">
+      <span><i style="background:var(--signal)"></i>điểm closed-book, 10.000 câu, first-letter</span>
+    </div>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 310" role="img" aria-label="Điểm tăng từ 71,85 lên 79,69 qua mười giai đoạn huấn luyện">
+        <g class="g-grid">
+          <line x1="60" y1="237.1" x2="860" y2="237.1"/>
+          <line x1="60" y1="185.3" x2="860" y2="185.3"/>
+          <line x1="60" y1="133.5" x2="860" y2="133.5"/>
+          <line x1="60" y1="81.8" x2="860" y2="81.8"/>
+          <line x1="60" y1="30" x2="860" y2="30"/>
+        </g>
+        <g class="t-lab" text-anchor="end">
+          <text x="52" y="241">72</text>
+          <text x="52" y="189">74</text>
+          <text x="52" y="137">76</text>
+          <text x="52" y="86">78</text>
+          <text x="52" y="34">80</text>
+        </g>
+        <path d="M70 240.9 L156 220.5 L242 181.7 L328 132.5 L414 86.7 L500 59.5 L586 54.9 L672 51.0 L758 38.8 L844 38.0 L844 262 L70 262 Z"
+              fill="var(--signal-wash)" stroke="none"/>
+        <polyline points="70,240.9 156,220.5 242,181.7 328,132.5 414,86.7 500,59.5 586,54.9 672,51.0 758,38.8 844,38.0"
+                  fill="none" stroke="var(--signal)" stroke-width="2" stroke-linejoin="round"/>
+        <g fill="var(--signal)">
+          <circle cx="70" cy="240.9" r="4"/><circle cx="156" cy="220.5" r="4"/>
+          <circle cx="242" cy="181.7" r="4"/><circle cx="328" cy="132.5" r="4"/>
+          <circle cx="414" cy="86.7" r="4"/><circle cx="500" cy="59.5" r="4"/>
+          <circle cx="586" cy="54.9" r="4"/><circle cx="672" cy="51.0" r="4"/>
+          <circle cx="758" cy="38.8" r="4"/><circle cx="844" cy="38.0" r="5.5"/>
+        </g>
+        <g class="t-val" text-anchor="middle">
+          <text x="70" y="230">71,85</text>
+          <text x="242" y="171">74,14</text>
+          <text x="328" y="122">76,04</text>
+          <text x="414" y="76">77,81</text>
+          <text x="500" y="49">78,86</text>
+          <text x="820" y="27">79,69</text>
+        </g>
+        <line x1="60" y1="262" x2="860" y2="262" class="g-axis"/>
+        <g class="t-lab" text-anchor="middle">
+          <text x="70" y="278">base</text>
+          <text x="156" y="278">bậc 1</text>
+          <text x="242" y="278">anchor</text>
+          <text x="328" y="278">bậc 2</text>
+          <text x="414" y="278">big run</text>
+          <text x="500" y="278">vd</text>
+          <text x="586" y="278">vd3</text>
+          <text x="672" y="278">soup</text>
+          <text x="758" y="278">sibling</text>
+          <text x="844" y="278">vd6</text>
+        </g>
+        <g class="t-val-s" text-anchor="middle" fill="var(--ink-3)">
+          <text x="156" y="293">200M tok</text>
+          <text x="328" y="293">870M</text>
+          <text x="414" y="293">2,2B</text>
+          <text x="500" y="293">45M</text>
+          <text x="758" y="293">45M</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Hình 1</b>Mười giai đoạn. Ba chặng đầu là <em>liều</em> — mỗi lần nhân token lên vài lần.
+      Bốn chặng cuối gần như không thêm dữ liệu mới: chúng chỉ sửa <em>cách model dùng</em> thứ nó đã học,
+      và cộng lại được +1,88 — nhiều hơn cả bước nhảy từ bậc 2 lên big run.</figcaption>
+  </figure>
+</section>
+
+<section id="baitoan">
+  <h2><span class="num">01</span>Bài toán, và tại sao nó khó đúng một kiểu</h2>
+
+  <p class="lede">
+    TeleQnA là cột lớn nhất của bảng xếp hạng GSMA Open Telco: 10.000 trong 19.588 câu mà điểm
+    <code>average</code> cộng vào — nhiều hơn sáu benchmark còn lại cộng lại.
+  </p>
+
+  <p>
+    Qwen3-8B trả lời closed-book được <span class="n">71,85</span>. Nhét đúng tám đoạn tài liệu vào context
+    thì nó được <span class="n">83,75</span>. Chênh lệch <span class="n">+11,9</span> điểm ấy là toàn bộ bài toán:
+    tri thức <em>có</em> trong tài liệu công khai, model <em>biết đọc</em> nó, nhưng khi không có tài liệu thì
+    không có gì. Câu hỏi duy nhất của track này là <strong>chuyển được bao nhiêu phần của +11,9 vào trong
+    trọng số</strong>.
+  </p>
+
+  <p>
+    Điều đó nghe như một bài continual-pretraining tầm thường. Nó không tầm thường vì một lý do cụ thể:
+    benchmark này công khai hoàn toàn — cả câu hỏi, cả đáp án, cả trường <code>explanation</code>. Một file
+    10.000 dòng câu-hỏi → đáp-án chính là một tập SFT hoàn hảo. Train trên nó sẽ cho điểm rất cao và không
+    có nghĩa gì. Vì vậy luật chơi phải được viết ra trước, và được tôn trọng ở từng bước:
+  </p>
+
+  <div class="rule-box">
+    <div class="row">
+      <div class="col">
+        <h5>Được phép</h5>
+        <ul>
+          <li>Dùng <strong>câu hỏi</strong> test để chọn tài liệu nguồn công khai (retrieval)</li>
+          <li>Sinh dữ liệu tổng hợp tự do từ tài liệu nguồn</li>
+          <li>Training tự do: CPT, SFT, consistency</li>
+          <li>Hậu xử lý output trước khi parse <code>ANSWER: X</code></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h5>Không bao giờ</h5>
+        <ul>
+          <li>Dùng đáp án hoặc <code>explanation</code> trong prompt sinh dữ liệu</li>
+          <li>Dùng đáp án trong bộ <strong>lọc</strong> dữ liệu</li>
+          <li>Train trên 10.000 dòng benchmark</li>
+          <li>Dùng model &gt; 8B lúc infer</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    Đáp án chỉ là <strong>dụng cụ đo</strong>: nó dùng để báo cáo, không chảy ngược vào pipeline. Mỗi khi một
+    thí nghiệm cố tình phá luật này — có một arm như vậy — nó được dán nhãn "cận trên answer-key" và loại khỏi
+    danh sách ứng viên nộp. Kết quả của arm đó, như sẽ thấy ở §03, lại là một trong những bài học hữu ích nhất.
+  </p>
+
+  <h3>Pipeline sáu tầng</h3>
+  <p>
+    Cấu trúc bên dưới không phải thiết kế ban đầu. Nó là thứ còn lại sau khi mười lăm hướng khác chết, và
+    mỗi tầng tồn tại vì một phép đo cụ thể đã chỉ ra tầng trước đó không phải nút thắt.
+  </p>
+
+  <div class="flow">
+    <div class="stage">
+      <span class="id">Tầng 1</span>
+      <span class="what"><b>Nguồn</b> — 10.000 câu hỏi → BM25 + rerank trên 5,1M chunk → 114.125 cửa sổ ~1,2k token</span>
+      <span class="sc">89,4</span>
+    </div>
+    <div class="stage">
+      <span class="id">Tầng 2</span>
+      <span class="what"><b>Generator</b> — Qwen3-8B viết lại mỗi cửa sổ thành 6 view, mọi cổng là so khớp chuỗi</span>
+      <span class="sc">1,41B tok</span>
+    </div>
+    <div class="stage">
+      <span class="id">Tầng 3</span>
+      <span class="what"><b>Pack</b> — kit + replay + anchor + chat rows + masked, cắt block 1024</span>
+      <span class="sc">2,20B tok</span>
+    </div>
+    <div class="stage">
+      <span class="id">Tầng 4</span>
+      <span class="what"><b>CPT full-weight</b> — 8 × H200, lr 3e-5, 1 epoch, 18,3 giờ</span>
+      <span class="sc">77,81</span>
+    </div>
+    <div class="stage">
+      <span class="id">Tầng 5</span>
+      <span class="what"><b>Stage hành vi</b> — sibling-contrast, vote-distillation: 20 phút mỗi lượt</span>
+      <span class="sc">79,69</span>
+    </div>
+    <div class="stage">
+      <span class="id">Tầng 6</span>
+      <span class="what"><b>Serving</b> — greedy, parser harness gốc, không mẹo nào cả</span>
+      <span class="sc">+0,00</span>
+    </div>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink-3);max-width:var(--measure)">
+    Cột phải: con số đặc trưng của tầng đó. Tầng 6 bằng 0 là một kết quả, không phải một thiếu sót — §07 giải thích.
+  </p>
+</section>
+
+<section id="tran">
+  <h2><span class="num">02</span>Thang trần: công cụ đo quan trọng nhất</h2>
+
+  <p>
+    Trước khi đốt một giờ card nào, luôn phải biết trần của bước đó ở đâu. Bốn tầng trần được đo bằng cùng
+    một harness, cùng một template, chỉ khác thứ đặt vào context:
+  </p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Tầng</th><th>Đặt gì vào context</th><th class="n">Điểm</th><th>Trả lời câu hỏi</th></tr></thead>
+      <tbody>
+        <tr><th>T0</th><td>gold <code>explanation</code> của chính benchmark</td><td class="n">98,58</td><td>câu hỏi có trả lời được không</td></tr>
+        <tr><th>T1</th><td>8 cửa sổ tài liệu nguồn</td><td class="n">83,75</td><td>tài liệu có chứa tri thức không</td></tr>
+        <tr><th>T2</th><td>study-kit sinh từ cùng cửa sổ đó</td><td class="n">≈ T1</td><td>generator có giữ tri thức không</td></tr>
+        <tr class="best"><th>T3</th><td>không có gì (closed-book)</td><td class="n">79,69</td><td>trọng số hấp thụ được bao nhiêu</td></tr>
+      </tbody>
+    </table>
+    <div class="tbl-note">Hiệu suất kênh = (T3 − base) / (T2 − base). Đó là con số phải tăng, không phải điểm tổng.</div>
+  </div>
+
+  <p>Thang này cứu cả tuần card ba lần:</p>
+  <ol>
+    <li><strong>Vòng EntiGraph trước study-kit:</strong> T3 ≈ T2 → model đã học gần hết những gì kit của nó chứa.
+      Nút thắt là T2, tức chất lượng dữ liệu sinh, không phải liều. Nếu chỉ nhìn điểm tổng (+0,53) sẽ kết luận
+      ngược lại là "kênh trọng số không mở".</li>
+    <li><strong>Đơn vị tài liệu:</strong> cùng một nội dung, section 3GPP thô 4–8k token trong context cho +3,6;
+      cắt thành cửa sổ ~1,5k token cho +7,5. Đo ở T1, không cần train một phút nào.</li>
+    <li><strong>Chọn generator:</strong> T2 của Qwen3-8B tự viết (79,67 = 68% lift của RAG) cao hơn OTel-31B
+      (76,00 = 52%), và nhanh gấp 2,7 lần. Model đọc tốt nhất thứ do chính nó viết — ngược trực giác, nhưng đo được.</li>
+  </ol>
+
+  <figure class="wide">
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 372" role="img" aria-label="Thang giá trị của benchmark từ 60 đến 100 với các mốc tham chiếu">
+        <g class="g-grid">
+          <line x1="332.9" y1="16" x2="332.9" y2="330"/>
+          <line x1="498.6" y1="16" x2="498.6" y2="330"/>
+          <line x1="664.3" y1="16" x2="664.3" y2="330"/>
+          <line x1="830" y1="16" x2="830" y2="330"/>
+        </g>
+
+        <g class="t-name" text-anchor="end">
+          <text x="238" y="34">T0 · gold explanation</text>
+          <text x="238" y="62">SOTA · OTel-LLM-8.3B</text>
+          <text x="238" y="90">trần nguồn · RAG-8 ∪ TB-8</text>
+          <text x="238" y="118">oracle union 18 ckpt</text>
+          <text x="238" y="146">mục tiêu</text>
+          <text x="238" y="174">T1 · 8 cửa sổ trong context</text>
+          <text x="238" y="202" fill="var(--signal)" font-weight="600">vd6 · closed-book</text>
+          <text x="238" y="230">GPT-4 (2023)</text>
+          <text x="238" y="258">base Qwen3-8B</text>
+          <text x="238" y="286">chuyên gia viễn thông</text>
+          <text x="238" y="314">sàn hình-dạng distractor</text>
+        </g>
+
+        <g>
+          <rect x="250" y="24" width="568.2" height="13" rx="3" fill="var(--ink-3)" opacity=".4"/>
+          <rect x="250" y="52" width="507.1" height="13" rx="3" fill="var(--ink-3)" opacity=".55"/>
+          <rect x="250" y="80" width="492.2" height="13" rx="3" fill="var(--deep)" opacity=".85"/>
+          <rect x="250" y="108" width="485.2" height="13" rx="3" fill="var(--deep)" opacity=".5"/>
+          <rect x="250" y="136" width="455.7" height="13" rx="3" fill="var(--warn)" opacity=".8"/>
+          <rect x="250" y="164" width="445.4" height="13" rx="3" fill="var(--deep)" opacity=".85"/>
+          <rect x="250" y="192" width="411.7" height="13" rx="3" fill="var(--signal)"/>
+          <rect x="250" y="220" width="372.1" height="13" rx="3" fill="var(--ink-3)" opacity=".4"/>
+          <rect x="250" y="248" width="346.8" height="13" rx="3" fill="var(--ink-3)" opacity=".62"/>
+          <rect x="250" y="276" width="288.8" height="13" rx="3" fill="var(--ink-3)" opacity=".4"/>
+          <rect x="250" y="304" width="80.5" height="13" rx="3" fill="var(--ink-3)" opacity=".28"/>
+        </g>
+
+        <g class="t-val" text-anchor="start" fill="var(--ink)">
+          <text x="826.2" y="35">98,58</text>
+          <text x="765.1" y="63">91,20</text>
+          <text x="750.2" y="91">89,40</text>
+          <text x="743.2" y="119">88,56</text>
+          <text x="713.7" y="147">85,00</text>
+          <text x="703.4" y="175">83,75</text>
+          <text x="669.7" y="203" fill="var(--signal)" font-weight="600">79,69</text>
+          <text x="630.1" y="231">74,91</text>
+          <text x="604.8" y="259">71,85</text>
+          <text x="546.8" y="287">64,86</text>
+          <text x="338.5" y="315">39,72</text>
+        </g>
+
+        <line x1="250" y1="330" x2="830" y2="330" class="g-axis"/>
+        <g class="t-lab" text-anchor="middle">
+          <text x="250" y="348">30</text>
+          <text x="332.9" y="348">40</text>
+          <text x="498.6" y="348">60</text>
+          <text x="664.3" y="348">80</text>
+          <text x="830" y="348">100</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Hình 2</b>Toàn bộ không gian của benchmark trên một thang. Ba vạch đáng nhớ:
+      <em>trần nguồn 89,4</em> (tất cả tài liệu truy được, đặt vào context) — nhét hoàn hảo cũng chưa tới 91,2 của SOTA;
+      <em>oracle union 88,56</em> — hợp các câu mà bất kỳ checkpoint nào từng trả lời đúng; và
+      <em>39,72</em> — điểm của một chính sách không đọc câu hỏi, chỉ khai thác hình dạng distractor. Mọi "gain"
+      phải vượt vạch cuối này trước khi được gọi là tri thức.</figcaption>
+  </figure>
+
+  <div class="lesson">
+    <span class="tag">Bài học</span>
+    <p>T1 = 83,75 &lt; 85 là một kết luận khó chịu nhưng quyết định hướng đi: <strong>nhét hoàn hảo cũng chưa tới
+    mục tiêu.</strong> Muốn 85 thì phải nâng corpus, không chỉ nâng phương pháp. Đó là lý do tầng nguồn được làm
+    trước tầng thuật toán.</p>
+  </div>
+</section>
+
+<section id="nguon">
+  <h2><span class="num">03</span>Nguồn: coverage trước thuật toán</h2>
+
+  <p>
+    Một <strong>cửa sổ</strong> là đoạn ~800 từ mà retrieval trả về cho một câu test — đơn vị cơ bản của cả
+    pipeline. Tám cửa sổ cho mỗi câu; 80% cửa sổ chỉ phục vụ đúng một câu.
+  </p>
+
+  <h3>Bài học đắt nhất về lọc dữ liệu</h3>
+  <p>
+    51.637 cửa sổ là nhiều. Ý tưởng tự nhiên: giữ lại cửa sổ <em>có ích</em>. Cách làm label-free: đưa từng
+    cửa sổ một mình vào context (69.718 cặp câu–cửa sổ), giữ cửa sổ nào làm model <strong>đổi chữ cái</strong>
+    so với closed-book. Không dùng đáp án. Kết quả: 15.760 cửa sổ, 30,5%. Kiểm bằng gold để báo cáo: 77% dòng
+    mà RAG-8 sửa được đã được một cửa sổ đơn sửa. Nghe rất tốt.
+  </p>
+  <p>
+    Phép đo tiếp theo phá vỡ nó. Đưa <em>chỉ</em> tập cửa sổ đã giữ vào context cho <span class="n">72,57</span> —
+    gần bằng base, trong khi tám cửa sổ đầy đủ cho <span class="n">83,75</span>:
+  </p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Nhóm câu</th><th class="n">n</th><th>Tác dụng của tập "giữ" trong context</th></tr></thead>
+      <tbody>
+        <tr><td>base <strong>sai</strong></td><td class="n">1.804</td><td>sửa 1.442 (80%) — <span class="ok">hơn cả RAG-8 đầy đủ</span></td></tr>
+        <tr><td>base <strong>đúng</strong></td><td class="n">4.725</td><td>90,3 → 61,4; <span class="no">broke 1.390</span> (RAG-8 chỉ 585)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Lý do hiển nhiên khi đã thấy: bộ lọc "đổi chữ cái" theo định nghĩa chỉ giữ cửa sổ <em>gây đổi</em>.
+    Với câu model đã đúng, "đổi" nghĩa là "làm sai". 40% tập giữ chỉ có tác dụng hại.
+  </p>
+  <p>
+    Đã thử bốn tín hiệu label-free để tách "sửa" khỏi "hại" — margin base, đồng thuận nhiều cửa sổ, chữ cái
+    đa số, độ tự tin có cửa sổ trong context. <strong>Không cái nào tách sạch.</strong> Lý do bản chất: cửa sổ
+    được retrieval <em>vì nó giống câu hỏi</em>, mà câu hỏi giống distractor, nên cửa sổ tất yếu nói về
+    distractor một cách tự tin.
+  </p>
+  <p>
+    Arm quyết định phá luật một lần để đo cận trên: <code>tier1gf</code> chỉ train trên 6.291 cửa sổ
+    <em>thật sự sửa được</em>, chọn bằng gold. Kết quả: <span class="n">72,20</span> —
+    <strong>kém hơn</strong> bản label-free (72,64). Và nhóm "chỉ có cửa sổ hại" vẫn tụt, dù kit gold-fix không
+    chứa cửa sổ hại nào.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 1</span>
+    <p>Churn không phải lỗi dữ liệu. Câu "mong manh" bị lật ~10% bởi <em>mọi</em> arm — và bị lật 21% chỉ vì
+    xoay thứ tự lựa chọn. Hai kit khác hẳn nhau lật <em>cùng những dòng</em> (Jaccard 0,66).
+    <code>broke</code> là thuộc tính của dòng thiếu tự tin, không phải của dữ liệu. Lọc dữ liệu để giảm broke là
+    vô ích; muốn giảm broke phải làm model <strong>nhất quán</strong> hơn — đó là toàn bộ lý do tồn tại của tầng 5.</p>
+  </div>
+
+  <h3>Bịt lỗ hổng nguồn: sáu hướng, ba thành công</h3>
+  <p>
+    Phân tích 2.816 câu base sai cho biết tri thức nằm ở đâu: 64,1% có ít nhất một cửa sổ đơn sửa được;
+    14,5% chỉ tổ hợp tám cửa sổ sửa được; <strong>20,3% (573 câu) gold không có trong cửa sổ nào</strong>.
+  </p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Hướng</th><th>Làm gì</th><th>Kết quả</th></tr></thead>
+      <tbody>
+        <tr><td>BM25 truy ngược</td><td>chunk 800 từ trên 5,1M chunk (3GPP + TCC + IEEE), top-16 mỗi câu</td><td><span class="ok">✓</span> coverage 83,8 → <strong>89,4%</strong> khi hợp với tập cũ</td></tr>
+        <tr><td>4 PDF IEEE</td><td>802.11 (4.379 trang), 802.3, 802.15.4, C95.1 → 5.846 chunk</td><td><span class="ok">✓</span> 802.11 72,5→87,6 · C95.1 55,4→81,5</td></tr>
+        <tr><td>Deep rerank</td><td>BM25 top-100 → rerank embedding → top-8 cho 1.059 câu chưa cover</td><td><span class="dim">~</span> sửa 121/740 so với <strong>control lạc đề 67</strong></td></tr>
+        <tr><td>Wikipedia API</td><td>718 câu có trang → 5.691 cửa sổ</td><td><span class="dim">~</span> sửa 69 so với control 49</td></tr>
+        <tr><td>Recitation 31B</td><td>model telecom 31B tự viết passage, cổng atom-agreement</td><td><span class="no">✗</span> 213 passage qua cổng chỉ đúng 57 — đóng</td></tr>
+        <tr><td>Teacher 122B</td><td>3 passage/câu, cổng đồng thuận ba bản</td><td><span class="dim">—</span> chưa chạy (thiếu khoá gateway)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="lesson">
+    <span class="tag">Bài học 2</span>
+    <p>Luôn có control ngữ cảnh xoay. "Deep rerank sửa được 121 câu" nghe như thành công cho tới khi control —
+    mỗi câu nhận tám cửa sổ <em>của câu khác</em> — cũng sửa 67. Sàn nhiễu của "có passage nào đó trong context"
+    là ~9%. Không có control thì mọi con số coverage đều thổi phồng.</p>
+  </div>
+
+  <p>
+    Một chi tiết về <em>cách đo</em> coverage cũng đáng ghi. Lần đầu dùng thước "gold có nguyên văn trong tám
+    cửa sổ": chỉ 20,5% ở mọi nhóm — vô nghĩa, vì option của TeleQnA là diễn đạt lại của GPT-3.5 chứ không phải
+    trích dẫn nguồn. Thước đúng là <strong>chức năng</strong>: đưa cửa sổ vào context, model trả lời đúng không.
+    Cùng tập cửa sổ ấy: 83,8%.
+  </p>
+</section>
+
+<section id="generator">
+  <h2><span class="num">04</span>Generator: sáu view, cổng chuỗi, không LLM judge</h2>
+
+  <p>
+    Mỗi cửa sổ được chính Qwen3-8B viết lại thành sáu view. Đây là một cửa sổ thật —
+    <code>w000002</code>, trích TS 29.575 về dịch vụ Nmfaf_3daDataManagement — đi qua cả sáu:
+  </p>
+
+  <div class="ex">
+    <header>Nguồn · cửa sổ w000002 (~1,2k token)</header>
+    <pre>Upon the reception of an HTTP POST request with "{apiRoot}/nmfaf-3dadatamanagement/&lt;apiVersion&gt;/
+configurations" as Resource URI and MfafConfiguration data structure as request body, the MFAF shall:
+create a new configuration; assign a transaction reference id; determine the MFAF notification
+information and add it to the configuration if no MFAF notification information has been provided
+in the request; and store the configuration. ... shall respond with "201 Created" ...</pre>
+  </div>
+
+  <div class="ex">
+    <header>Sáu view sinh ra từ cửa sổ đó — 165 dòng, 118 qua cổng</header>
+    <pre><span class="dim">── facts ─ fact nguyên tử + span đáp án nguyên văn + câu hỏi không chứa span</span>
+{"fact": "The MFAF assigns a transaction reference id when creating a new configuration.",
+ "answer": "assign a transaction reference id",
+ "q": "What does the MFAF do when creating a new configuration?"}
+
+<span class="dim">── factview ─ mỗi fact viết lại K dạng, span đáp án bắt buộc nguyên văn từng dòng</span>
+The MFAF is required to <mark>assign a transaction reference id</mark> when creating a new configuration.
+When a new configuration is created, the MFAF must <mark>assign a transaction reference id</mark>.
+
+<span class="dim">── register ─ viết lại CẢ cửa sổ theo 8 văn phong (đây là "notes")</span>
+The MFAF shall create a new configuration upon receiving an HTTP POST request with
+"{apiRoot}/nmfaf-3dadatamanagement/&lt;apiVersion&gt;/configurations" as Resource URI.
+The MFAF shall assign a transaction reference id when creating a new configuration.
+The MFAF shall respond with "201 Created" if it created an "Individual MFAF Configuration".
+
+<span class="dim">── qa ─ 12 câu hỏi, đáp án ≤12 từ nguyên văn trong nguồn</span>
+{"q": "What status code is returned on successful configuration creation?",
+ "a": "201 Created", "why": "The excerpt states this status code for successful creation."}
+
+<span class="dim">── mcq ─ 4 MCQ kiểu chứng chỉ, distractor near-miss, evidence nguyên văn</span>
+{"q": "What HTTP status code does the MFAF return when it successfully updates a configuration?",
+ "options": ["200 OK", "201 Created", "204 No Content", "302 Found"], "answer": 0,
+ "evidence": "...the MFAF shall respond with: HTTP \"200 OK\" status code with the message body..."}
+
+<span class="dim">── verbatim ─ chính cửa sổ, không đổi một chữ</span></pre>
+  </div>
+
+  <p>Mỗi view chữa một cơ chế thất bại cụ thể, không phải "để có nhiều dữ liệu hơn":</p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>View</th><th>Chữa cơ chế nào</th><th>Cổng</th><th class="n">Khuếch đại</th></tr></thead>
+      <tbody>
+        <tr><td><code>verbatim</code></td><td>nguồn gốc, không mất mát</td><td>—</td><td class="n">1,0×</td></tr>
+        <tr><td><code>facts</code></td><td>tách mệnh đề khỏi văn xuôi</td><td>span ⊂ nguồn, span ⊄ câu hỏi</td><td class="n">1,46×</td></tr>
+        <tr><td><code>factview</code></td><td><strong>multiplicity</strong> — K dạng khác nhau cho một fact</td><td>span đáp án nguyên văn <em>từng dòng</em></td><td class="n">~3×</td></tr>
+        <tr><td><code>register</code></td><td>đa dạng <em>ngữ cảnh</em> quanh cùng một fact</td><td>atom coverage ≥ 0,7</td><td class="n">8×</td></tr>
+        <tr><td><code>qa</code></td><td>dạng <em>hỏi</em> — cầu nối sang cách benchmark hỏi</td><td>đáp án ⊂ nguồn (chỉ 41% qua)</td><td class="n">~1×</td></tr>
+        <tr><td><code>mcq</code></td><td>nguyên liệu cho anchor, vote-distillation, sibling</td><td>evidence ⊂ nguồn</td><td class="n">0,66×</td></tr>
+      </tbody>
+    </table>
+    <div class="tbl-note">"atom" = <code>TS xx.yyy</code>, <code>Rel-N</code>, số + đơn vị, ACRONYM, số 2–4 chữ số. Cổng atom ≥ 0,7 bắt ảo giác bằng chuỗi, không cần judge.</div>
+  </div>
+
+  <h3>Cái giá của cổng chuỗi</h3>
+  <p>
+    Cổng là so khớp chuỗi vì ba lý do: rẻ (chạy trên CPU), tất định, và <strong>không thể bị chính generator
+    lừa</strong>. Cái giá thì rất cụ thể. Cùng một fact, span bắt buộc là
+    <code>"update the configuration of corresponding transaction reference Id"</code>:
+  </p>
+
+  <div class="ex">
+    <header>Cổng span — hai dòng bị loại lại là tiếng Anh đúng hơn hai dòng được giữ</header>
+    <pre><span class="ok">[PASS]</span> The MFAF, when processing an HTTP PUT, <mark>update the configuration of corresponding
+       transaction reference Id</mark>.
+<span class="ok">[PASS]</span> For every HTTP PUT request, the MFAF <mark>update the configuration of corresponding
+       transaction reference Id</mark>.
+<span class="no">[FAIL]</span> When an HTTP PUT request is processed, the MFAF <mark class="w">updates</mark> the configuration of
+       corresponding transaction reference Id.
+<span class="no">[FAIL]</span> The configuration of corresponding transaction reference Id <mark class="w">is updated by</mark> the MFAF
+       during the processing of an HTTP PUT.</pre>
+  </div>
+
+  <p>
+    Cổng ép generator giữ nguyên chia động từ, nên nó sinh ra câu hơi sai ngữ pháp ("the MFAF update").
+    Trong 29 dạng của fact đó, 23 qua cổng. Chấp nhận được với CPT — model học fact, không học văn phong —
+    nhưng phải biết mình đang đánh đổi cái gì.
+  </p>
+
+  <h3>Ba view đã chết</h3>
+  <ul>
+    <li><strong><code>relations</code></strong> (EntiGraph, sinh passage cho mọi cặp entity): giữ được 20% lift
+      của RAG, 33% passage chứa câu kiểu "the document does not mention…". Nó bỏ đúng thứ câu hỏi spec hỏi —
+      giá trị số và mệnh đề mức clause.</li>
+    <li><strong><code>dense</code></strong> (viết lại theo đoạn 260 token, coverage atom ≥ 0,8): 76,33 — không
+      hơn textbook đơn giản.</li>
+    <li><strong>recite-then-answer</strong> (model tự viết fact rồi tự trả lời): base 71,86 →
+      <span class="n">65,39</span>. Ảo giác <em>nhắm đúng câu hỏi</em> gây nhiễu mạnh hơn passage lạc đề nhiều.</li>
+  </ul>
+
+  <div class="lesson">
+    <span class="tag">Bài học 3</span>
+    <p>"Viết lại cả đoạn một lượt" mất khoảng một nửa chi tiết, ở <em>mọi</em> cấu hình đã thử — cổng
+    faithfulness, ngân sách 24k, chia đoạn nhỏ, gộp nhiều view đều cho 48–68% lift của RAG. Đó là trần của
+    việc nén qua một lượt sinh, và là lý do <code>verbatim</code> luôn có mặt trong pack.</p>
+  </div>
+
+  <h3>Audit: đừng hỏi generator xem nó có bịa không</h3>
+  <p>
+    Hai judge đọc cửa sổ nguồn và phán <em>supported / partial / bịa</em> trên 150–200 hàng mỗi view:
+  </p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>View</th><th class="n">Judge 8B — bịa</th><th class="n">Judge 31B — bịa</th><th class="n">31B — partial</th></tr></thead>
+      <tbody>
+        <tr><td><code>facts</code></td><td class="n">0,0%</td><td class="n">2,0%</td><td class="n">3,5%</td></tr>
+        <tr><td><code>factview</code></td><td class="n">0,7%</td><td class="n">4,0%</td><td class="n">19,0%</td></tr>
+        <tr><td><code>qa</code></td><td class="n">0,7%</td><td class="n">4,0%</td><td class="n">12,0%</td></tr>
+        <tr><td><code>mcq</code></td><td class="n">0,7%</td><td class="n">6,0%</td><td class="n">13,0%</td></tr>
+        <tr><td><code>register</code></td><td class="n">0,0%</td><td class="n">0,0%</td><td class="n">39,0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Judge mạnh khắt khe hơn hẳn. Và khi đọc các ca bị phán "bịa", phần lớn không phải lỗi generator mà là
+    <strong>cửa sổ nguồn rác</strong> — log Orion, socket buffer, câu lặp "heuristically designed because
+    heuristically designed" — nội dung web và mailing-list lọt vào corpus rồi lọt vào retrieval.
+    Hướng sửa vì thế là lọc cửa sổ, không phải siết prompt.
+  </p>
+</section>
+
+<section id="pack">
+  <h2><span class="num">05</span>Pack: nơi ba bug đắt nhất đã xảy ra</h2>
+
+  <p class="lede">
+    Pack là bước "tầm thường" — tokenize rồi ghép thành block — và là nơi mất nhiều điểm nhất.
+    Ba bug dưới đây cộng lại đáng khoảng 4 điểm.
+  </p>
+
+  <h3>Bug 1 — anchor phản tín hiệu (~1,5 điểm)</h3>
+  <p>
+    CPT trên văn xuôi làm model quên hợp đồng <code>ANSWER: X</code>. Cách chữa đã đo từ vòng trước: trộn vào
+    pack các hàng "self-replay" — MCQ tổng hợp kèm <em>câu trả lời của chính base</em>, đúng template harness,
+    loss chỉ trên completion. Nó neo định dạng mà không dạy kiến thức mới.
+  </p>
+  <p>
+    Bug: MCQ tổng hợp được sinh <strong>từ chính cửa sổ đang dạy</strong>. Base chỉ đồng ý với đáp án có
+    evidence 74,3% số lần. Nghĩa là 25,7% anchor đang dạy model <em>giữ niềm tin sai ngay tại fact vừa học</em>:
+  </p>
+
+  <div class="ex">
+    <header>Hai hàng anchor bị loại sau khi sửa</header>
+    <pre>Q: Which function controls the downlink user data flow to the ng-eNB-DU?
+   A) Transfer of user data        B) Warning messages information transfer
+   C) RRC message delivery status  D) Flow control function
+   base nói: <span class="no">A</span>        generator (có evidence trong cửa sổ) nói: <span class="ok">D</span>
+
+Q: What is the maximum relative time error that CoMP cannot tolerate in 5G networks?
+   A) 1.5μs   B) 1.0μs   C) 0.4μs   D) 2.0μs
+   base nói: <span class="no">C</span>        generator nói: <span class="ok">B</span></pre>
+  </div>
+
+  <p>
+    Khoảng 11,3k hàng như vậy, lặp 12 lần, chiếm ~27% token của pack. Cách sửa là một dòng: ghi thêm trường
+    <code>agree</code> lúc sinh anchor, và chỉ giữ <code>agree=True</code>. Format vẫn được neo, hết phản tín hiệu.
+    Cùng pack, cùng learning rate, cùng một epoch: <span class="n">72,64 → 74,14</span>.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 4</span>
+    <p>Mọi hàng trong pack đều dạy một điều gì đó — kể cả hàng "chỉ để neo định dạng". Câu hỏi phải hỏi cho từng
+    loại hàng: <em>nếu model học thuộc hàng này thì nó tin điều gì?</em></p>
+  </div>
+
+  <h3>Bug 2 — lệch chế độ chat / raw (~2,5 điểm ở bậc 1)</h3>
+  <p>
+    Chấm cùng 10.000 câu bằng hai prompt: harness chat template, và văn bản thô
+    <code>Question: … Answer:</code> đọc log-prob chữ cái.
+  </p>
+
+  <div class="tbl-scroll">
+    <table style="min-width:420px">
+      <thead><tr><th>Prompt</th><th class="n">base</th><th class="n">bậc 1</th><th class="n">Δ</th></tr></thead>
+      <tbody>
+        <tr><td>chat harness</td><td class="n">71,79</td><td class="n">72,69</td><td class="n">+0,90</td></tr>
+        <tr class="best"><td>văn bản thô</td><td class="n">69,55</td><td class="n">73,16</td><td class="n">+3,61</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    CPT là học ở chế độ pretraining. Đường chat chỉ rút được khoảng một phần tư số tri thức đã vào. Có thể chữa
+    bằng mẹo serving — render request thành prompt thô bên trong, hợp lệ vì ta phục vụ model — nhưng cách đã chọn
+    là xây cầu nối vào chính pack: một nửa view <code>qa</code> thành lượt chat, và MCQ tổng hợp ở đúng harness
+    format với đáp án có evidence làm target. Tới checkpoint <code>vd</code> thì hai chế độ bằng nhau
+    (78,79 so với 78,86) — khoảng lệch biến mất.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 5</span>
+    <p>"Model không biết" và "model không lấy ra được ở format này" là hai chuyện khác nhau, và chúng chênh nhau
+    2,7 điểm. Luôn chấm thêm một arm ở chế độ raw log-prob để phân biệt.</p>
+  </div>
+
+  <h3>Bug 3 — thiếu <code>&lt;|im_end|&gt;</code> (strict parser tụt 36 điểm)</h3>
+  <p>
+    Các hàng chat trong pack nối <code>prompt + completion</code> nhưng không có token kết thúc. Model học
+    "sau <code>ANSWER: X</code> thì viết tiếp", không học "dừng".
+  </p>
+
+  <div class="ex">
+    <header>Một completion thật của big run, step 24.000 — chữ cái đúng, điểm bằng 0</header>
+    <pre>ANSWER: B The Nmfaf_3daDataManagement_Deconfigure service operation is used to stop the MFAF
+from mapping data or analytics to out-bound notification endpoints. This is the opposite of the
+Nmfaf_3daDataManagement_Configure operation, which is used to start the mapping process. The
+other options describe different functionalities related to data or analytics handling, but not...</pre>
+  </div>
+
+  <div class="tbl-scroll">
+    <table style="min-width:520px">
+      <thead><tr><th>Checkpoint</th><th class="n">strict</th><th class="n">first-letter</th><th class="n">Câu có đuôi</th><th class="n">Median completion</th></tr></thead>
+      <tbody>
+        <tr><td>big step24000</td><td class="n"><span class="no">39,23</span></td><td class="n">77,81</td><td class="n">5.018</td><td class="n">2.438 ký tự</td></tr>
+        <tr class="best"><td>vd6/ep1 (sau khi sửa)</td><td class="n">79,69</td><td class="n">79,69</td><td class="n">0</td><td class="n">9 ký tự</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Sửa tận gốc: nối <code>&lt;|im_end|&gt;</code> vào completion và <strong>đặt loss lên chính token đó</strong> —
+    tức là dạy model dừng. Đây cũng là một nửa lý do vì sao vote-distillation ở §06 thắng lớn đến vậy.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 6</span>
+    <p>Một checkpoint có thể "đúng" 77,81 và bị chấm 39,23. Luôn báo cả hai con số — suýt nữa eval-loop đã xoá mất
+    checkpoint tốt nhất vì nó xếp hạng theo <code>strict</code>.</p>
+  </div>
+</section>
+
+<section id="train">
+  <h2><span class="num">06</span>Train: liều, learning rate, và điểm bão hoà</h2>
+
+  <p>
+    Full-weight, DDP một bản sao đầy đủ mỗi card, block 1024, batch hiệu dụng 32 sequence, cosine + warmup.
+    Không LoRA: các vòng full-weight ở lr 1e-5 giữ được hợp đồng <code>ANSWER: X</code> (unparsed 0) và vẫn học được.
+  </p>
+
+  <h3>Learning rate có đỉnh rõ</h3>
+  <div class="tbl-scroll">
+    <table style="min-width:560px">
+      <thead><tr><th>lr</th><th class="n">điểm</th><th class="n">recover</th><th class="n">broke</th><th>ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td>1e-5, anchor cũ</td><td class="n">72,64</td><td class="n">410</td><td class="n">330</td><td></td></tr>
+        <tr><td>2e-5</td><td class="n">72,87</td><td class="n">481</td><td class="n">378</td><td></td></tr>
+        <tr><td>3e-5</td><td class="n">73,11</td><td class="n">592</td><td class="n">465</td><td>probe extractive tăng đơn điệu theo lr</td></tr>
+        <tr class="best"><td>1e-5, anchor agree-only</td><td class="n">74,14</td><td class="n">652</td><td class="n">422</td><td>sửa bug ăn đứt tăng lr</td></tr>
+        <tr><td>5e-5</td><td class="n">71,73</td><td class="n">1.030</td><td class="n">1.041</td><td><span class="no">quá nóng</span> — recover = broke, net 0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Learning rate cao mua recover <em>và</em> broke gần như theo tỉ lệ. Ở 5e-5 tỉ lệ đó về 1:1 và net bằng 0.
+    Liều không phải một nút vặn miễn phí.
+  </p>
+
+  <h3>Thang liều, và nơi nó dừng lại</h3>
+
+  <figure class="wide">
+    <div class="legend">
+      <span><i style="background:var(--signal)"></i>first-letter, 10.000 câu</span>
+      <span><i style="background:var(--deep)"></i>bản xoay thứ tự lựa chọn (rot1)</span>
+      <span><i style="background:var(--ink-3)"></i>bậc 2 = 76,04 (tham chiếu)</span>
+    </div>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 300" role="img" aria-label="Đường cong big run phẳng quanh 77 điểm từ 36 phần trăm epoch">
+        <g class="g-grid">
+          <line x1="70" y1="240" x2="850" y2="240"/>
+          <line x1="70" y1="202" x2="850" y2="202"/>
+          <line x1="70" y1="164" x2="850" y2="164"/>
+          <line x1="70" y1="126" x2="850" y2="126"/>
+          <line x1="70" y1="88" x2="850" y2="88"/>
+          <line x1="70" y1="50" x2="850" y2="50"/>
+        </g>
+        <g class="t-lab" text-anchor="end">
+          <text x="62" y="244">73,5</text>
+          <text x="62" y="206">74,5</text>
+          <text x="62" y="168">75,5</text>
+          <text x="62" y="130">76,5</text>
+          <text x="62" y="92">77,5</text>
+          <text x="62" y="54">78,5</text>
+        </g>
+
+        <line x1="70" y1="143.5" x2="850" y2="143.5" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="5 4" opacity=".7"/>
+        <text x="846" y="137" class="t-val-s" text-anchor="end" fill="var(--ink-3)">bậc 2 · 76,04</text>
+
+        <polyline points="70,127 142,112 214,122 286,76 358,108 430,99 502,103 574,106 646,100 718,103 790,105"
+                  fill="none" stroke="var(--signal)" stroke-width="2" stroke-linejoin="round"/>
+        <polyline points="70,225 142,198 214,220 286,153 358,185 430,193 502,190 574,190 646,190 718,194 790,190"
+                  fill="none" stroke="var(--deep)" stroke-width="2" stroke-linejoin="round" stroke-dasharray="1 0"/>
+
+        <g fill="var(--signal)">
+          <circle cx="70" cy="127" r="3.5"/><circle cx="142" cy="112" r="3.5"/><circle cx="214" cy="122" r="3.5"/>
+          <circle cx="286" cy="76" r="5.5"/><circle cx="358" cy="108" r="3.5"/><circle cx="430" cy="99" r="3.5"/>
+          <circle cx="502" cy="103" r="3.5"/><circle cx="574" cy="106" r="3.5"/><circle cx="646" cy="100" r="3.5"/>
+          <circle cx="718" cy="103" r="3.5"/><circle cx="790" cy="105" r="3.5"/>
+        </g>
+        <g fill="var(--deep)">
+          <circle cx="70" cy="225" r="3"/><circle cx="142" cy="198" r="3"/><circle cx="214" cy="220" r="3"/>
+          <circle cx="286" cy="153" r="4.5"/><circle cx="358" cy="185" r="3"/><circle cx="430" cy="193" r="3"/>
+          <circle cx="502" cy="190" r="3"/><circle cx="574" cy="190" r="3"/><circle cx="646" cy="190" r="3"/>
+          <circle cx="718" cy="194" r="3"/><circle cx="790" cy="190" r="3"/>
+        </g>
+
+        <text x="286" y="64" class="t-val" text-anchor="middle" fill="var(--signal)">77,81</text>
+        <text x="286" y="145" class="t-val-s" text-anchor="middle" fill="var(--deep)">75,76</text>
+        <text x="70" y="118" class="t-val-s" text-anchor="middle">76,47</text>
+        <text x="790" y="96" class="t-val-s" text-anchor="middle">77,08</text>
+
+        <line x1="70" y1="258" x2="850" y2="258" class="g-axis"/>
+        <g class="t-lab" text-anchor="middle">
+          <text x="70" y="274">6k</text>
+          <text x="142" y="274">12k</text>
+          <text x="214" y="274">18k</text>
+          <text x="286" y="274">24k</text>
+          <text x="358" y="274">30k</text>
+          <text x="430" y="274">36k</text>
+          <text x="502" y="274">42k</text>
+          <text x="574" y="274">48k</text>
+          <text x="646" y="274">54k</text>
+          <text x="718" y="274">60k</text>
+          <text x="790" y="274">ep1</text>
+        </g>
+        <text x="460" y="292" class="t-lab" text-anchor="middle">bước tối ưu (1 epoch = 67.069 bước, 2,20B token, 18,3 giờ)</text>
+      </svg>
+    </div>
+    <figcaption><b>Hình 3</b>Big run phẳng quanh 77 ± 0,5 từ 36% epoch, và checkpoint tốt nhất nằm ở
+      <em>giữa</em> chứ không phải cuối. Decay learning rate về sau không bứt lên. Đây là chỗ kênh trọng số
+      bão hoà với công thức hiện tại.</figcaption>
+  </figure>
+
+  <p>
+    So sánh trực tiếp big run với bậc 2 — gấp 2,5 lần dữ liệu — cho một kết luận không ai đoán trước:
+  </p>
+
+  <div class="tbl-scroll">
+    <table style="min-width:460px">
+      <thead><tr><th></th><th class="n">bậc 2 (870M)</th><th class="n">big run (2,20B)</th></tr></thead>
+      <tbody>
+        <tr><td>recover</td><td class="n">1.004</td><td class="n">1.044</td></tr>
+        <tr><td>broke</td><td class="n">588</td><td class="n"><span class="ok">448</span></td></tr>
+        <tr><td>điểm</td><td class="n">76,04</td><td class="n">77,81</td></tr>
+      </tbody>
+    </table>
+    <div class="tbl-note">820 câu recover trùng nhau giữa hai checkpoint.</div>
+  </div>
+
+  <div class="lesson">
+    <span class="tag">Bài học 7</span>
+    <p>Lợi ích của 2,5× dữ liệu là <strong>bớt broke</strong>, không phải thêm recover. Kênh trọng số bão hoà
+    ở khoảng 1.000–1.050 câu recover. Từ điểm này trở đi, thêm dữ liệu không còn là đòn bẩy — và mọi bước sau
+    đều nhắm vào <code>broke</code> hoặc vào khả năng <em>trích xuất</em>.</p>
+  </div>
+
+  <h3>Nút thắt thật: trích xuất, không phải lưu trữ</h3>
+  <p>Hai phép đo độc lập nói cùng một chuyện.</p>
+  <p>
+    <strong>Học một phần.</strong> So xác suất option gold giữa base và checkpoint bậc 2, trên nhóm câu
+    <em>chưa</em> được sửa mà nguồn có chứa đáp án (n = 1.214): P(gold) đi từ 0,037 lên 0,121, và tỉ lệ gold
+    đứng hạng nhì từ 47,8% lên 54,3%. Model đã học một phần, chỉ chưa đủ để vượt lên hạng nhất.
+  </p>
+  <p>
+    Và nhóm <code>broke</code> hé lộ điều quan trọng hơn: P(gold) rơi từ 0,896 xuống 0,205. Training không làm
+    model do dự — nó <strong>đẩy mạnh sang một option sai cụ thể</strong>.
+  </p>
+  <p>
+    <strong>Nguồn trong context.</strong> Cho checkpoint bậc 2 đọc lại tám cửa sổ: 77,89, trong khi base đọc
+    cùng cửa sổ được 83,75. Trên 1.214 câu nói trên, base + tài liệu trả lời đúng 1.010 (83%). Tức là fact
+    <em>rút được từ nguồn</em> — thất bại nằm ở khâu trích xuất trong trọng số, không phải câu mơ hồ, không phải
+    thiếu nguồn.
+  </p>
+
+  <h3>Hai cách trộn trọng số, hai kết quả trái ngược</h3>
+  <p>
+    <strong>Soup hai dòng khác nhau thất bại.</strong> Tập đúng của bậc 2 hợp với big run là 80,71 — hai
+    checkpoint biết những thứ khác nhau, nghe rất đáng trộn. Trung bình trọng số 0,5 cho 77,36: nằm <em>giữa</em>
+    hai cha, không lấy được phần hợp.
+  </p>
+  <p>
+    <strong>Soup cùng một dòng thì có lãi.</strong> Trung bình 7 checkpoint là hậu duệ của <code>vd3</code>:
+    <span class="n">79,19</span> (rot1 77,37), broke giảm còn 425. Đó là SWA, và nó làm mượt đúng nhóm câu dao động.
+    Mở rộng lên 13 checkpoint: 79,15 — bão hoà.
+  </p>
+  <p>
+    Cùng hiệu ứng ấy đưa vào trainer dưới dạng EMA thì có một bẫy vận hành đáng ghi: bản EMA fp32 trên CPU của
+    rank 0 phải copy 32 GB mỗi 10 bước, làm cả run chậm <strong>3,7 lần</strong>. Big run phải tắt EMA và quay lại
+    soup các checkpoint sau khi train — cùng hiệu ứng, không tốn giờ card.
+  </p>
+</section>
+
+<section id="hanhvi">
+  <h2><span class="num">07</span>Tầng hành vi: không dạy fact, dạy cách dùng fact</h2>
+
+  <p class="lede">
+    Đây là phần có tỉ lệ lợi ích trên chi phí cao nhất của cả track: mỗi stage khoảng 20 phút trên 8 card,
+    không sinh thêm một fact nào, và cộng lại chúng đóng góp +1,88 điểm — nhiều hơn bước nhảy 2,5× dữ liệu ở §06.
+  </p>
+
+  <h3>Vote-distillation: biến mẹo lúc infer thành nhãn train</h3>
+  <p>
+    Quan sát khởi đầu: model biết câu trả lời nhưng trả lời khác nhau tuỳ vị trí option. Bỏ phiếu 4 hoán vị ×
+    8 mẫu lúc infer cho +1,30. Vậy thì <strong>lấy chính kết quả vote đó làm nhãn và train ngược lại</strong> —
+    biến thuộc tính của ensemble thành thuộc tính của một forward pass. Hoàn toàn label-free.
+  </p>
+  <p>
+    Quy trình: gom 409.035 MCQ tổng hợp đã qua cổng từ mọi bậc → lấy 100k → cho checkpoint tự trả lời dưới
+    4 hoán vị × 4 mẫu → bỏ phiếu <em>trong không gian chỉ số gốc</em>, không phải theo chữ cái → giữ câu có
+    share ≥ 0,6 (84.351/100.000) → phát 4 hàng chat, mỗi hàng là một hoán vị với chữ cái đích tương ứng:
+  </p>
+
+  <div class="ex">
+    <header>Một câu → bốn hàng train, bốn chữ cái khác nhau</header>
+    <pre class="nowrap">A) Minimum SINR constraint   B) Maximum secrecy rate   <mark>C) Individual and sum EH</mark>   ...  → ANSWER: C
+A) Maximum secrecy rate      <mark>B) Individual and sum EH</mark>   C) Minimum SINR         ...  → ANSWER: B
+<mark>A) Individual and sum EH</mark>     B) Minimum throughput     C) Minimum SINR         ...  → ANSWER: A
+A) Minimum throughput        B) Minimum SINR           C) Maximum secrecy rate <mark>D) …EH</mark> → ANSWER: D</pre>
+  </div>
+
+  <p>
+    Cùng một nội dung, bốn chữ cái. Model không thể học vị trí; nó buộc phải học nội dung. Pack chỉ 45M token,
+    loss chỉ đặt trên <code>ANSWER: X</code> và token dừng — 19 phút trên 8 card. Kết quả:
+  </p>
+
+  <div class="tbl-scroll">
+    <table style="min-width:560px">
+      <thead><tr><th></th><th class="n">big/step24000</th><th class="n">vd/ep1</th></tr></thead>
+      <tbody>
+        <tr><td>strict</td><td class="n"><span class="no">39,23</span></td><td class="n"><span class="ok">78,86</span></td></tr>
+        <tr><td>first-letter</td><td class="n">77,81</td><td class="n">78,86</td></tr>
+        <tr><td>unparsed</td><td class="n">5.018</td><td class="n">0</td></tr>
+        <tr><td>broke</td><td class="n">448</td><td class="n"><span class="ok">345</span> (−23%)</td></tr>
+        <tr><td>greedy / vote</td><td class="n">77,81 / 78,45</td><td class="n">78,86 / 78,65</td></tr>
+        <tr><td>raw / chat</td><td class="n">78,20 / 77,68</td><td class="n">78,79 / 78,86</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Bốn mục tiêu đạt cùng lúc: đuôi hết, strict bằng first-letter, broke giảm 23%, và <strong>mọi mẹo serving bị
+    nội hoá</strong> — vote không còn thêm gì, chế độ raw và chat bằng nhau. Vòng 2 với 200k câu mới:
+    78,49 — bão hoà sau đúng một vòng.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 8</span>
+    <p>Nếu một mẹo lúc infer cho +1, hãy biến nó thành nhãn train. Vote-distillation lấy chính hành vi ensemble
+    và ép vào một forward pass: không cần đáp án, không cần dữ liệu mới, 19 phút.</p>
+  </div>
+
+  <h3>Sibling-contrast: đòn bẩy lớn nhất, và nó đến từ một chẩn đoán</h3>
+  <p>
+    Stage này không được nghĩ ra từ literature mà từ việc mổ xẻ nhóm câu <em>chưa checkpoint nào trả lời đúng</em>
+    (§08). Đặc điểm của nhóm ấy: model không do dự — nó <strong>tin chắc vào một đáp án sai</strong>
+    (margin 0,90, P(gold) 0,01). Và 413 trong 428 câu có gold nguyên văn trong cửa sổ đã được kit lặp lại
+    ít nhất 5 lần. Fact <em>có</em> trong dữ liệu, được lặp nhiều, model vẫn chọn sai.
+  </p>
+  <p>Đọc mười ca thì thấy một mẫu duy nhất — model chọn <strong>thực thể anh em trong cùng đoạn</strong>:</p>
+  <div class="ex">
+    <header>Lỗi binding: gold → thứ model chọn</header>
+    <pre>EDGE-1 → EDGE-3          ·  state N8 → state N9
+first-order → second-order Markov  ·  10 cm → 1,5 m
+queuing theory → stochastic network calculus  ·  index modulation → SSK</pre>
+  </div>
+  <p>
+    Paraphrase giữ nguyên thực thể nên không dạy được ràng buộc thuộc-tính ↔ đúng-thực-thể. Và
+    contrastive-MCQ trước đó lấy distractor từ <em>cửa sổ khác</em> — cũng không chạm vào lỗi này.
+  </p>
+  <p>
+    Cách làm mới: generator liệt kê các nhóm sibling dễ nhầm <em>trong chính cửa sổ</em> (state đánh số,
+    interface, tham số + giá trị, phương pháp liệt kê cạnh nhau, message, timer, release), rồi viết câu hỏi mà
+    <strong>mọi option đều là sibling của cùng nhóm</strong>. Cổng nghiêm hơn mọi view trước: option <em>và</em>
+    evidence đều phải nguyên văn trong cửa sổ — loại mất ~45% số sinh ra.
+  </p>
+
+  <div class="ex">
+    <header>Sibling-contrast thật · cửa sổ w048526 (IEEE C95.1, bảng tác động RF/MW)</header>
+    <pre>Q: What is an effect of RF/MW radiation exposure on children?
+   <mark>A) Decreased memory, attention, and slower reaction time in school children</mark>   ← đúng
+   B) Retarded learning in rats indicating a deficit in spatial "working memory"
+   C) Increased blood pressure in healthy men
+   D) Damage to eye cells when combined with commonly used glaucoma medications
+   E) Changes in sleep patterns and REM type sleep
+
+evidence: "20) - Decreased memory, attention, and slower reaction time in school children"</pre>
+  </div>
+
+  <p>
+    Bốn distractor đều là <em>mệnh đề đúng</em>, lấy nguyên văn từ cùng bảng trong cùng tài liệu. Chúng chỉ sai
+    ở chỗ trả lời câu hỏi <em>khác</em>. Không cách nào chọn đúng bằng cách nhận ra chủ đề; phải thật sự buộc
+    thuộc tính vào đúng thực thể.
+  </p>
+  <p>
+    174k MCQ sibling từ 60k cửa sổ → 349k hàng chat → SFT lr 5e-6 từ <code>vd3</code>:
+    <strong>79,66 / rot1 77,90</strong> (recover 1.225, broke 443). Đây là stage đơn có lãi lớn nhất kể từ
+    vote-distillation vòng 1. Thêm một lượt consistency lên trên: <strong>79,69 / 78,05</strong> — checkpoint chốt.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 9</span>
+    <p>Distractor phải đến từ <strong>chính đoạn nguồn</strong>. Lỗi thật của model là nhầm sibling cùng đoạn;
+    distractor lấy từ đoạn khác, hay do generator bịa ra, không chạm vào nó. Cổng "option nguyên văn trong cửa sổ"
+    là thứ làm view này khác mọi view trước.</p>
+  </div>
+
+  <h3>Và bảy hướng cho ≈ 0 — ghi lại vì chúng thu hẹp không gian</h3>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Arm</th><th class="n">điểm</th><th class="n">recover</th><th class="n">broke</th><th>vì sao ≈ 0</th></tr></thead>
+      <tbody>
+        <tr><td>numeric drill (84.689 Q/A số)</td><td class="n">78,75</td><td class="n">1.037</td><td class="n">346</td><td>bucket mục tiêu không nhúc nhích: 63,7 → 63,7</td></tr>
+        <tr><td>behaviour view (All / NOT)</td><td class="n">78,52</td><td class="n">1.047</td><td class="n">379</td><td>data cân bằng 1:1 làm lệch prior thật 4,5:1</td></tr>
+        <tr><td>chỉ cập nhật MLP</td><td class="n">78,79</td><td class="n">1.151</td><td class="n">456</td><td>bớt 35 broke <em>và</em> 30 recover</td></tr>
+        <tr><td>letter-DPO, lr 5e-7</td><td class="n">78,97</td><td class="n">1.162</td><td class="n">449</td><td>loss đứng 0,69 — liều quá thấp</td></tr>
+        <tr><td>letter-DPO, lr 3e-6</td><td class="n"><span class="no">14,11</span></td><td class="n">494</td><td class="n">6.267</td><td><strong>sụp</strong> — likelihood displacement, dồn xác suất sang C/E</td></tr>
+        <tr><td>RPO (DPO + NLL), lr 1e-6</td><td class="n">78,97</td><td class="n">1.172</td><td class="n">459</td><td>tín hiệu âm trên chữ cái không thêm gì</td></tr>
+        <tr><td>re-study bậc 3 (808M token)</td><td class="n">77,77</td><td class="n">~1.080</td><td class="n">487</td><td><strong>dừng ở 26% run</strong> theo quy tắc đặt trước</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Vụ DPO đáng kể lại chi tiết. Completion chỉ dài <em>một token</em> (chữ cái), nên khi DPO đẩy xác suất của
+    cả chosen lẫn rejected xuống, khối lượng xác suất không đi đâu khác ngoài các chữ cái <em>còn lại</em>:
+    model suy biến thành dự đoán C 48% / E 21%. Phát hiện phụ: cặp DPO gần như không có chữ E, vì MCQ tổng hợp
+    chỉ có 4 option trong khi 64% câu test có 5 — một lệch cấu trúc của toàn bộ dữ liệu MCQ mà chỉ view sibling
+    (3–5 option) sau này mới sửa.
+  </p>
+
+  <h3>Và hướng "dạy nhớ lại"</h3>
+  <p>
+    Một câu hỏi tự nhiên: model <em>nhận ra</em> (recognition) hay <em>nhớ lại</em> (recall)? Probe đầu tiên nói
+    5% — nhưng probe đó hỏng, vì nhiều câu QA của kit phụ thuộc ngữ cảnh ("đóng góp chính của bài báo là gì?").
+    Probe sửa lại dùng QA <strong>tự-chứa</strong> — câu hỏi phải nêu tên thực thể, cấm mọi từ ngữ cảnh:
+  </p>
+
+  <div class="ex">
+    <header>Recall-QA tự-chứa · hàng train và cũng là probe</header>
+    <pre>Q: What is the name of the attribute that holds the Notification Correlation ID
+   for the Data or Analytics Consumer?                      A: correId
+Q: What is the maximum number of messages per day for LoRaWAN?
+                                                            A: 500 51-byte messages per day
+Q: What is the name of the algorithm used for optimizing both repetition values
+   and CTU numbers?        A: Cooperative Multi-Agent learning based on DQN (CMA-DQN)</pre>
+  </div>
+
+  <p>
+    Trên probe này: base 15,2% → <code>vd3</code> <strong>23,2%</strong>. Trọng số <em>có</em> gain ở mức nhớ lại,
+    nhưng mới 23% số fact tự-chứa của chính những cửa sổ đã học. Thêm QA tự-chứa vào pack bậc 1 cho +0,5 ở cả hai
+    thứ tự; riêng QA (52M token, không có tài liệu) đã +1,96 — <strong>hiệu quả trên mỗi token cao hơn tài liệu
+    nhiều lần</strong>. Thứ tự QA-trước-tài-liệu (công thức PIT) không hơn trộn lẫn.
+  </p>
+</section>
+
+<section id="never">
+  <h2><span class="num">08</span>Trần thật ở đâu: flicker và lõi never</h2>
+
+  <p>
+    Câu hỏi "còn bao nhiêu điểm để lấy" được trả lời bằng một phép đo rẻ: hợp tất cả các câu mà
+    <em>bất kỳ</em> checkpoint nào trong 18 checkpoint từng trả lời đúng.
+  </p>
+
+  <figure class="wide">
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 210" role="img" aria-label="Phân rã 10.000 câu thành ổn định, dao động và lõi never">
+        <rect x="40" y="58" width="517" height="46" rx="3" fill="var(--signal)" opacity=".85"/>
+        <rect x="559" y="58" width="192" height="46" rx="3" fill="var(--warn)" opacity=".8"/>
+        <rect x="753" y="58" width="92" height="46" rx="3" fill="var(--ink-3)" opacity=".55"/>
+
+        <g class="t-val" fill="var(--card)" text-anchor="middle">
+          <text x="298" y="87" font-size="13" font-weight="600">6.460</text>
+        </g>
+        <g class="t-val" text-anchor="middle">
+          <text x="655" y="87" font-size="13" font-weight="600" fill="var(--card)">2.396</text>
+          <text x="799" y="87" font-size="13" font-weight="600" fill="var(--card)">1.144</text>
+        </g>
+
+        <g class="t-name" text-anchor="middle">
+          <text x="298" y="130">đúng ở <tspan font-weight="600">mọi</tspan> checkpoint</text>
+          <text x="655" y="130">flicker</text>
+          <text x="799" y="130">never</text>
+        </g>
+        <g class="t-lab" text-anchor="middle">
+          <text x="298" y="148">64,6% — nền vững</text>
+          <text x="655" y="148">ít nhất một ckpt đúng</text>
+          <text x="799" y="148">không ckpt nào đúng</text>
+        </g>
+
+        <line x1="677" y1="36" x2="677" y2="112" stroke="var(--ink)" stroke-width="2"/>
+        <circle cx="677" cy="36" r="4" fill="var(--ink)"/>
+        <text x="683" y="32" class="t-val" fill="var(--ink)">vd6 = 7.969 câu đúng</text>
+
+        <line x1="40" y1="172" x2="845" y2="172" class="g-axis"/>
+        <line x1="845" y1="166" x2="845" y2="178" class="g-axis"/>
+        <line x1="40" y1="166" x2="40" y2="178" class="g-axis"/>
+        <text x="442" y="192" class="t-lab" text-anchor="middle">10.000 câu · oracle union của 18 checkpoint = 8.856 (88,56%)</text>
+      </svg>
+    </div>
+    <figcaption><b>Hình 4</b>Pipeline <em>đã từng</em> trả lời đúng 88,56% tập test — gần đúng trần nguồn 89,4.
+      Nghĩa là khoảng cách từ 79,7 lên 88,6 không phải "chưa học được" mà là <strong>chưa giữ được đồng thời</strong>.
+      Nhóm flicker có margin median 0,50 và gold đứng nhì ở 82% số câu; nhóm never thì ngược hẳn — margin 0,90,
+      gold đứng nhì chỉ 45%: model <em>tin chắc</em> vào đáp án sai.</figcaption>
+  </figure>
+
+  <p>
+    Hai nhóm ấy cần hai loại thuốc khác nhau, và đó chính là bản đồ của tầng 5:
+    <strong>flicker</strong> → consistency và soup (vote-distillation cắt broke 23%, soup cùng dòng cắt thêm);
+    <strong>never</strong> → sibling-contrast, vì lỗi của nó là binding chứ không phải thiếu tri thức.
+  </p>
+  <p>
+    Một kiểm tra cuối để chắc trần nguồn không bị hạ thấp bởi chính khả năng đọc của 8B: cho OTel-31B đọc cùng
+    tám cửa sổ trên 1.500 câu. Kết quả 80,4 so với 82,8 của 8B — reader mạnh hơn <strong>không</strong> mở thêm
+    trần. Trên nhóm never, chỉ ~45% được nguồn giải quyết ở cả hai reader; ~55% còn lại là retrieval miss hoặc
+    nhãn mơ hồ.
+  </p>
+
+  <h3>Nhãn của benchmark sai bao nhiêu?</h3>
+  <p>
+    Một judge 31B đọc năm cửa sổ nguồn rồi phán đồng ý hay trái với gold. Trên 600 câu ngẫu nhiên: đồng ý 47,0%,
+    trái 7,7%, không quyết được 45,3%. Đọc tay 59 ca "trái" thì ít nhất ba là judge sai. Ước nhiễu nhãn thật
+    <strong>3–5%</strong> → trần với kiến thức hoàn hảo khoảng 95–97.
+  </p>
+  <p>
+    Nhưng nhóm <code>broke</code> giàu câu mơ hồ gấp đôi ngẫu nhiên (trái 15,5%), nên khoảng một phần ba số
+    <code>broke</code> là <em>không tránh được</em> khi model học đúng theo nguồn. Có ca model học đúng fact và
+    bị chấm sai: "chargeable events → charging events" là việc của CTF theo TS 32.240, nhưng gold ghi OCF.
+  </p>
+  <p>
+    Cũng trong lượt kiểm tra ấy, contamination được soát lại: 2.937 câu test có câu hỏi trùng nguyên văn trong
+    kit — không phải vì dataset lọt vào corpus, mà vì cửa sổ nguồn chứa đúng câu văn mà GPT-3.5 đã dùng để sinh
+    câu hỏi. Kiểm chứng quyết định: <strong>gain ở hai nhóm bằng nhau</strong> (+7,4 với câu trùng, +7,1 với câu
+    không trùng). Và chấm qua harness thật của Inspect: <span class="n">79,07</span>, khớp với 79,04 đo nội bộ.
+  </p>
+</section>
+
+<section id="ketqua">
+  <h2><span class="num">09</span>Kết quả</h2>
+
+  <figure class="wide">
+    <div class="legend">
+      <span><i style="background:var(--signal)"></i>recover — câu base sai, checkpoint đúng</span>
+      <span><i style="background:var(--warn)"></i>broke — câu base đúng, checkpoint sai</span>
+    </div>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 470" role="img" aria-label="Recover và broke của mười checkpoint chính">
+        <line x1="430" y1="34" x2="430" y2="424" class="g-axis"/>
+
+        <g class="t-lab" text-anchor="middle">
+          <text x="430" y="26">0</text>
+          <text x="303" y="26">500</text>
+          <text x="176" y="26">1.000</text>
+          <text x="557" y="26">500</text>
+          <text x="684" y="26">1.000</text>
+        </g>
+        <g class="g-grid">
+          <line x1="303" y1="34" x2="303" y2="424"/>
+          <line x1="176" y1="34" x2="176" y2="424"/>
+          <line x1="557" y1="34" x2="557" y2="424"/>
+          <line x1="684" y1="34" x2="684" y2="424"/>
+        </g>
+
+        <g>
+          <rect x="346" y="42" width="84" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="42" width="104" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="323" y="80" width="107" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="80" width="166" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="281" y="118" width="149" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="118" width="255" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="316" y="156" width="114" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="156" width="265" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="342" y="194" width="88" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="194" width="266" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="305" y="232" width="125" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="232" width="300" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="317" y="270" width="113" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="270" width="296" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="322" y="308" width="108" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="308" width="295" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="317" y="346" width="113" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="346" width="311" height="15" rx="2" fill="var(--signal)"/>
+          <rect x="319" y="384" width="111" height="15" rx="2" fill="var(--warn)" opacity=".85"/>
+          <rect x="432" y="384" width="310" height="15" rx="2" fill="var(--signal)"/>
+        </g>
+
+        <g class="t-val-s" text-anchor="end" style="fill:var(--ink-2);stroke:var(--card);stroke-width:3px;paint-order:stroke">
+          <text x="342" y="54">330</text><text x="319" y="92">422</text><text x="277" y="130">588</text>
+          <text x="312" y="168">448</text><text x="338" y="206">345</text><text x="301" y="244">491</text>
+          <text x="313" y="282">444</text><text x="318" y="320">425</text><text x="313" y="358">443</text>
+          <text x="315" y="396">435</text>
+        </g>
+        <g class="t-val-s" text-anchor="start" style="fill:var(--ink-2);stroke:var(--card);stroke-width:3px;paint-order:stroke">
+          <text x="540" y="54">410</text><text x="602" y="92">652</text><text x="691" y="130">1.004</text>
+          <text x="701" y="168">1.044</text><text x="702" y="206">1.047</text><text x="736" y="244">1.181</text>
+          <text x="732" y="282">1.164</text><text x="731" y="320">1.160</text><text x="747" y="358">1.225</text>
+          <text x="746" y="396">1.220</text>
+        </g>
+
+        <g class="t-name" text-anchor="middle" style="font-size:10.5px;fill:var(--ink-3);stroke:var(--card);stroke-width:4px;paint-order:stroke">
+          <text x="430" y="70">bậc 1 · 72,64</text>
+          <text x="430" y="108">anchor-fix · 74,14</text>
+          <text x="430" y="146">bậc 2 · 76,04</text>
+          <text x="430" y="184">big-24k · 77,81</text>
+          <text x="430" y="222">vd · 78,86</text>
+          <text x="430" y="260">cmcq · 78,74</text>
+          <text x="430" y="298">vd3 · 79,04</text>
+          <text x="430" y="336">soup-7 · 79,19</text>
+          <text x="430" y="374">sibling · 79,66</text>
+          <text x="430" y="412" fill="var(--signal)" font-weight="600">vd6 · 79,69</text>
+        </g>
+
+        <text x="176" y="444" class="t-lab" text-anchor="middle">← số câu bị làm hỏng</text>
+        <text x="684" y="444" class="t-lab" text-anchor="middle">số câu được sửa →</text>
+      </svg>
+    </div>
+    <figcaption><b>Hình 5</b>Cùng một điểm tổng có thể đến từ hai hình dạng rất khác nhau. Từ bậc 2 trở đi
+      recover gần như đứng yên quanh 1.000–1.200; toàn bộ tiến bộ về sau nằm ở cánh trái co lại. Hai ngoại lệ đáng
+      chú ý: <em>cmcq</em> thêm recover nhưng thêm cả broke (net ≈ 0), còn <em>sibling</em> là lần đầu recover
+      vượt 1.200 mà broke không tăng.</figcaption>
+  </figure>
+
+  <figure class="wide">
+    <div class="legend">
+      <span><i style="background:var(--ink-3);opacity:.6"></i>base Qwen3-8B</span>
+      <span><i style="background:var(--signal)"></i>vd6/ep1</span>
+    </div>
+    <div class="svg-scroll">
+      <svg viewBox="0 0 880 330" role="img" aria-label="Điểm theo môn của base so với checkpoint cuối">
+        <g class="g-grid">
+          <line x1="70" y1="250" x2="855" y2="250"/>
+          <line x1="70" y1="197.5" x2="855" y2="197.5"/>
+          <line x1="70" y1="145" x2="855" y2="145"/>
+          <line x1="70" y1="92.5" x2="855" y2="92.5"/>
+          <line x1="70" y1="40" x2="855" y2="40"/>
+        </g>
+        <g class="t-lab" text-anchor="end">
+          <text x="62" y="254">55</text><text x="62" y="201">65</text><text x="62" y="149">75</text>
+          <text x="62" y="96">85</text><text x="62" y="44">95</text>
+        </g>
+
+        <g>
+          <rect x="88" y="217.8" width="58" height="32.2" rx="3" fill="var(--ink-3)" opacity=".6"/>
+          <rect x="148" y="163.9" width="58" height="86.1" rx="3" fill="var(--signal)"/>
+          <rect x="245" y="172.1" width="58" height="77.9" rx="3" fill="var(--ink-3)" opacity=".6"/>
+          <rect x="305" y="129.0" width="58" height="121" rx="3" fill="var(--signal)"/>
+          <rect x="402" y="146.4" width="58" height="103.6" rx="3" fill="var(--ink-3)" opacity=".6"/>
+          <rect x="462" y="109.1" width="58" height="140.9" rx="3" fill="var(--signal)"/>
+          <rect x="559" y="149.5" width="58" height="100.5" rx="3" fill="var(--ink-3)" opacity=".6"/>
+          <rect x="619" y="114.6" width="58" height="135.4" rx="3" fill="var(--signal)"/>
+          <rect x="716" y="99.9" width="58" height="150.1" rx="3" fill="var(--ink-3)" opacity=".6"/>
+          <rect x="776" y="54.7" width="58" height="195.3" rx="3" fill="var(--signal)"/>
+        </g>
+
+        <g class="t-val-s" text-anchor="middle" fill="var(--ink-2)">
+          <text x="117" y="211">61,2</text><text x="274" y="165">69,8</text><text x="431" y="140">74,7</text>
+          <text x="588" y="143">74,2</text><text x="745" y="93">83,6</text>
+        </g>
+        <g class="t-val" text-anchor="middle" fill="var(--signal)">
+          <text x="177" y="156">71,5</text><text x="334" y="121">78,0</text><text x="491" y="101">81,8</text>
+          <text x="648" y="107">80,8</text><text x="805" y="47">92,2</text>
+        </g>
+
+        <line x1="70" y1="250" x2="855" y2="250" class="g-axis"/>
+        <g class="t-name" text-anchor="middle" font-size="11.5">
+          <text x="147" y="270">Standards spec</text>
+          <text x="304" y="270">Standards ovw</text>
+          <text x="461" y="270">Research pubs</text>
+          <text x="618" y="270">Research ovw</text>
+          <text x="775" y="270">Lexicon</text>
+        </g>
+        <g class="t-lab" text-anchor="middle">
+          <text x="147" y="286">n = 2.000</text>
+          <text x="304" y="286">n = 1.000</text>
+          <text x="461" y="286">n = 4.500</text>
+          <text x="618" y="286">n = 2.000</text>
+          <text x="775" y="286">n = 500</text>
+        </g>
+        <g class="t-val-s" text-anchor="middle" fill="var(--signal)">
+          <text x="147" y="306">+10,30</text>
+          <text x="304" y="306">+8,20</text>
+          <text x="461" y="306">+7,11</text>
+          <text x="618" y="306">+6,65</text>
+          <text x="775" y="306">+8,60</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>Hình 6</b>Standards specifications +10,30 là con số có ý nghĩa nhất ở đây. Đó chính là môn mà
+      tối ưu system prompt làm <em>giảm</em> 2,80 điểm và thinking mode chỉ nhích 0,35 — nghĩa là nó không phải
+      khoảng trống lý luận mà là khoảng trống tri thức. Kênh trọng số đã mở đúng chỗ đó.</figcaption>
+  </figure>
+
+  <h3>Bảng đầy đủ</h3>
+  <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr><th>Arm</th><th>Mô tả</th><th class="n">first-letter</th><th class="n">rot1</th><th class="n">recover</th><th class="n">broke</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>base</td><td>Qwen3-8B</td><td class="n">71,85</td><td class="n">70,29</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>kit1</td><td>bậc 1, lr 1e-5, anchor cũ</td><td class="n">72,64</td><td class="n">70,81</td><td class="n">410</td><td class="n">330</td></tr>
+        <tr><td>kit1gf</td><td>chỉ cửa sổ gold-fix — cận trên answer-key</td><td class="n">72,20</td><td class="n">70,54</td><td class="n">355</td><td class="n">319</td></tr>
+        <tr><td>kit1lr5e5</td><td>bậc 1, lr 5e-5</td><td class="n">71,73</td><td class="n">69,59</td><td class="n">1.030</td><td class="n">1.041</td></tr>
+        <tr><td>kit1agree</td><td>anchor agree-only (sửa bug)</td><td class="n">74,14</td><td class="n">72,07</td><td class="n">652</td><td class="n">422</td></tr>
+        <tr><td>kit1masked</td><td>+ masked reconstruction</td><td class="n">74,41</td><td class="n">72,19</td><td class="n">636</td><td class="n">379</td></tr>
+        <tr><td>kit2</td><td>bậc 2 mixed, 870M token, lr 3e-5</td><td class="n">76,04</td><td class="n">73,60</td><td class="n">1.004</td><td class="n">588</td></tr>
+        <tr><td>big_step24000</td><td>big run 2,20B, 36% epoch</td><td class="n">77,81</td><td class="n">75,76</td><td class="n">1.044</td><td class="n">448</td></tr>
+        <tr><td>big_ep1</td><td>big run đủ 1 epoch</td><td class="n">77,08</td><td class="n">74,80</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>soup_t2_big</td><td>trộn hai dòng khác nhau</td><td class="n">77,36</td><td class="n">75,28</td><td class="n">993</td><td class="n">769</td></tr>
+        <tr><td>vd</td><td>vote-distillation vòng 1</td><td class="n">78,86</td><td class="n">76,67</td><td class="n">1.047</td><td class="n">345</td></tr>
+        <tr><td>vd2</td><td>vote-distillation vòng 2</td><td class="n">78,49</td><td class="n">77,06</td><td class="n">1.031</td><td class="n">366</td></tr>
+        <tr><td>cm</td><td>contrastive-MCQ</td><td class="n">78,74</td><td class="n">76,79</td><td class="n">1.181</td><td class="n">491</td></tr>
+        <tr><td>num / beh</td><td>numeric drill / behaviour view</td><td class="n">78,75 / 78,52</td><td class="n">76,73 / 76,45</td><td class="n">1.037 / 1.047</td><td class="n">346 / 379</td></tr>
+        <tr><td>vd3</td><td>consistency trên cm</td><td class="n">79,04</td><td class="n">77,11</td><td class="n">1.164</td><td class="n">444</td></tr>
+        <tr><td>vd3 qua harness</td><td><code>run_baseline.py</code>, contract Inspect</td><td class="n">79,07</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>cm2 / vd4</td><td>lượt 2 contrastive → consistency</td><td class="n">78,83 / 78,81</td><td class="n">76,97 / 77,10</td><td class="n">1.211 / 1.204</td><td class="n">512 / 507</td></tr>
+        <tr><td>dpo / dpo3</td><td>letter-DPO 5e-7 / RPO 1e-6</td><td class="n">78,97 / 78,97</td><td class="n">77,17 / 77,15</td><td class="n">1.162 / 1.172</td><td class="n">449 / 459</td></tr>
+        <tr><td>style / vd5</td><td>MCQ đúng kiểu hỏi → consistency</td><td class="n">78,46 / 78,71</td><td class="n">76,92 / 77,24</td><td class="n">1.181 / 1.187</td><td class="n">519 / 500</td></tr>
+        <tr><td>soup-7 / soup-13</td><td>trộn trọng số cùng một dòng</td><td class="n">79,19 / 79,15</td><td class="n">77,37 / 77,44</td><td class="n">1.160 / 1.151</td><td class="n">425 / 420</td></tr>
+        <tr><td>recall / PIT</td><td>bậc 1 + QA tự-chứa, từ base</td><td class="n">74,67 / 74,73</td><td class="n">72,60 / 72,20</td><td class="n">667 / 681</td><td class="n">384 / 392</td></tr>
+        <tr><td>qa_all</td><td>chỉ QA tự-chứa, 114k cửa sổ, từ base</td><td class="n">73,80</td><td class="n">72,53</td><td class="n">475</td><td class="n">279</td></tr>
+        <tr><td>sib</td><td>sibling-contrast từ vd3</td><td class="n">79,66</td><td class="n">77,90</td><td class="n">1.225</td><td class="n">443</td></tr>
+        <tr class="best"><td>vd6 ★</td><td>consistency trên sibling</td><td class="n">79,69</td><td class="n">78,05</td><td class="n">1.220</td><td class="n">435</td></tr>
+      </tbody>
+    </table>
+    <div class="tbl-note">10.000 câu, greedy, no-think, template harness byte-identical. <code>first-letter</code> = chữ cái đầu sau <code>ANSWER:</code>. <code>rot1</code> = cùng bộ câu hỏi, thứ tự lựa chọn đã xoay.</div>
+  </div>
+
+  <h3>Mọi mẹo lúc infer đều đã bị nội hoá</h3>
+  <div class="tbl-scroll">
+    <table style="min-width:560px">
+      <thead><tr><th>Kỹ thuật</th><th class="n">trên base</th><th class="n">trên big-24k</th><th class="n">trên vd</th></tr></thead>
+      <tbody>
+        <tr><td>vote 4 hoán vị × 8 mẫu</td><td class="n">+0,53</td><td class="n">+0,64</td><td class="n"><span class="no">−0,21</span></td></tr>
+        <tr><td>prompt văn bản thô</td><td class="n">−2,24</td><td class="n">+0,52</td><td class="n">−0,07</td></tr>
+        <tr><td>dừng sau chữ cái</td><td class="n">không cần</td><td class="n">+38,58</td><td class="n">không cần</td></tr>
+        <tr><td>thinking mode (1.000 câu)</td><td class="n">+2,50</td><td class="n">—</td><td class="n"><span class="no">−0,60</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Thinking mode là ca thú vị nhất: nó giúp base +2,5 nhưng <em>hại</em> model đã train. Cả pipeline chạy
+    no-think nên phân phối "lý luận trước đáp án" bị lệch — hoặc đơn giản là tri thức đã học được truy cập trực
+    tiếp tốt hơn là qua deliberation.
+  </p>
+
+  <div class="lesson">
+    <span class="tag">Bài học 10</span>
+    <p>Model càng tốt thì mẹo serving càng vô dụng — và đó là dấu hiệu lành. Deliverable cuối cùng là một forward
+    pass greedy với parser harness gốc, đúng thứ mà một dòng trên bảng xếp hạng nên đại diện.</p>
+  </div>
+</section>
+
+<section id="baihoc">
+  <h2><span class="num">10</span>Những gì mang đi được</h2>
+
+  <h4>Về dữ liệu</h4>
+  <ol>
+    <li>Đa dạng <strong>dạng</strong> quan trọng hơn số lần lặp: K = 30 dạng khác nhau cho +4,78, lặp 30 lần chỉ +1,45.</li>
+    <li>Điều dự báo "sửa được" là số <strong>tài liệu độc lập</strong> nói cùng một fact (1 → 9%, ≥4 → 30%),
+      chứ không phải số dòng kit chứa gold (0 dòng: 21%, 50+ dòng: 22% — không khác nhau).</li>
+    <li>Đơn vị tài liệu là cửa sổ ~1,2k token, không phải section.</li>
+    <li><strong>Không lọc dữ liệu theo hiệu ứng.</strong> Cận trên answer-key còn kém hơn label-free.</li>
+    <li>Distractor phải đến từ chính đoạn nguồn — đó là khác biệt giữa +0,0 và +0,6.</li>
+    <li>Đừng audit dữ liệu bằng chính model đã sinh ra nó.</li>
+    <li>Dữ liệu cân bằng làm lệch prior của test: All-of-the-above 1:1 trong khi thật là 4,5:1.</li>
+  </ol>
+
+  <h4>Về pack và training</h4>
+  <ol start="8">
+    <li>Mọi hàng trong pack đều dạy nội dung, kể cả hàng "chỉ để neo định dạng".</li>
+    <li>CPT học ở chế độ pretraining; cầu nối sang chat phải nằm trong chính pack.</li>
+    <li>Thiếu token dừng nghĩa là model không học dừng — và strict parser tụt 36 điểm.</li>
+    <li>Learning rate cao mua recover <em>và</em> broke gần theo tỉ lệ; ở 5e-5 net bằng 0.</li>
+    <li>Ở 2,20B token, thêm dữ liệu chỉ bớt broke chứ không thêm recover.</li>
+    <li>Nút thắt là <strong>trích xuất</strong>, không phải lưu trữ: 83% câu chưa sửa <em>có</em> fact rút được từ nguồn.</li>
+    <li>Trộn trọng số cùng một dòng thì có lãi; trộn hai dòng khác nhau thì không, dù hợp tập đúng rất cao.</li>
+  </ol>
+
+  <h4>Về hành vi và đo lường</h4>
+  <ol start="15">
+    <li>Nếu một mẹo lúc infer cho +1, hãy biến nó thành nhãn train.</li>
+    <li>Hai can thiệp "≈ 0" theo đúng thứ tự có thể dương: contrastive thêm recover, rồi consistency cắt broke.</li>
+    <li>DPO trên completion một token thì sụp — likelihood displacement dồn xác suất sang chữ cái còn lại.</li>
+    <li>Luôn có control (ngữ cảnh xoay, sàn nhiễu A/A 0,50, base cùng stack) trước khi gọi bất cứ thứ gì là hiệu ứng.</li>
+    <li>Đo cái mình cần, không đo cái dễ đo: coverage phải là <em>chức năng</em>, recall probe phải dùng câu tự-chứa.</li>
+    <li>Điểm tổng che mất mọi thứ. Luôn báo <code>recover</code> / <code>broke</code> / <code>rot1</code> /
+      strict-so-với-first-letter cùng lúc.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="num">11</span>Còn lại 531 câu</h2>
+
+  <p>Từ 79,69 lên 85 là 531 câu. Phân tích cho biết chúng nằm ở đâu, và ba nhóm cần ba loại công việc khác nhau:</p>
+
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Nhóm</th><th class="n">~n</th><th>Tình trạng và hướng xử lý</th></tr></thead>
+      <tbody>
+        <tr><td>có nguồn, chưa sửa, gold đã lên hạng nhì</td><td class="n">660</td><td>học một phần — cần <strong>trích xuất</strong> tốt hơn, không cần dữ liệu mới</td></tr>
+        <tr><td>không có nguồn truy được</td><td class="n">520</td><td>trần cứng của corpus; cần IEEE và research sâu hơn</td></tr>
+        <tr><td><code>broke</code> do học lệch</td><td class="n">330</td><td>sibling mở rộng + consistency</td></tr>
+        <tr><td><code>broke</code> do nhãn mơ hồ</td><td class="n">115</td><td>không sửa được mà không dùng đáp án</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    <strong>Đang chạy:</strong> big run 3 — đóng gói lại toàn bộ kit ở block 2048 (cửa sổ ~1,36k token không còn
+    bị cắt đôi như ở block 1024), pack 2,57B token gồm kit đầy đủ + recall-QA ×3 + sibling ×2 + style, trên stack
+    FSDP2 + Liger mới: 78,6k tok/s ở smoke test, gấp đôi stack DDP cũ, batch 0,5M token mỗi bước thay vì 32k.
+    Ước 10–11 giờ thay vì 19. Sau đó là một lượt consistency.
+  </p>
+  <p>
+    Kỳ vọng thành thật: <strong>80–81</strong>. Các đòn bẩy đã biết cộng dồn lại vẫn chưa tới 85, và bốn hướng
+    còn chưa thử — prompt distillation (nhắm thẳng vào nút thắt trích xuất), lọc cửa sổ theo chất lượng, teacher
+    122B cho nhóm không có nguồn, và trộn hàng train dạng think — mỗi hướng ước ≤ +1.
+  </p>
+  <p>
+    Điều đã chắc chắn thì đáng nói rõ: một model 8B đơn, closed-book, không retrieval, không ensemble, hiện ở
+    <strong>79,69</strong> — trên GPT-4 của 2023 gần 5 điểm và trên chuyên gia viễn thông gần 15 điểm, với toàn bộ
+    tri thức đến từ tài liệu công khai được chính nó viết lại cho chính nó học.
+  </p>
+</section>
+
+<hr class="sep">
+<div class="foot">
+  Nguồn số liệu: <code>infra/teleqna/METHOD_STUDYKIT.md</code> · <code>PLAN_CLOSED_BOOK_8B.md</code> ·
+  <code>README.md</code> · log và per-row artefact trên H200.<br>
+  Trang này là bản đọc của ba tài liệu đó — mọi con số đều truy được về một dòng <code>RESULT</code> hoặc một
+  file kết quả cụ thể.
+</div>
+
+</div>
+
+<script>
+  (function () {
+    var b = document.getElementById('tgl');
+    var root = document.documentElement;
+    function cur() {
+      var t = root.getAttribute('data-theme');
+      if (t) return t;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    try {
+      var saved = localStorage.getItem('sk-theme');
+      if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+    } catch (e) {}
+    b.addEventListener('click', function () {
+      var next = cur() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('sk-theme', next); } catch (e) {}
+    });
+  })();
+</script>

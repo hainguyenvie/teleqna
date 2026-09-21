@@ -11,11 +11,14 @@ points at the failing stage instead of just shrinking the output.
                 substring of the source chunk — checked, not judged
   distinct      distractors are not the gold restated (exact/normalised)
   dedup         one question per normalised 6-word tail across the whole run
-  contamination the hard gate: any generated question whose normalised text
-                collides with a teleqna test row (6-word-tail match, or
-                Jaccard >= 0.6 on content words) is dropped. We generate from
-                the same specs the benchmark was built from, so collisions are
-                expected and their count is reported, not hidden.
+  contamination ITEM-COPY only (policy of 14/09/2026, PLAN_CLOSED_BOOK_8B §6.6):
+                a generated question is dropped only when it IS a test question —
+                normalised text identical, or its last --copy-tail (8) content
+                words identical. Sharing the fact, the wording, or most content
+                words with a test row is NOT a drop: we generate from the very
+                documents the benchmark was built from, so that overlap is the
+                knowledge we want in the weights. Near-collisions (Jaccard >=
+                --jaccard) are COUNTED and reported as `near_test`, never dropped.
 
 Output rows use the test.jsonl schema (sample_id/question/choices/answer/
 subject) so run_baseline.py and the training builder consume them unchanged.
@@ -50,8 +53,9 @@ def main() -> None:
     ap.add_argument("--raw", type=Path, required=True)
     ap.add_argument("--chunks", type=Path, required=True)
     ap.add_argument("--test", type=Path, required=True)
-    ap.add_argument("--tail", type=int, default=6)
-    ap.add_argument("--jaccard", type=float, default=0.6)
+    ap.add_argument("--tail", type=int, default=6, help="dedup tail within the run")
+    ap.add_argument("--copy-tail", type=int, default=8, help="tail length that counts as a test-question copy")
+    ap.add_argument("--jaccard", type=float, default=0.6, help="near-collision threshold, reported only")
     ap.add_argument("--out", type=Path, required=True)
     args = ap.parse_args()
 
@@ -59,12 +63,14 @@ def main() -> None:
                   for l in args.chunks.open(encoding="utf-8")}
 
     test_tails: set[str] = set()
+    test_norm: set[str] = set()
     test_words: list[set[str]] = []
     for line in args.test.open(encoding="utf-8"):
         q = json.loads(line)["question"]
         w = words(q)
-        if len(w) >= args.tail:
-            test_tails.add(" ".join(w[-args.tail:]))
+        test_norm.add(" ".join(w))
+        if len(w) >= args.copy_tail:
+            test_tails.add(" ".join(w[-args.copy_tail:]))
         test_words.append(set(w))
 
     drops = collections.Counter()
@@ -112,11 +118,13 @@ def main() -> None:
                 drops["dedup"] += 1
                 continue
             wset = set(w)
-            if tail in test_tails or any(
-                    len(wset & t) / max(1, len(wset | t)) >= args.jaccard
-                    for t in test_words):
-                drops["contamination"] += 1
+            copy_tail = " ".join(w[-args.copy_tail:]) if len(w) >= args.copy_tail else None
+            if " ".join(w) in test_norm or (copy_tail and copy_tail in test_tails):
+                drops["contamination"] += 1      # an actual copy of a test item
                 continue
+            if any(len(wset & t) / max(1, len(wset | t)) >= args.jaccard
+                   for t in test_words):
+                drops["near_test"] += 1          # reported, kept
             seen_tails.add(tail)
             if literature:
                 meta = {"chunk_id": rec["chunk_id"], "doc_id": rec["doc_id"],

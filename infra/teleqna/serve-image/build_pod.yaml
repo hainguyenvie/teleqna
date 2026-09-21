@@ -1,0 +1,118 @@
+# kaniko build cho teleqna-serve. Cùng khuôn với telelogs: máy local không có
+# docker, trọng số 16 GB đã nằm trên đĩa node, cluster có đường internet riêng —
+# nên build và push thẳng từ một pod thường, không daemon, không privileged.
+#
+#   kubectl apply -f build_pod.yaml
+#   kubectl logs -f teleqna-imgbuild
+#   kubectl delete pod teleqna-imgbuild
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teleqna-imgbuild
+  namespace: tensara
+  labels: {app: teleqna-imgbuild, owner: h2n}
+spec:
+  restartPolicy: Never
+  nodeName: hgx046
+  # DNS của cluster (10.96.0.10) không trả lời; pod theo ClusterFirst sẽ hỏng cả
+  # pull base image lẫn pip. Resolver công cộng, timeout 1 / attempts 1 để bỏ qua
+  # resolver chết trong một giây.
+  dnsConfig:
+    nameservers: ["8.8.8.8", "1.1.1.1"]
+    options:
+      - {name: timeout, value: "1"}
+      - {name: attempts, value: "1"}
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:v1.23.2-debug
+      command: ["/busybox/sh", "-c"]
+      args:
+        - |
+          set -e
+          SRC=/workspace/build/src
+          CTX=/workspace/build/context
+
+          # Service account không có RBAC trên secrets, nên credential đi qua
+          # hostPath dùng chung. Việc đầu tiên: chuyển nó vào emptyDir của pod và
+          # xoá bản dùng chung.
+          if [ -f /workspace/cred/config.json ]; then
+            cp /workspace/cred/config.json /kaniko/.docker/config.json
+            rm -f /workspace/cred/config.json
+            echo "credential moved off shared storage"
+          elif [ -f /kaniko/.docker/config.json ]; then
+            echo "credential already in place"
+          else
+            echo "!! no registry credential at /workspace/cred/config.json"; exit 1
+          fi
+
+          echo "=== assembling build context $(date -u) ==="
+          rm -rf "$CTX"; mkdir -p "$CTX"
+          cp -r "$SRC/." "$CTX/"
+
+          # Trọng số 16 GB nằm cùng filesystem: hardlink thay vì copy.
+          mkdir -p "$CTX/model"
+          for f in /workspace/model/*; do
+            ln "$f" "$CTX/model/$(basename "$f")" 2>/dev/null || cp "$f" "$CTX/model/"
+          done
+
+          echo "--- context ---"; ls "$CTX"; du -sh "$CTX" "$CTX/model"
+
+          for required in Dockerfile entrypoint.sh verify_summary.py \
+                          eval/teleqna/teleqna.py eval/_utils.py \
+                          model/config.json model/generation_config.json model/chat_template.jinja; do
+            [ -e "$CTX/$required" ] || { echo "!! context thiếu $required"; exit 1; }
+          done
+          ls "$CTX"/hf_cache/hub/datasets--GSMA--ot-full/snapshots/*/teleqna/test-00000-of-00001.parquet >/dev/null \
+            || { echo "!! context thiếu parquet của GSMA/ot-full"; exit 1; }
+
+          echo "=== build + push $(date -u) ==="
+          # --compressed-caching=false bắt buộc ở kích thước này: kaniko giữ layer
+          # nén trong RAM và một layer 16 GB sẽ OOM pod.
+          #
+          # Vòng lặp thử lại: CDN của Docker Hub (CloudFront) reset kết nối giữa
+          # lúc kéo rootfs của base image — hai lần đầu hỏng sau đúng 4 giây,
+          # trước cả khi build bắt đầu. --image-download-retry không bắt được ca
+          # này, nên thử lại cả tiến trình; mỗi lần hỏng chỉ tốn vài giây.
+          rc=1
+          for attempt in 1 2 3 4 5 6 7 8; do
+            echo "--- executor attempt $attempt $(date -u) ---"
+            /kaniko/executor \
+              --context "dir://$CTX" \
+              --dockerfile "$CTX/Dockerfile" \
+              --destination "$DEST" \
+              --compressed-caching=false \
+              --snapshot-mode=redo \
+              --cache=false \
+              --push-retry 5 \
+              --image-download-retry 5 \
+              --registry-mirror mirror.gcr.io \
+              --registry-mirror registry-1.docker.io \
+              --verbosity info && { rc=0; break; }
+            echo "attempt $attempt failed, retrying in 20s"
+            rm -rf /kaniko/0 /kaniko/1 2>/dev/null || true
+            sleep 20
+          done
+          [ "$rc" = 0 ] || { echo "!! executor failed after 8 attempts"; exit 1; }
+          echo BUILD_PUSH_DONE
+      env:
+        # PRIVATE repository: image mang parquet của GSMA/ot-full. Tạo repo ở chế
+        # độ Private TRƯỚC khi chạy — push vào repo chưa tồn tại sẽ tạo nó public.
+        - {name: DEST, value: "docker.io/hainh67/teleqna-serve:wise-o3"}
+        - {name: TMPDIR, value: /workspace/build/tmp}
+      resources:
+        requests: {cpu: "4", memory: 16Gi}
+        limits:   {cpu: "16", memory: 96Gi}
+      volumeMounts:
+        - {name: build, mountPath: /workspace/build}
+        - {name: model, mountPath: /workspace/model, readOnly: true}
+        - {name: cred, mountPath: /workspace/cred}
+        - {name: dockercfg, mountPath: /kaniko/.docker}
+  volumes:
+    - name: build
+      hostPath: {path: /mnt/registry/tensara-home/projects/teleqna/runs/image-build, type: DirectoryOrCreate}
+    - name: model
+      hostPath: {path: /mnt/registry/tensara-home/projects/teleqna/runs/teleqna-8b/models/kit/wise_o3, type: Directory}
+    - name: cred
+      hostPath: {path: /mnt/registry/tensara-home/projects/teleqna/runs/image-build/.cred, type: DirectoryOrCreate}
+    - name: dockercfg
+      emptyDir: {}

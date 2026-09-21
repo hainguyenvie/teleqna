@@ -262,3 +262,35 @@ The greedy selection also ran to exhaustion, not to its 700-section budget:
 1,904 seen questions are reachable by any section at all, and the 447 chosen
 sections cover all 1,904. There is no unselected section that could have added
 a target question.
+
+### 8.6 Verdict run 3 — tính lại 14/09/2026 từ `backups/h200/teleqna-8b-20260905`
+
+Tài liệu dừng ở pre-registration; eval `results/eg/otfull_eg3.jsonl` (22/08 13:00 UTC) có trong
+backup nhưng verdict chưa từng được ghi. Chạy đúng `code/eg3/groups_eval3.py` (estimator v3,
+bootstrap 4.000, seed 20260822) trên artefact trong backup:
+
+| | run 1 (3,7×) | run 2 (8,6×) | **run 3 (35,6×)** |
+|---|---:|---:|---:|
+| KNOWLEDGE v3 (chuẩn hoá độ khó + margin) | +0,19 [−1,41, +1,75] p=0,84 | −0,21 [−1,86, +1,38] p=0,78 | **+2,52 [+0,82, +4,26] p=0,005** |
+| raw TARGET − OTHER | +0,93 | +0,60 | **+2,87** |
+| TARGET (1.904) | +1,37 | +1,10 | **+2,84** |
+| OTHER (6.596, style control) | +0,44 | +0,50 | **−0,03** |
+| HOLDOUT (1.500, transfer control) | +0,67 | +0,60 | **+0,07** |
+| ot-full toàn bộ | +0,65 | +0,63 | +0,53 (fixed 499 / broke 446, unparsed 0) |
+
+TARGET theo môn (run 3): Standards specifications **+2,8** (n=1.217), Standards overview **+3,2**
+(n=347), Lexicon +5,4 (n=202), Research −1,9/+0,0 (n=106/32). OTHER Standards specifications
+**−2,4** (n=509) — lãi tập trung đúng vào dòng có section được khuếch đại, và không lan sang
+dòng cùng môn nhưng không được khuếch đại.
+
+**Đọc theo ba cách đọc đã cố định trước ở §8.4: rơi vào cách đọc 1.** v3 > +1,5, CI loại trừ 0,
+HOLDOUT ≈ 0 và OTHER ≈ 0 nên không phải style (khác hẳn run 1–2, nơi lãi nằm ở OTHER/HOLDOUT).
+Kết luận của §7 ("kênh corpus → weights: đóng") **bị bác bỏ ở điều kiện run 3**: kênh mở khi mỗi
+fact được viết lại ≥ vài chục dạng *khác nhau* (40 entity, ~734 quan hệ/section, 35,6×), đúng
+biến mà K-sweep tìm thấy (+3,33 multiplicity effect). Run 2 thất bại vì tăng liều trên chunk
+540 token với 7 entity — tối đa 21 cặp — tức là lặp lại ít quan hệ chứ không phải nhiều dạng.
+
+Độ lớn để lập kế hoạch: trên đúng dòng Standards specifications được phủ, 35,6× mua +2,8pp,
+trong khi cùng tri thức đưa vào context (strong RAG, 9B) mua +16,9pp — kênh weights ở liều này
+thu được ~1/6 của kênh context. Tổng thể chỉ +0,53 vì TARGET mới chiếm 19% benchmark
+(447/23.170 section). Xem [`PLAN_CLOSED_BOOK_8B.md`](PLAN_CLOSED_BOOK_8B.md) cho cách mở rộng.
