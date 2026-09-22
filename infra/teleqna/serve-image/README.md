@@ -44,6 +44,28 @@ Repo **private**. Entrypoint `/opt/entrypoint.sh`, cmd `serve`, cổng 8000, env
 `/opt/eval/{inspect_cli.py,verify_summary.py,evals/teleqna/teleqna.py,evals/_registry.py}`,
 parquet `GSMA/ot-full` và 19.028 file thư viện chấm điểm (ABI cpython-312, khớp base Ubuntu 24.04).
 
+## Đã kéo ngược về và chạy thật (22/09/2026)
+
+Không có docker trên H200 và cluster không cho tạo pull secret, nên dựng lại container
+từ **chính các byte trên Docker Hub**: `pullback_test.sh` tải từng layer của
+`wise-o3` thẳng từ registry (có resume, CDN reset giữa chừng), kiểm sha256 từng layer
+khớp manifest, giải nén thành cây `/opt` y như trong image. `runtest.sh` rồi chạy
+**nguyên văn** `entrypoint.sh` lấy từ layer đó, với env đọc từ config của image, trên
+vLLM **0.26.0** (đúng bản của base image), card 4.
+
+| kiểm tra | kết quả |
+|---|---|
+| trọng số tải về so với bản gốc | **giống từng byte** (sha256 `252d94d0…`) |
+| entrypoint | self-test `ANSWER: A` 5 token → `=== READY ===` |
+| `/v1/models` | `Qwen3-8B-Telco`, `teleqna-8b-closedbook`, `wise-o3` |
+| replay nguyên văn 10.000 request body của orchestrator | **82,25 %**, 27 giây |
+| định dạng: `ANSWER: X` khớp tuyệt đối (fullmatch) | **10.000 / 10.000**, 0 câu có `<think>` |
+| `response.model == request.model` | 10.000 / 10.000, `finish_reason: stop` 10.000 |
+| mode `verify` (harness chính thức, offline, thư viện trong image) | **0,8217**, 10.000 / 10.000 mẫu |
+
+`verifytest.sh` chạy mode verify với entrypoint của image, chỉ đổi tiền tố `/opt/`
+sang cây đã giải nén (dev pod không có quyền ghi `/opt`).
+
 ## Chạy
 
 ```bash
