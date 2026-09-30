@@ -7,9 +7,9 @@ gọi nó y hệt gọi một model — và lần này bên trong **đúng là**
 ## Địa chỉ
 
 ```
-POST  http://127.0.0.1:8000/v1/chat/completions
-GET   http://127.0.0.1:8000/v1/models
-GET   http://127.0.0.1:8000/health
+POST  http://127.0.0.1:20501/v1/chat/completions
+GET   http://127.0.0.1:20501/v1/models
+GET   http://127.0.0.1:20501/health
 ```
 
 ## Gửi cái gì

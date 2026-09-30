@@ -1,0 +1,130 @@
+# Ba chuyên gia trên một server bench, mỗi con một card, mỗi con một cổng.
+#
+#   GPU 3  ->  oran      hainh67/oran-serve:ob1b-step1059     cổng 20502
+#   GPU 4  ->  teleqna   hainh67/teleqna-serve:wise-o3        cổng 20501
+#   GPU 5  ->  telelogs  hainh67/telelogs-serve:ckpt700       cổng 20503   (cấu hình giữ nguyên bản đang chạy)
+#
+#   (ba repo hainh67/{teleqna,oran,telelogs}-serve đều PUBLIC từ 29/09 — không cần docker login để pull)
+#   docker compose -f docker-compose.bench.yml up -d
+#   docker compose -f docker-compose.bench.yml logs -f        chờ đủ ba dòng "=== READY ==="
+#
+# Nếu telelogs ĐANG chạy từ compose cũ của nó: hoặc `down` stack cũ rồi bật file này, hoặc chỉ bật hai
+# con mới mà không đụng telelogs:
+#   docker compose -f docker-compose.bench.yml up -d teleqna oran
+#
+# Router trên host gọi   http://127.0.0.1:20501/v1  ·  :20502/v1  ·  :20503/v1
+#
+# Network: dùng `bridge` mặc định của Docker (network_mode: bridge), KHÔNG tạo network riêng. Trên server
+# bench (dùng chung) Docker đã hết dải địa chỉ: "all predefined address pools have been fully subnetted".
+# Đừng `docker network prune` trên máy dùng chung — nó xoá cả network của người khác.
+# Cả ba nhận model "Qwen3-8B-Telco" (đúng tên trong request mẫu của orchestrator) và trả "ANSWER: X"
+# (teleqna, oran) hoặc chẩn đoán "\boxed{..}" (telelogs).
+#
+# Chấm lại tại chỗ (harness chính thức, dataset đóng sẵn trong image, không cần mạng). Chạy TRƯỚC `up`
+# hoặc sau khi `stop` dịch vụ đó: `run` dùng đúng card của dịch vụ, mà dịch vụ đang giữ 85% bộ nhớ card.
+#   docker compose -f docker-compose.bench.yml run --rm teleqna verify   # kỳ vọng ~0,822 (10.000 câu, ~2 phút)
+#   docker compose -f docker-compose.bench.yml run --rm oran verify      # kỳ vọng ~0,836 (1.500 câu, ~1 phút)
+
+x-vllm-service: &vllm-service
+  restart: unless-stopped
+  # vLLM cần shm lớn hơn 64 MB mặc định; thiếu thì treo lúc khởi động chứ không báo lỗi rõ.
+  shm_size: "8gb"
+  # bridge mặc định có sẵn: không cần tạo network mới (server đã hết address pool)
+  network_mode: bridge
+
+services:
+  teleqna:
+    <<: *vllm-service
+    image: hainh67/teleqna-serve:wise-o3
+    container_name: teleqna
+    # Chỉ nghe loopback: tiến trình trên máy này gọi được, ngoài mạng thì không.
+    ports:
+      - "127.0.0.1:20501:20501"
+    environment:
+      SERVED_NAMES: "Qwen3-8B-Telco teleqna-8b-closedbook wise-o3"
+      PORT: "20501"                 # cổng trong container, giữ bằng vế phải của `ports`
+      HOST: "0.0.0.0"
+      VLLM_TP: "1"
+      VLLM_MAX_MODEL_LEN: "4096"
+      VLLM_GPU_MEM_UTIL: "0.85"     # card riêng; hạ xuống nếu card bị chia (tối thiểu ~0.5 trên card 40 GB)
+      VLLM_MAX_NUM_SEQS: "64"
+      VERIFY_CONNECTIONS: "64"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["4"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:20501/health',timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+
+  oran:
+    <<: *vllm-service
+    image: hainh67/oran-serve:ob1b-step1059
+    container_name: oran
+    ports:
+      - "127.0.0.1:20502:20502"
+    environment:
+      SERVED_NAMES: "Qwen3-8B-Telco oran-8b-closedbook ob1b-step1059"
+      PORT: "20502"
+      HOST: "0.0.0.0"
+      VLLM_TP: "1"
+      VLLM_MAX_MODEL_LEN: "4096"
+      VLLM_GPU_MEM_UTIL: "0.85"     # GPU 3 được ghi là của nhóm ORAN; nếu nhiều người cùng chạy trên đó thì hạ xuống
+      VLLM_MAX_NUM_SEQS: "64"
+      VERIFY_CONNECTIONS: "64"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["3"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:20502/health',timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+
+  telelogs:
+    <<: *vllm-service
+    # Giữ nguyên cấu hình telelogs đang chạy (compose gốc của telelogs-serve-image), chỉ gom vào đây.
+    image: hainh67/telelogs-serve:ckpt700
+    container_name: telelogs
+    ports:
+      - "127.0.0.1:20503:20503"
+    environment:
+      PIPELINE_PORT: "20503"
+      PIPELINE_HOST: "0.0.0.0"
+      PIPELINE_SERVED_NAME: "telelogs-ckpt700"
+      PIPELINE_ECHO_MODEL: "1"       # trả lời dưới đúng tên model người gọi gửi
+      PIPELINE_EXPOSE_META: "0"
+      VLLM_PORT: "8100"              # engine nội bộ, nằm trong namespace mạng của container, không đụng host
+      VLLM_TP: "1"
+      VLLM_MAX_MODEL_LEN: "40960"
+      VLLM_GPU_MEM_UTIL: "0.90"
+      VLLM_MAX_NUM_SEQS: "64"
+      VERIFY_WORKERS: "8"
+    # File shim sửa tay được mount đè vào image, như bản đang chạy. Phải có ./pipeline_openai_shim.py cạnh
+    # file compose này; nếu không cần bản sửa tay thì xoá block volumes để dùng bản trong image.
+    volumes:
+      - ./pipeline_openai_shim.py:/opt/pipeline/pipeline_openai_shim.py:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["5"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:20503/health',timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 600s            # 16,4 GB trọng số + một chẩn đoán thật qua cả pipeline

@@ -45,7 +45,7 @@ Chỉ layer của mình mới phải upload.
 2. dựng cây /opt/{model,eval,hf,entrypoint.sh}   (hardlink 16 GB trọng số, không copy)
 3. kiểm hợp đồng artefact (greedy + thinking off + task + dataset)   <- y như RUN trong Dockerfile
 4. tar 2 layer  ->  crane append  ->  hainh67/teleqna-serve:wise-o3
-5. crane mutate: entrypoint, cmd, env, cổng 8000
+5. crane mutate: entrypoint, cmd, env, cổng 20501
 ```
 
 Thư viện chấm điểm cài bằng `pip install --target` (không venv, vì venv gắn cứng
@@ -57,9 +57,8 @@ restart giữa lúc upload 16 GB là mất 20 phút. `setsid nohup … &` rồi 
 
 ## Điều kiện tiên quyết
 
-**1. Repo Docker Hub phải là PRIVATE.** Image mang parquet `GSMA/ot-full`.
-Đã tạo `hainh67/teleqna-serve` ở chế độ private ngày 21/09 (qua API, xác nhận
-`is_private: true`). Push vào repo chưa tồn tại sẽ tạo nó **public**.
+**1. Repo Docker Hub.** `hainh67/teleqna-serve` tạo private ngày 21/09, chuyển **public** ngày 29/09 theo
+quyết định của chủ repo. Gói miễn phí của `hainh67` chỉ cho 1 repo private.
 
 **2. Credential.** `~/.docker/config.json` trên server (chmod 600), lấy từ
 `~/.docker/config.json` của máy local, tài khoản `hainh67`. crane đọc thẳng file này.
@@ -81,3 +80,11 @@ trước khi push nên hai lỗi này đáng lẽ không tới được đây.
 Giữ làm công thức chuẩn cho ai có docker daemon: `docker build -t … .` với context
 gồm `model/`, `eval/`, `hf_cache/`. Nội dung image do `build_crane.sh` tạo ra là
 tương đương — cùng base, cùng file, cùng env — chỉ khác cách lắp.
+
+## Nếu đẩy lại trọng số 16 GB thì tách shard trước (bài học 29/09 từ image ORAN)
+
+crane đẩy mỗi layer trong một luồng duy nhất. Ngày 21/09 layer 16 GB của TeleQnA lọt trong một lượt, nhưng
+ngày 29/09 cùng kích thước đó chết hai lần ở phút ~10 (`write: connection reset by peer`) và phải làm lại từ
+đầu. Cách đã chạy được: tách `model.safetensors` thành shard ~2 GB rồi đẩy mỗi shard một layer, thử lại theo
+layer (`oran/infra/oran/serve-image/reshard.py` và `push_sharded.sh`). Kéo về để kiểm thì tải song song nhiều
+đoạn byte (`pull_parallel.py`): CDN giới hạn theo từng kết nối, 1 luồng chỉ 0,3 MiB/s.

@@ -14,16 +14,12 @@
 # các lần chạy, đổi minor version sẽ đổi dải đó một lượng không biết trước.
 FROM vllm/vllm-openai:v0.26.0
 
-# venv riêng cho harness chấm lại (mode `verify`). inspect-ai kéo theo openai và
-# pydantic riêng; trộn vào interpreter của vLLM là cách chắc chắn nhất để ngày nào
-# đó image chấm bằng một client khác với client đã đo.
-RUN python3 -m venv /opt/eval/venv \
- && /opt/eval/venv/bin/pip install --no-cache-dir --upgrade pip \
- && /opt/eval/venv/bin/pip install --no-cache-dir \
-      "inspect-ai==0.3.188" \
-      "datasets==4.6.1" \
-      "pyarrow==22.0.0" \
-      "openai==2.26.0"
+# Thư viện cho harness chấm lại (mode `verify`) cài bằng pip --target vào /opt/eval/pylibs, KHÔNG venv:
+# entrypoint gọi `PYTHONPATH=/opt/eval/pylibs python3 /opt/eval/inspect_cli.py`, và image thật (build_crane.sh)
+# có đúng bố cục này. inspect-ai kéo openai/pydantic riêng nên không cài chung vào site-packages của vLLM.
+RUN python3 -m pip install --no-cache-dir --target /opt/eval/pylibs \
+      "inspect-ai==0.3.188" "datasets==4.6.1" "pyarrow==22.0.0" "openai==2.26.0"
+COPY inspect_cli.py /opt/eval/inspect_cli.py
 
 # Task chính thức của GSMA (gsma-labs/evals, MIT) — nguyên văn, không sửa một dòng:
 # hf_dataset("GSMA/ot-full", name="teleqna", split="test") + multiple_choice(cot=False) + choice().
@@ -51,13 +47,13 @@ assert g.get('do_sample') is False and g.get('temperature')==0.0 and g.get('top_
 t=open('/opt/model/chat_template.jinja').read(); \
 assert 'enable_thinking is not defined' in t and 'set enable_thinking = false' in t; \
 print('artifact contract ok: greedy defaults + thinking off')" \
- && /opt/eval/venv/bin/python -c "import inspect_ai, datasets; print('inspect_ai', inspect_ai.__version__)"
+ && PYTHONPATH=/opt/eval/pylibs python3 -c "import inspect_ai, datasets; print('inspect_ai', inspect_ai.__version__)"
 
-# Orchestrator gọi với "model": "Qwen3-8B-Telco"; satellite mặc định gọi cổng 8000.
-EXPOSE 8000
+# Orchestrator gọi với "model": "Qwen3-8B-Telco". Cổng 20501 (8000 bị cấm trên server bench).
+EXPOSE 20501
 
 ENV SERVED_NAMES="Qwen3-8B-Telco teleqna-8b-closedbook wise-o3" \
-    PORT=8000 \
+    PORT=20501 \
     HOST=0.0.0.0 \
     VLLM_TP=1 \
     VLLM_MAX_MODEL_LEN=4096 \

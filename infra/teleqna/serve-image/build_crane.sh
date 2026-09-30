@@ -18,6 +18,8 @@ REPO=${REPO:-hainh67/teleqna-serve}
 BASE_TAG=${BASE_TAG:-$REPO:base-vllm-0.26.0}
 DEST=${DEST:-$REPO:wise-o3}
 MODEL=${MODEL:-$R/models/kit/wise_o3}
+# tar tạm trên ổ home, KHÔNG /tmp: /tmp của pod là ổ ephemeral của node — 16 GB ở đó từng làm node DiskPressure
+TMPD=${TMPD:-$HOME/projects/teleqna/runs/image-build/tmp}; mkdir -p "$TMPD"
 
 echo "=== 1. base image -> repo đích (mount blob trong registry) ==="
 "$CRANE" copy "$BASE_SRC" "$BASE_TAG" --platform linux/amd64
@@ -63,26 +65,26 @@ PY
 
 echo "=== 3. đóng layer ==="
 cd "$STAGE"
-tar --numeric-owner --owner=0 --group=0 -cf /tmp/l_model.tar opt/model
-tar --numeric-owner --owner=0 --group=0 -cf /tmp/l_rest.tar opt/eval opt/hf opt/entrypoint.sh
-ls -la /tmp/l_model.tar /tmp/l_rest.tar
+tar --numeric-owner --owner=0 --group=0 -cf $TMPD/l_model.tar opt/model
+tar --numeric-owner --owner=0 --group=0 -cf $TMPD/l_rest.tar opt/eval opt/hf opt/entrypoint.sh
+ls -la $TMPD/l_model.tar $TMPD/l_rest.tar
 
 echo "=== 4. append + push ==="
-"$CRANE" append -b "$BASE_TAG" -f /tmp/l_rest.tar -t "$REPO:stage1" 
-"$CRANE" append -b "$REPO:stage1" -f /tmp/l_model.tar -t "$DEST"
+"$CRANE" append -b "$BASE_TAG" -f $TMPD/l_rest.tar -t "$REPO:stage1" && rm -f $TMPD/l_rest.tar
+"$CRANE" append -b "$REPO:stage1" -f $TMPD/l_model.tar -t "$DEST" && rm -f $TMPD/l_model.tar
 
 echo "=== 5. metadata (entrypoint / cmd / env / cổng) ==="
 "$CRANE" mutate "$DEST" -t "$DEST" \
   --entrypoint /opt/entrypoint.sh --cmd serve \
-  --exposed-ports 8000/tcp \
+  --exposed-ports 20501/tcp \
   --env SERVED_NAMES="Qwen3-8B-Telco teleqna-8b-closedbook wise-o3" \
-  --env PORT=8000 --env HOST=0.0.0.0 \
+  --env PORT=20501 --env HOST=0.0.0.0 \
   --env VLLM_TP=1 --env VLLM_MAX_MODEL_LEN=4096 --env VLLM_GPU_MEM_UTIL=0.85 --env VLLM_MAX_NUM_SEQS=64 \
   --env VERIFY_CONNECTIONS=64 \
   --env HF_HOME=/opt/hf --env HF_HUB_OFFLINE=1 --env HF_DATASETS_OFFLINE=1 \
   --env TOKENIZERS_PARALLELISM=false --env OMP_NUM_THREADS=8
 
-rm -f /tmp/l_model.tar /tmp/l_rest.tar
+rm -f $TMPD/l_model.tar $TMPD/l_rest.tar
 echo "=== xong: $DEST ==="
 "$CRANE" config "$DEST" | python3 -c "import json,sys; c=json.load(sys.stdin)['config']; print('Entrypoint', c.get('Entrypoint'), '| Cmd', c.get('Cmd'), '| Ports', c.get('ExposedPorts')); print('Env:'); [print('   ', e) for e in c.get('Env', []) if not e.startswith(('PATH=','LD_','NV_','CUDA_','NCCL_'))]"
 echo BUILD_PUSH_DONE

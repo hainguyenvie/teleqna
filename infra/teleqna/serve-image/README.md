@@ -8,7 +8,7 @@ nằm ở hệ thống; ở đây điểm nằm trong trọng số, nên image c
 file cấu hình quyết định con số đó.
 
 ```
-orchestrator / satellite ──▶ :8000  vLLM (thư mục /opt/model)
+orchestrator / satellite ──▶ :20501  vLLM (thư mục /opt/model)
                                       trả "ANSWER: X", 5 token
 ```
 
@@ -39,7 +39,7 @@ hainh67/teleqna-serve:base-vllm-0.26.0 <- base copy chéo repo, để build lạ
 hainh67/teleqna-serve:stage1           <- trung gian (base + eval + dataset), giữ để build lại nhanh
 ```
 
-Repo **private**. Entrypoint `/opt/entrypoint.sh`, cmd `serve`, cổng 8000, env đầy đủ
+Repo **public** từ 29/09 (quyết định của chủ repo; trước đó private). Entrypoint `/opt/entrypoint.sh`, cmd `serve`, cổng 20501 (đổi từ 8000 ngày 29/09 bằng `crane mutate`, layer giữ nguyên), env đầy đủ
 (kiểm bằng `crane config`). Nội dung đã kiểm từ registry: `/opt/entrypoint.sh`,
 `/opt/eval/{inspect_cli.py,verify_summary.py,evals/teleqna/teleqna.py,evals/_registry.py}`,
 parquet `GSMA/ot-full` và 19.028 file thư viện chấm điểm (ABI cpython-312, khớp base Ubuntu 24.04).
@@ -69,12 +69,14 @@ sang cây đã giải nén (dev pod không có quyền ghi `/opt`).
 ## Chạy
 
 ```bash
-docker run --gpus all -p 127.0.0.1:8000:8000 hainh67/teleqna-serve:wise-o3
+docker run --gpus '"device=4"' -p 127.0.0.1:20501:20501 hainh67/teleqna-serve:wise-o3
 # chờ dòng "=== READY ==="
-curl http://127.0.0.1:8000/v1/models
+curl http://127.0.0.1:20501/v1/models
 ```
 
-hoặc `docker compose up -d` với `docker-compose.yml` kèm theo (đã ghim card 6).
+hoặc `docker compose up -d` với `docker-compose.yml` kèm theo (ghim GPU 4, cổng 20501).
+Chạy chung với ORAN (GPU 3, cổng 20502) và TeleLogs (GPU 5, cổng 20503) trên server bench:
+`docker compose -f docker-compose.bench.yml up -d`.
 
 ## Chấm lại
 
@@ -85,11 +87,11 @@ docker run --gpus all --rm hainh67/teleqna-serve:wise-o3 verify
 Harness chính thức (gsma-labs/evals trên Inspect AI), đủ 10.000 câu, dataset
 `GSMA/ot-full` đã đóng trong image. Kỳ vọng **0,822–0,823**.
 
-## Repo Docker Hub phải tạo PRIVATE trước
+## Repo Docker Hub: public
 
-Image mang theo parquet của `GSMA/ot-full` (3,5 MB) để `verify` chạy offline.
-Push vào một repository chưa tồn tại sẽ tạo nó **public**. Tạo
-`hainh67/teleqna-serve` ở chế độ Private trên hub.docker.com **trước** lần push đầu.
+Chủ repo cho phép public ngày 29/09. Image mang trọng số và parquet `GSMA/ot-full` (bản công khai trên
+Hugging Face) để `verify` chạy offline. Gói miễn phí chỉ cho 1 repo private — nếu sau này cần private
+lại thì chỉ một trong ba repo `teleqna-serve` / `oran-serve` / `telelogs-serve` được.
 
 ## Build
 
